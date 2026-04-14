@@ -136,29 +136,40 @@ apt install -y -qq \
 log_success "系统依赖安装完成"
 
 # 5. 安装 Python 3.11
-log_info "安装 Python 3.11..."
-add-apt-repository ppa:deadsnakes/ppa -y > /dev/null 2>&1
-apt update -qq > /dev/null 2>&1
-apt install -y -qq python3.11 python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
+if command -v python3.11 &> /dev/null; then
+    log_success "Python 3.11 已安装，跳过：$(python3.11 --version)"
+else
+    log_info "安装 Python 3.11..."
+    add-apt-repository ppa:deadsnakes/ppa -y > /dev/null 2>&1
+    apt update -qq > /dev/null 2>&1
+    apt install -y -qq python3.11 python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
 
-# 验证 Python
-if ! command -v python3.11 &> /dev/null; then
-    log_error "Python 3.11 安装失败"
-    exit 1
+    # 验证 Python
+    if ! command -v python3.11 &> /dev/null; then
+        log_error "Python 3.11 安装失败"
+        exit 1
+    fi
+    log_success "Python 3.11 安装完成：$(python3.11 --version)"
 fi
-log_success "Python 3.11 安装完成：$(python3.11 --version)"
+
+# 确保 venv 和 dev 包也已安装
+apt install -y -qq python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
 
 # 6. 安装 Node.js 18
-log_info "安装 Node.js 18..."
-curl -fsSL https://deb.nodesource.com/setup_18.x | bash - > /dev/null 2>&1
-apt install -y -qq nodejs > /dev/null 2>&1
+if command -v node &> /dev/null; then
+    log_success "Node.js 已安装，跳过：$(node --version)"
+else
+    log_info "安装 Node.js 18..."
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - > /dev/null 2>&1
+    apt install -y -qq nodejs > /dev/null 2>&1
 
-# 验证 Node.js
-if ! command -v node &> /dev/null; then
-    log_error "Node.js 安装失败"
-    exit 1
+    # 验证 Node.js
+    if ! command -v node &> /dev/null; then
+        log_error "Node.js 安装失败"
+        exit 1
+    fi
+    log_success "Node.js 安装完成：$(node --version)"
 fi
-log_success "Node.js 安装完成：$(node --version)"
 
 # 7. 创建项目目录
 log_info "创建项目目录：$INSTALL_DIR"
@@ -181,8 +192,9 @@ cd "$INSTALL_DIR/web/backend"
 python3.11 -m venv venv
 source venv/bin/activate
 
-# 安装依赖
+# 安装依赖（先安装固定版本的 bcrypt，避免兼容性问题）
 pip install --upgrade pip -q
+pip install bcrypt==3.2.2 -q
 pip install -r requirements.txt -q
 
 log_success "后端依赖安装完成"
