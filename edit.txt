@@ -1,0 +1,567 @@
+HTTP/2 200
+
+date: Fri, 10 Apr 2026 13:32:21 GMT
+
+content-type: text/html; charset=utf-8
+
+strict-transport-security: max-age=31536000
+
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+
+cache-control: no-store, no-cache, must-revalidate
+
+pragma: no-cache
+
+strict-transport-security: max-age=31536000
+
+alt-svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+
+server: JingCeDun
+
+\<html>
+
+&#x20;   \<head>
+
+&#x20;       \<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+&#x20;       \<title>\</title>
+
+&#x20;       \<script src="/static/app/js/jquery-2.2.1.min.js">\</script>
+
+&#x20;       \<script src="/static/app/js/layer.js">\</script>
+
+&#x20;       \<link href="/static/merchant/default/libs/jquery-confirm/css/jquery-confirm.css" rel="stylesheet" type="text/css">
+
+&#x20;       \<script src="/static/merchant/default/libs/jquery-confirm/js/jquery-confirm.js">\</script>
+
+&#x20;       \<style>
+
+&#x20;           body{
+
+&#x20;               font-family: "Microsoft Yahei", "微软雅黑", "Pinghei";
+
+&#x20;           }
+
+&#x20;           button,a{
+
+&#x20;               border: none;
+
+&#x20;               font-size: 16px;
+
+&#x20;           }
+
+&#x20;           .order\_show{
+
+&#x20;               padding:20px;
+
+&#x20;           }
+
+&#x20;           .order\_info{
+
+&#x20;               line-height:30px;
+
+&#x20;               font-size:14px;
+
+&#x20;               color:#666;
+
+&#x20;               padding:20px;
+
+&#x20;           }
+
+&#x20;           .order\_pay{
+
+&#x20;               line-height:30px;
+
+&#x20;               font-size:16px;
+
+&#x20;               color:#333;
+
+&#x20;               padding:20px;
+
+&#x20;               /\*border-bottom:1px solid #eee;\*/
+
+&#x20;           }
+
+&#x20;           .order\_pay img{
+
+&#x20;               float: left;
+
+&#x20;               margin-right: 20px;
+
+&#x20;           }
+
+&#x20;           .order\_pay p{
+
+&#x20;               margin: 0;
+
+&#x20;               float: left;
+
+&#x20;           }
+
+&#x20;           .order\_pay p span{
+
+&#x20;               color: crimson;
+
+&#x20;           }
+
+&#x20;           .order\_btn1, .order\_btn2 {
+
+&#x20;               display: block;
+
+&#x20;               text-decoration: none;
+
+&#x20;               color: #fff;
+
+&#x20;               margin: 10px;
+
+&#x20;               float: left;
+
+&#x20;               height: 40px;
+
+&#x20;               line-height: 40px;
+
+&#x20;               width: calc(50% - 20px);
+
+&#x20;               text-align: center;
+
+&#x20;               border-radius: 3px;
+
+&#x20;               font-size: 12px;
+
+&#x20;           }
+
+&#x20;           .order\_btn1{
+
+&#x20;               background: crimson;
+
+&#x20;           }
+
+&#x20;           .order\_btn2{
+
+&#x20;               background: #ccc;
+
+&#x20;           }
+
+&#x20;           @media only screen and (min-width: 768px) {
+
+&#x20;               .layui-layer-iframe{min-height: 400px;}
+
+&#x20;           }
+
+&#x20;           @media only screen and (max-width: 768px) {
+
+&#x20;               .layui-layer-iframe{width: 80%!important;}
+
+&#x20;           }
+
+&#x20;           .note{
+
+&#x20;               color: #8c8787;
+
+&#x20;               font-size: 13px;
+
+&#x20;           }
+
+&#x20;       \</style>
+
+&#x20;   \</head>
+
+&#x20;   \<body>
+
+&#x20;               \<form id="payForm" name="p"  action="/index/pay/payment" target="\_blank">&#x20;
+
+&#x20;             \<input type="hidden" name="trade\_no" value="4Y2604102160F47HZ">
+
+&#x20;           \<div class="order\_show">
+
+&#x20;               \<div style="position: relative;">
+
+&#x20;                   \<div class="order\_box">
+
+&#x20;                       \<div class="order\_pay">
+
+&#x20;                           \<img src="/static/app/images/order\_pay.png" alt="">
+
+&#x20;                           \<p>
+
+&#x20;                               支付金额：
+
+&#x20;                               \<span>62.7000元 \</span>\<br>
+
+&#x20;                               支付方式：
+
+&#x20;                               \<span>支付宝H5\</span>
+
+&#x20;                           \</p>
+
+&#x20;                           \<div style="clear: both">
+
+&#x20;                           \</div>
+
+&#x20;                       \</div>
+
+&#x20;                       \<div class="order\_info">
+
+&#x20;                           订单编号： 4Y2604102160F47HZ                            \<br>
+
+&#x20;                           商品名称： 测试商品                            \<br>
+
+&#x20;                           购买数量： 1                        \</div>
+
+&#x20;                       \<div class="ymm-prompt form-group">
+
+&#x20;                           \<p style="padding-left: 16px;">
+
+&#x20;                               \<input style="display:inline-block;vertical-align: middle;" id="check" class="checkbox" name="agree"
+
+&#x20;                                      type="checkbox" checked>
+
+&#x20;                               \<span class="color1" style="font-size: 12px;">点击同意\<a id="agreement" href="#" target="\_blank"
+
+&#x20;                                                                                    style="margin-top:-1px;display:inline-block;font-size: 12px;text-decoration: none;color: crimson;">《用户协议》\</a>
+
+&#x20;                               \</span>
+
+&#x20;                           \</p>
+
+&#x20;                       \</div>
+
+&#x20;                       \<div class="paybtn" id="d1">
+
+&#x20;                           \<button class="order\_btn1" type="button" id="pay\_btn">确认付款\</button>
+
+&#x20;                           \<a onclick="back\_url()" class="order\_btn2">重新选择\</a>
+
+&#x20;                       \</div>
+
+&#x20;                       \<div class="paybtn" style="display:none;" id="d2">
+
+&#x20;                           \<a onclick="back\_url()" class="order\_btn2">返回商品\</a>
+
+&#x20;                           \<a href="/orderquery?orderid=4Y2604102160F47HZ" id="pay" target="\_parent" class="order\_btn1"> 等待付款中...\</a>
+
+&#x20;                       \</div>
+
+&#x20;                       \<div class="note" style="color:#1E90FF; font-weight:bold; text-align:center;">平台只负责卡密正确性，卡密问题保证处理，\<font color="FF1493">其他所有问题请和商家沟通，咨询商家后再买，\</font>遇到更新请等待，买错不退不换，\<font color="FF0000">以上无法接受请不要购买。\</font>\</div>
+
+&#x20;                   \</div>
+
+&#x20;                   \<div class="collect\_box" style="display: none;position: absolute;top:0px;left:0px;width: 100%;height: 100%;">
+
+&#x20;                       \<style>
+
+&#x20;                           .ewm {
+
+&#x20;                               /\*border: 1px solid #eee;\*/
+
+&#x20;                               color: #666;
+
+&#x20;                               display: flex;
+
+&#x20;                               flex-direction: column;
+
+&#x20;                               align-items: center;
+
+&#x20;                               justify-content: center;
+
+&#x20;                               width: 100%;
+
+&#x20;                               height: 100%;
+
+&#x20;                           }
+
+&#x20;                       \</style>
+
+&#x20;                       \<div class="ewm">
+
+&#x20;                           \<div id="qrcode" style="width:150px;height:150px;">\<img id="bindwximg" style="width:150px;height:150px;" src="">\</div>\<br>
+
+&#x20;                           \<p style="font-size: 14px;text-align:center;margin-top: 30px;font-weight: 700">为方便查询订单，首次下单请关注微信公众号\</p>
+
+&#x20;                           \<p style="font-size: 13px;text-align:center;margin-top: 0px;font-weight: 500;color: #fff; background-color: #34c38f;padding:4px 8px;border-radius: 50px;">扫码完成后将自动跳转支付\</p>
+
+&#x20;                       \</div>
+
+&#x20;                   \</div>
+
+&#x20;               \</div>
+
+&#x20;           \</div>
+
+&#x20;       \</form>
+
+&#x20;       \<script type="text/javascript">
+
+&#x20;           \$('#agreement').click(function () {
+
+&#x20;               layer.open({
+
+&#x20;                   type: 2,
+
+&#x20;                   title: '用户协议',
+
+&#x20;                   area: ['80%'],
+
+&#x20;                   anim: 2,
+
+&#x20;                   content: ['/index/index/service\_agreement']
+
+&#x20;               });
+
+&#x20;               return false;
+
+&#x20;           })
+
+&#x20;           function guid() {
+
+&#x20;               return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+
+&#x20;                   var r = Math.random() \* 16 | 0;
+
+&#x20;                   var v = c == 'x' ? r : (r & 0x3 | 0x8);
+
+&#x20;                   return v.toString(16);
+
+&#x20;               });
+
+&#x20;           }
+
+&#x20;           var \_fingerprint = window\.localStorage.getItem("\_fingerprint");
+
+&#x20;           if (\_fingerprint === null || \_fingerprint === "")
+
+&#x20;           {
+
+&#x20;               \_fingerprint = guid();
+
+&#x20;               window\.localStorage.setItem("\_fingerprint", \_fingerprint);
+
+&#x20;           }
+
+&#x20;           var \_wxauth = window\.localStorage.getItem("\_wxauth"), \_wxauth = (\_wxauth === null) ? "" : \_wxauth;
+
+&#x20;           function oderquery(t) {
+
+&#x20;               var orderid = '4Y2604102160F47HZ';
+
+&#x20;               \$.post('/pay/getOrderStatus', {
+
+&#x20;                   orderid: orderid,
+
+&#x20;                   token: "d9320e0c1f30349bca6d5ff17348fa011775826808"
+
+&#x20;               }, function (ret) {
+
+&#x20;                   if (ret == 1) {
+
+&#x20;                       \$("#pay").html("付款成功，查看卡密");
+
+&#x20;                   }
+
+&#x20;               });
+
+&#x20;               t = t + 1;
+
+&#x20;               setTimeout('oderquery(' + t + ')', 3000);
+
+&#x20;           }
+
+&#x20;           function scanquery(t) {
+
+&#x20;               \$.ajax({
+
+&#x20;                   url: '/index/pay/getWxscanStatus',
+
+&#x20;                   type: 'post',
+
+&#x20;                   dataType: 'json',
+
+//                    async: false,
+
+&#x20;                   data: {
+
+&#x20;                       trade\_no: '4Y2604102160F47HZ',
+
+&#x20;                       fingerprint: \_fingerprint,
+
+&#x20;                   },
+
+&#x20;                   success: function (res) {
+
+&#x20;                       if (res.code == 1) {
+
+&#x20;                           window\.localStorage.setItem("\_wxauth", res.data);
+
+&#x20;                           var comfirm = layer.confirm('🤗 恭喜您关注成功，可继续支付啦！', {
+
+&#x20;                               btn: ['继续支付'] //按钮
+
+&#x20;                           }, function () {
+
+&#x20;                               layer.close(comfirm);
+
+&#x20;                               \$(".order\_box").css("opacity", "1");
+
+&#x20;                               \$(".collect\_box").css("display", "none");
+
+&#x20;                               \$("#d1").hide();
+
+&#x20;                               \$("#d2").show().attr("dis");
+
+&#x20;                               setTimeout('oderquery(1)', 3000);
+
+&#x20;                               \$('#payForm').submit();
+
+&#x20;                           });
+
+&#x20;                       } else {
+
+&#x20;                           t = t + 1;
+
+&#x20;                           setTimeout('scanquery(' + t + ')', 3000);
+
+&#x20;                       }
+
+&#x20;                   }
+
+&#x20;               });
+
+&#x20;           }
+
+&#x20;           \$('#pay\_btn').click(function () {
+
+&#x20;               if (false === \$("#check").is(':checked')) {
+
+&#x20;                   layer.msg('请先同意用户协议');
+
+&#x20;                   return false;
+
+&#x20;               }
+
+&#x20;               \$.ajax({
+
+&#x20;                   url: '/index/pay/check\_buyer',
+
+&#x20;                   type: 'post',
+
+&#x20;                   dataType: 'json',
+
+&#x20;                   async:false,
+
+&#x20;                   data: {
+
+&#x20;                       trade\_no: '4Y2604102160F47HZ',
+
+&#x20;                       fingerprint: \_fingerprint,
+
+&#x20;                       wxauth: \_wxauth
+
+&#x20;                   },
+
+&#x20;                   success: function (res) {
+
+&#x20;                       if (res.status === "tip")
+
+&#x20;                       {
+
+&#x20;                           \$.alert(res.msg);
+
+&#x20;                       } else if (res.status === "collect")
+
+&#x20;                       {
+
+&#x20;                           \$(".order\_box").css("opacity", "0.1");
+
+&#x20;                           \$(".collect\_box").css("display", "block");
+
+&#x20;                           \$('#bindwximg').attr("src", res.qrcode);
+
+&#x20;                           //轮询查询状态
+
+&#x20;                           setTimeout('scanquery(1)', 3000);
+
+&#x20;                       } else {
+
+&#x20;                           \$("#d1").hide();
+
+&#x20;                           \$("#d2").show().attr("dis");
+
+&#x20;                           setTimeout('oderquery(1)', 3000);
+
+&#x20;                           \$('#payForm').submit();
+
+&#x20;                       }
+
+&#x20;                   }
+
+&#x20;               });
+
+&#x20;           });
+
+&#x20;           function back\_url() {
+
+&#x20;               try {
+
+&#x20;                   parent.\$.nyroModalRemove();
+
+&#x20;               } catch (err) {
+
+&#x20;                   window\.history.back();
+
+&#x20;               }
+
+&#x20;               return false;
+
+&#x20;           }
+
+&#x20;           function query\_url() {
+
+&#x20;               try {
+
+&#x20;                   parent.location.href = '/orderquery?orderid=4Y2604102160F47HZ';
+
+&#x20;               } catch (err) {
+
+&#x20;                   window\.location.href = '/orderquery?orderid=4Y2604102160F47HZ';
+
+&#x20;               }
+
+&#x20;               return false;
+
+&#x20;           }
+
+&#x20;       \</script>
+
+        
+
+&#x20;       \<script type="text/javascript">
+
+&#x20;       \</script>
+
+    
+
+\<!-- 百度统计 开始 -->
+
+\<script>
+
+&#x20;   var \_hmt = \_hmt || [];
+
+&#x20;   (function() {
+
+&#x20;       var hm = document.createElement("script");
+
+&#x20;       hm.src = "https\://hm.baidu.com/hm.js?e52c00dfe173682d88617b0375521ef5";
+
+        var s = document.getElementsByTagName("script")[0]; 
+
+&#x20;       s.parentNode.insertBefore(hm, s);
+
+&#x20;   })();
+
+\</script>
+
+\<!-- 百度统计 结束 -->
+
+\</body>
+
+\</html>

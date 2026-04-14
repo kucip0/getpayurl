@@ -1,0 +1,6 @@
+requests
+beautifulsoup4
+qrcode[pil]
+Pillow
+playwright
+playwright-stealth

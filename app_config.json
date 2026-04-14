@@ -1,0 +1,34 @@
+{
+  "platforms": {
+    "houfaka": {
+      "merchant_cookies": {
+        "username": "yousha01",
+        "cookies": [
+          {
+            "name": "sc447eeeb",
+            "value": "b2dk0q22ogbd9cvnho0lpm0foj",
+            "domain": "www.houfaka.com"
+          },
+          {
+            "name": "server_name_session",
+            "value": "877094bcb60f7123a5f2dadd225f7789",
+            "domain": "www.houfaka.com"
+          },
+          {
+            "name": "SITE_TOTAL_ID",
+            "value": "8eaa2f0d984ccb8d61e4af37937ca927",
+            "domain": "www.houfaka.com"
+          },
+          {
+            "name": "merchant",
+            "value": "%7B%22id%22%3A11633%2C%22key%22%3A%22401767ad6f3421bc44ecb171bdaad7440781de444b4bf24fe883bc820b705bd0%22%7D",
+            "domain": "www.houfaka.com"
+          }
+        ],
+        "login_time": "2026-04-10 15:50:29"
+      },
+      "last_url": "https://www.houfaka.com/details/E11D52A3"
+    }
+  },
+  "last_active_platform": "houfaka"
+}
