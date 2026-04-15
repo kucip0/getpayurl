@@ -115,8 +115,16 @@ if [ "$INTERACTIVE" = true ]; then
     fi
 fi
 
-# 3. 更新系统
-log_info "更新系统包..."
+# 3. 更新系统（使用阿里云镜像源）
+log_info "配置阿里云APT镜像源..."
+cat > /etc/apt/sources.list << 'APT_EOF'
+deb http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse
+APT_EOF
+
+log_info "更新系统包（使用阿里云镜像）..."
 apt update -qq
 apt upgrade -y -qq
 log_success "系统更新完成"
@@ -155,13 +163,17 @@ fi
 # 确保 venv 和 dev 包也已安装
 apt install -y -qq python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
 
-# 6. 安装 Node.js 18
+# 6. 安装 Node.js 18（使用淘宝Node.js镜像）
 if command -v node &> /dev/null; then
     log_success "Node.js 已安装，跳过：$(node --version)"
 else
-    log_info "安装 Node.js 18..."
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - > /dev/null 2>&1
-    apt install -y -qq nodejs > /dev/null 2>&1
+    log_info "安装 Node.js 18（使用淘宝镜像）..."
+    # 使用淘宝镜像源安装Node.js
+    curl -fsSL https://npmmirror.com/mirrors/node/v18.20.4/node-v18.20.4-linux-x64.tar.xz -o /tmp/nodejs.tar.xz
+    tar -xJf /tmp/nodejs.tar.xz -C /usr/local/
+    ln -sf /usr/local/node-v18.20.4-linux-x64/bin/node /usr/local/bin/node
+    ln -sf /usr/local/node-v18.20.4-linux-x64/bin/npm /usr/local/bin/npm
+    rm -f /tmp/nodejs.tar.xz
 
     # 验证 Node.js
     if ! command -v node &> /dev/null; then
@@ -185,12 +197,16 @@ else
 fi
 
 # 9. 安装后端依赖
-log_info "安装后端 Python 依赖..."
+log_info "安装后端 Python 依赖（使用清华PyPI镜像）..."
 cd "$INSTALL_DIR/web/backend"
 
 # 创建虚拟环境
 python3.11 -m venv venv
 source venv/bin/activate
+
+# 配置pip使用清华镜像
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
 
 # 安装依赖（先安装固定版本的 bcrypt，避免兼容性问题）
 pip install --upgrade pip -q
@@ -222,8 +238,12 @@ EOF
 log_success "环境变量配置完成"
 
 # 11. 安装前端依赖并构建
-log_info "安装前端依赖..."
+log_info "安装前端依赖（使用淘宝npm镜像）..."
 cd "$INSTALL_DIR/web/frontend"
+
+# 配置npm使用淘宝镜像
+npm config set registry https://registry.npmmirror.com
+
 npm install --silent
 
 log_info "构建前端项目..."
@@ -376,17 +396,26 @@ fi
 echo "✓ 代码更新完成"
 echo ""
 
-# 2. 更新后端依赖
+# 2. 更新后端依赖（使用清华PyPI镜像）
 echo "[2/5] 更新后端依赖..."
 cd "$INSTALL_DIR/web/backend"
 source venv/bin/activate
+
+# 配置pip使用清华镜像
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
+
 pip install -r requirements.txt -q
 echo "✓ 后端依赖更新完成"
 echo ""
 
-# 3. 更新前端依赖并构建
+# 3. 更新前端依赖并构建（使用淘宝npm镜像）
 echo "[3/5] 更新前端依赖并构建..."
 cd "$INSTALL_DIR/web/frontend"
+
+# 配置npm使用淘宝镜像
+npm config set registry https://registry.npmmirror.com
+
 npm install --silent
 npm run build --silent
 echo "✓ 前端构建完成"
