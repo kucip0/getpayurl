@@ -359,16 +359,67 @@ log_info "创建管理脚本..."
 # 部署脚本
 cat > "$INSTALL_DIR/deploy.sh" << 'DEPLOY_EOF'
 #!/bin/bash
-echo "开始部署更新..."
-cd /opt/getpayurl/web/backend
+echo "=============================================="
+echo "  GetPayurl - 更新部署脚本"
+echo "=============================================="
+echo ""
+
+cd "$INSTALL_DIR"
+
+# 1. 拉取最新代码
+echo "[1/5] 拉取最新代码..."
+git pull origin main
+if [ $? -ne 0 ]; then
+    echo "错误：代码拉取失败"
+    exit 1
+fi
+echo "✓ 代码更新完成"
+echo ""
+
+# 2. 更新后端依赖
+echo "[2/5] 更新后端依赖..."
+cd "$INSTALL_DIR/web/backend"
 source venv/bin/activate
 pip install -r requirements.txt -q
-cd ../frontend
+echo "✓ 后端依赖更新完成"
+echo ""
+
+# 3. 更新前端依赖并构建
+echo "[3/5] 更新前端依赖并构建..."
+cd "$INSTALL_DIR/web/frontend"
 npm install --silent
 npm run build --silent
+echo "✓ 前端构建完成"
+echo ""
+
+# 4. 重启服务
+echo "[4/5] 重启后端服务..."
 sudo systemctl restart getpayurl-backend
+sleep 2
+
+# 检查服务状态
+if systemctl is-active --quiet getpayurl-backend; then
+    echo "✓ 后端服务重启成功"
+else
+    echo "✗ 后端服务启动失败，请检查日志：sudo journalctl -u getpayurl-backend -n 50"
+    exit 1
+fi
+echo ""
+
+# 5. 重载Nginx
+echo "[5/5] 重载Nginx配置..."
 sudo systemctl reload nginx
-echo "部署完成！"
+echo "✓ Nginx重载成功"
+echo ""
+
+echo "=============================================="
+echo "  ✓ 部署完成！"
+echo "=============================================="
+echo ""
+echo "提示："
+echo "  - 查看实时日志：sudo journalctl -u getpayurl-backend -f"
+echo "  - 查看服务状态：sudo systemctl status getpayurl-backend"
+echo "  - 备份数据库：sudo $INSTALL_DIR/backup.sh"
 DEPLOY_EOF
 
 chmod +x "$INSTALL_DIR/deploy.sh"
