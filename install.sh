@@ -116,40 +116,77 @@ if [ "$INTERACTIVE" = true ]; then
 fi
 
 # 3. 更新系统（使用阿里云镜像源）
-log_info "配置阿里云APT镜像源..."
-cat > /etc/apt/sources.list << 'APT_EOF'
+log_info "检查APT镜像源配置..."
+if grep -q "mirrors.aliyun.com" /etc/apt/sources.list 2>/dev/null; then
+    log_success "阿里云APT镜像源已配置，跳过"
+else
+    log_info "配置阿里云APT镜像源..."
+    # 备份原始配置
+    cp /etc/apt/sources.list /etc/apt/sources.list.bak 2>/dev/null || true
+    cat > /etc/apt/sources.list << 'APT_EOF'
 deb http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse
 APT_EOF
+    log_success "阿里云APT镜像源配置完成"
+fi
 
 log_info "更新系统包（使用阿里云镜像）..."
 apt update -qq
 apt upgrade -y -qq
 log_success "系统更新完成"
 
-# 4. 安装依赖
-log_info "安装系统依赖..."
-apt install -y -qq \
-    git \
-    curl \
-    wget \
-    build-essential \
-    libssl-dev \
-    libffi-dev \
-    software-properties-common \
-    nginx \
-    > /dev/null 2>&1
-log_success "系统依赖安装完成"
+# 4. 安装依赖（逐项检查）
+log_info "检查系统依赖..."
 
-# 5. 安装 Python 3.11
+# 定义需要安装的包
+SYSTEM_PACKAGES="git curl wget build-essential libssl-dev libffi-dev software-properties-common nginx"
+
+# 检查每个包是否已安装
+PACKAGES_TO_INSTALL=""
+for pkg in $SYSTEM_PACKAGES; do
+    if dpkg -s "$pkg" 2>/dev/null | grep -q "Status: install ok installed"; then
+        log_success "$pkg 已安装，跳过"
+    else
+        log_info "$pkg 未安装，将安装"
+        PACKAGES_TO_INSTALL="$PACKAGES_TO_INSTALL $pkg"
+    fi
+done
+
+# 如果有需要安装的包
+if [ -n "$PACKAGES_TO_INSTALL" ]; then
+    log_info "安装缺失的系统依赖..."
+    apt install -y -qq $PACKAGES_TO_INSTALL > /dev/null 2>&1
+    log_success "系统依赖安装完成"
+else
+    log_success "所有系统依赖已安装，无需更新"
+fi
+
+# 5. 安装 Python 3.11（详细检查）
 if command -v python3.11 &> /dev/null; then
     log_success "Python 3.11 已安装，跳过：$(python3.11 --version)"
+    
+    # 检查venv和pip是否可用
+    if ! python3.11 -m venv --help &>/dev/null; then
+        log_info "python3.11-venv 未安装，正在安装..."
+        apt install -y -qq python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
+        log_success "python3.11-venv 安装完成"
+    else
+        log_success "python3.11-venv 已安装，跳过"
+    fi
 else
     log_info "安装 Python 3.11..."
-    add-apt-repository ppa:deadsnakes/ppa -y > /dev/null 2>&1
-    apt update -qq > /dev/null 2>&1
+    
+    # 检查PPA是否已添加
+    if ! grep -r "deadsnakes" /etc/apt/sources.list.d/ 2>/dev/null; then
+        log_info "添加deadsnakes PPA..."
+        add-apt-repository ppa:deadsnakes/ppa -y > /dev/null 2>&1
+        apt update -qq > /dev/null 2>&1
+    else
+        log_success "deadsnakes PPA已添加，跳过"
+    fi
+    
     apt install -y -qq python3.11 python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
 
     # 验证 Python
@@ -160,19 +197,26 @@ else
     log_success "Python 3.11 安装完成：$(python3.11 --version)"
 fi
 
-# 确保 venv 和 dev 包也已安装
-apt install -y -qq python3.11-venv python3.11-dev python3-pip > /dev/null 2>&1
-
-# 6. 安装 Node.js 18（使用淘宝Node.js镜像）
+# 6. 安装 Node.js 18（详细检查，使用淘宝Node.js镜像）
 if command -v node &> /dev/null; then
-    log_success "Node.js 已安装，跳过：$(node --version)"
-else
+    NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+    if [ "$NODE_VERSION" -ge 18 ] 2>/dev/null; then
+        log_success "Node.js 已安装（版本 >= 18），跳过：$(node --version)"
+    else
+        log_warning "Node.js 版本过低（当前：$(node --version)），需要 >= 18，将重新安装..."
+        rm -rf /usr/local/node-v*
+        rm -f /usr/local/bin/node /usr/local/bin/npm
+    fi
+fi
+
+if ! command -v node &> /dev/null; then
     log_info "安装 Node.js 18（使用淘宝镜像）..."
     # 使用淘宝镜像源安装Node.js
     curl -fsSL https://npmmirror.com/mirrors/node/v18.20.4/node-v18.20.4-linux-x64.tar.xz -o /tmp/nodejs.tar.xz
     tar -xJf /tmp/nodejs.tar.xz -C /usr/local/
     ln -sf /usr/local/node-v18.20.4-linux-x64/bin/node /usr/local/bin/node
     ln -sf /usr/local/node-v18.20.4-linux-x64/bin/npm /usr/local/bin/npm
+    ln -sf /usr/local/node-v18.20.4-linux-x64/bin/npx /usr/local/bin/npx
     rm -f /tmp/nodejs.tar.xz
 
     # 验证 Node.js
@@ -196,24 +240,51 @@ else
     log_info "或者使用：git clone <项目地址> $INSTALL_DIR"
 fi
 
-# 9. 安装后端依赖
-log_info "安装后端 Python 依赖（使用清华PyPI镜像）..."
+# 9. 安装后端依赖（检查虚拟环境和依赖）
+log_info "检查后端Python虚拟环境..."
 cd "$INSTALL_DIR/web/backend"
 
-# 创建虚拟环境
-python3.11 -m venv venv
+# 检查虚拟环境是否存在
+if [ -d "venv" ] && [ -f "venv/bin/python" ] && [ -f "venv/bin/pip" ]; then
+    log_success "Python虚拟环境已存在，跳过创建"
+else
+    log_info "创建Python虚拟环境..."
+    python3.11 -m venv venv
+    log_success "Python虚拟环境创建完成"
+fi
+
+# 激活虚拟环境
 source venv/bin/activate
 
-# 配置pip使用清华镜像
-pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn
+# 配置pip使用清华镜像（总是执行，确保配置正确）
+pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple >/dev/null 2>&1
+pip config set global.trusted-host pypi.tuna.tsinghua.edu.cn >/dev/null 2>&1
 
-# 安装依赖（先安装固定版本的 bcrypt，避免兼容性问题）
-pip install --upgrade pip -q
-pip install bcrypt==3.2.2 -q
-pip install -r requirements.txt -q
+# 检查pip是否需要更新
+CURRENT_PIP=$(pip --version | awk '{print $2}')
+log_info "检查pip版本（当前：$CURRENT_PIP）..."
+pip install --upgrade pip -q >/dev/null 2>&1
 
-log_success "后端依赖安装完成"
+# 检查bcrypt是否已安装
+if python -c "import bcrypt" 2>/dev/null; then
+    log_success "bcrypt已安装，跳过"
+else
+    log_info "安装bcrypt..."
+    pip install bcrypt==3.2.2 -q
+    log_success "bcrypt安装完成"
+fi
+
+# 检查requirements.txt中的依赖是否已安装
+log_info "检查Python依赖..."
+if pip check 2>/dev/null | grep -q "No broken requirements"; then
+    log_success "所有Python依赖已正确安装"
+else
+    log_info "安装/更新Python依赖..."
+    pip install -r requirements.txt -q
+    log_success "Python依赖安装完成"
+fi
+
+log_success "后端环境配置完成"
 
 # 10. 配置环境变量
 log_info "生成环境变量配置..."
@@ -237,24 +308,55 @@ EOF
 
 log_success "环境变量配置完成"
 
-# 11. 安装前端依赖并构建
-log_info "安装前端依赖（使用淘宝npm镜像）..."
+# 11. 安装前端依赖并构建（检查node_modules）
+log_info "检查前端依赖..."
 cd "$INSTALL_DIR/web/frontend"
 
-# 配置npm使用淘宝镜像
-npm config set registry https://registry.npmmirror.com
+# 配置npm使用淘宝镜像（总是执行，确保配置正确）
+npm config set registry https://registry.npmmirror.com >/dev/null 2>&1
 
-npm install --silent
+# 检查node_modules是否存在
+if [ -d "node_modules" ]; then
+    log_success "node_modules已存在，检查是否需要更新..."
+    
+    # 检查package-lock.json是否存在
+    if [ -f "package-lock.json" ]; then
+        # 检查是否有新的依赖需要安装
+        if npm outdated >/dev/null 2>&1; then
+            log_info "所有npm依赖已是最新版本，无需更新"
+        else
+            log_info "发现依赖更新，正在安装..."
+            npm install --silent
+            log_success "npm依赖更新完成"
+        fi
+    else
+        log_info "package-lock.json不存在，执行完整安装..."
+        npm install --silent
+        log_success "npm依赖安装完成"
+    fi
+else
+    log_info "node_modules不存在，执行完整安装..."
+    npm install --silent
+    log_success "npm依赖安装完成"
+fi
 
-log_info "构建前端项目..."
-npm run build --silent
+# 检查dist目录是否存在且是最新构建
+if [ -d "dist" ] && [ -f "dist/index.html" ]; then
+    log_success "前端已构建，跳过"
+else
+    log_info "构建前端项目..."
+    npm run build --silent
+    log_success "前端构建完成"
+fi
 
-log_success "前端构建完成"
+# 12. 配置 Nginx（检查是否已配置）
+log_info "检查Nginx配置..."
 
-# 12. 配置 Nginx
-log_info "配置 Nginx..."
-
-cat > /etc/nginx/sites-available/getpayurl << EOF
+if [ -f /etc/nginx/sites-available/getpayurl ]; then
+    log_success "Nginx配置文件已存在，跳过创建"
+else
+    log_info "创建Nginx配置..."
+    cat > /etc/nginx/sites-available/getpayurl << EOF
 server {
     listen 80;
     server_name $DOMAIN;
@@ -299,24 +401,41 @@ server {
     add_header X-XSS-Protection "1; mode=block" always;
 }
 EOF
+    log_success "Nginx配置创建完成"
+fi
 
-# 启用配置
-ln -sf /etc/nginx/sites-available/getpayurl /etc/nginx/sites-enabled/
+# 启用配置（总是执行，确保符号链接正确）
+if [ -L /etc/nginx/sites-enabled/getpayurl ]; then
+    log_success "Nginx站点已启用，跳过"
+else
+    ln -sf /etc/nginx/sites-available/getpayurl /etc/nginx/sites-enabled/
+    log_success "Nginx站点启用完成"
+fi
+
 rm -f /etc/nginx/sites-enabled/default
 
 # 测试 Nginx 配置
 if nginx -t > /dev/null 2>&1; then
-    systemctl reload nginx
-    log_success "Nginx 配置完成"
+    if systemctl is-active --quiet nginx; then
+        systemctl reload nginx
+        log_success "Nginx配置重载完成"
+    else
+        systemctl start nginx
+        log_success "Nginx启动成功"
+    fi
 else
     log_error "Nginx 配置测试失败"
     exit 1
 fi
 
-# 13. 创建 systemd 服务
-log_info "创建后端 systemd 服务..."
+# 13. 创建 systemd 服务（检查是否已存在）
+log_info "检查systemd服务..."
 
-cat > /etc/systemd/system/getpayurl-backend.service << EOF
+if [ -f /etc/systemd/system/getpayurl-backend.service ]; then
+    log_success "systemd服务已存在，跳过创建"
+else
+    log_info "创建后端 systemd 服务..."
+    cat > /etc/systemd/system/getpayurl-backend.service << EOF
 [Unit]
 Description=GetPayurl Backend Service
 After=network.target
@@ -336,48 +455,71 @@ StandardError=append:/var/log/getpayurl/backend-error.log
 [Install]
 WantedBy=multi-user.target
 EOF
+    log_success "systemd服务创建完成"
+fi
 
 # 创建日志目录
-mkdir -p /var/log/getpayurl
+if [ -d /var/log/getpayurl ]; then
+    log_success "日志目录已存在，跳过创建"
+else
+    mkdir -p /var/log/getpayurl
+    log_success "日志目录创建完成"
+fi
 chown www-data:www-data /var/log/getpayurl
 
 # 设置权限
 chown -R www-data:www-data "$INSTALL_DIR"
 chmod -R 755 "$INSTALL_DIR"
 
-# 启动服务
+# 启动服务（检查是否需要启动或重启）
 systemctl daemon-reload
-systemctl enable getpayurl-backend
-systemctl start getpayurl-backend
 
-# 等待服务启动
-sleep 2
-
-# 检查服务状态
 if systemctl is-active --quiet getpayurl-backend; then
-    log_success "后端服务启动成功"
+    log_success "后端服务已在运行，跳过启动"
 else
-    log_error "后端服务启动失败，请查看日志：journalctl -u getpayurl-backend"
-    exit 1
+    log_info "启动后端服务..."
+    systemctl enable getpayurl-backend
+    systemctl start getpayurl-backend
+    
+    # 等待服务启动
+    sleep 2
+    
+    # 检查服务状态
+    if systemctl is-active --quiet getpayurl-backend; then
+        log_success "后端服务启动成功"
+    else
+        log_error "后端服务启动失败，请查看日志：journalctl -u getpayurl-backend"
+        exit 1
+    fi
 fi
 
-# 14. 配置防火墙
-log_info "配置防火墙..."
+# 14. 配置防火墙（检查规则是否已添加）
+log_info "检查防火墙配置..."
 if command -v ufw &> /dev/null; then
-    ufw allow 22/tcp > /dev/null 2>&1
-    ufw allow 80/tcp > /dev/null 2>&1
-    ufw allow 443/tcp > /dev/null 2>&1
-    ufw --force enable > /dev/null 2>&1
-    log_success "防火墙配置完成"
+    # 检查防火墙规则是否已添加
+    if ufw status 2>/dev/null | grep -q "80/tcp"; then
+        log_success "防火墙规则已配置，跳过"
+    else
+        log_info "配置防火墙规则..."
+        ufw allow 22/tcp > /dev/null 2>&1
+        ufw allow 80/tcp > /dev/null 2>&1
+        ufw allow 443/tcp > /dev/null 2>&1
+        ufw --force enable > /dev/null 2>&1
+        log_success "防火墙配置完成"
+    fi
 else
     log_warning "未检测到 UFW，跳过防火墙配置"
 fi
 
-# 15. 创建快捷脚本
-log_info "创建管理脚本..."
+# 15. 创建快捷脚本（检查是否已存在）
+log_info "检查管理脚本..."
 
 # 部署脚本
-cat > "$INSTALL_DIR/deploy.sh" << 'DEPLOY_EOF'
+if [ -f "$INSTALL_DIR/deploy.sh" ]; then
+    log_success "deploy.sh已存在，跳过创建"
+else
+    log_info "创建deploy.sh..."
+    cat > "$INSTALL_DIR/deploy.sh" << 'DEPLOY_EOF'
 #!/bin/bash
 echo "=============================================="
 echo "  GetPayurl - 更新部署脚本"
@@ -450,11 +592,16 @@ echo "  - 查看实时日志：sudo journalctl -u getpayurl-backend -f"
 echo "  - 查看服务状态：sudo systemctl status getpayurl-backend"
 echo "  - 备份数据库：sudo $INSTALL_DIR/backup.sh"
 DEPLOY_EOF
-
-chmod +x "$INSTALL_DIR/deploy.sh"
+    chmod +x "$INSTALL_DIR/deploy.sh"
+    log_success "deploy.sh创建完成"
+fi
 
 # 备份脚本
-cat > "$INSTALL_DIR/backup.sh" << 'BACKUP_EOF'
+if [ -f "$INSTALL_DIR/backup.sh" ]; then
+    log_success "backup.sh已存在，跳过创建"
+else
+    log_info "创建backup.sh..."
+    cat > "$INSTALL_DIR/backup.sh" << 'BACKUP_EOF'
 #!/bin/bash
 BACKUP_DIR="/opt/getpayurl/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
@@ -462,8 +609,9 @@ mkdir -p $BACKUP_DIR
 cp /opt/getpayurl/web/backend/getpayurl.db $BACKUP_DIR/getpayurl_$DATE.db
 echo "备份完成：$BACKUP_DIR/getpayurl_$DATE.db"
 BACKUP_EOF
-
-chmod +x "$INSTALL_DIR/backup.sh"
+    chmod +x "$INSTALL_DIR/backup.sh"
+    log_success "backup.sh创建完成"
+fi
 
 # 16. 验证部署
 log_info "验证部署..."
