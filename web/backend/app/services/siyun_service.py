@@ -2,7 +2,7 @@ import json
 import random
 import re
 import uuid
-from typing import Tuple
+from typing import Tuple, Optional
 from collections import OrderedDict
 from urllib.parse import urlencode, urlparse
 
@@ -893,3 +893,197 @@ class SiyunService(BaseService):
         qr_base64 = generate_qr_base64(url)
         self.log("步骤6: 生成二维码成功")
         return qr_base64
+
+    def query_orders(
+        self,
+        status: int = 1,
+        start_date: str = "",
+        end_date: str = "",
+        pay_type: Optional[int] = None,
+        order_type: Optional[int] = None
+    ) -> dict:
+        """查询订单列表（四云发卡）"""
+        try:
+            # 1. 检查登录态
+            if not self.load_cookies():
+                return {
+                    "success": False,
+                    "message": "店铺未登录，请在平台管理中重新登录",
+                    "orders": [],
+                    "total": 0
+                }
+
+            # 验证merchant Cookie是否存在
+            merchant_cookie = self.session.cookies.get("merchant")
+            if not merchant_cookie:
+                return {
+                    "success": False,
+                    "message": "店铺登录已过期，请在平台管理中重新登录",
+                    "orders": [],
+                    "total": 0
+                }
+
+            # 2. 构建查询URL
+            base_url = f"{self.BASE_URL}/merchant/order/index.html"
+            params = {"status": status}
+
+            if start_date and end_date:
+                params["date_range"] = f"{start_date} - {end_date}"
+
+            if pay_type is not None:
+                params["paytype"] = pay_type
+
+            if order_type is not None:
+                params["order_type"] = order_type
+
+            # 3. 请求订单列表页面
+            headers = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-User": "?1",
+                "Sec-Fetch-Dest": "document",
+                "Referer": f"{self.BASE_URL}/merchant/order/index.html?status={status}",
+                "Accept-Encoding": "gzip, deflate, br, zstd",
+                "Accept-Language": "zh-CN,zh;q=0.9",
+                "Priority": "u=0, i",
+            }
+
+            resp = self.session.get(
+                base_url,
+                params=params,
+                headers=headers,
+                timeout=15
+            )
+            resp.raise_for_status()
+
+            # 4. 处理转义的HTML
+            html = unescape_html(resp.text)
+
+            # 保存调试HTML到文件
+            import os
+            debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
+            os.makedirs(debug_dir, exist_ok=True)
+            debug_file = os.path.join(debug_dir, 'siyun_orders_debug.html')
+            with open(debug_file, 'w', encoding='utf-8') as f:
+                f.write(html)
+
+            # 5. 检测是否跳转到登录页
+            # 更准确的检测：检查是否真的没有订单表格且有登录表单
+            has_order_table = '<table class="table mb-0">' in html or '订单列表' in html
+            has_login_form = 'action="/index/user/doLogin"' in html or 'login' in html.lower()
+
+            if not has_order_table and has_login_form:
+                return {
+                    "success": False,
+                    "message": "店铺登录已过期，请在平台管理中重新登录",
+                    "orders": [],
+                    "total": 0
+                }
+
+            # 6. 解析订单表格
+            from app.utils.html_parser import parse_order_table
+            orders = parse_order_table(html)
+
+            self.log(f"查询成功，共获取到 {len(orders)} 个订单")
+
+            return {
+                "success": True,
+                "message": "查询成功",
+                "orders": orders,
+                "total": len(orders)
+            }
+
+        except Exception as e:
+            self.log(f"查询订单失败: {str(e)}")
+            return {
+                "success": False,
+                "message": f"查询失败: {str(e)}",
+                "orders": [],
+                "total": 0
+            }
+
+    def get_balance(self) -> dict:
+        """查询账户余额（四云发卡）"""
+        try:
+            # 1. 检查登录态
+            if not self.load_cookies():
+                return {
+                    "success": False,
+                    "message": "店铺未登录，请在平台管理中重新登录",
+                    "withdrawable": "0.000",
+                    "non_withdrawable": "0.000"
+                }
+
+            # 验证merchant Cookie是否存在
+            merchant_cookie = self.session.cookies.get("merchant")
+            if not merchant_cookie:
+                return {
+                    "success": False,
+                    "message": "店铺登录已过期，请在平台管理中重新登录",
+                    "withdrawable": "0.000",
+                    "non_withdrawable": "0.000"
+                }
+
+            # 2. 请求提现页面
+            cash_url = f"{self.BASE_URL}/merchant/cash/apply.html"
+            headers = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "Upgrade-Insecure-Requests": "1",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-User": "?1",
+                "Sec-Fetch-Dest": "document",
+                "Referer": f"{self.BASE_URL}/merchant/index/index.html",
+                "Accept-Encoding": "gzip, deflate, br, zstd",
+                "Accept-Language": "zh-CN,zh;q=0.9",
+                "Priority": "u=0, i",
+            }
+
+            resp = self.session.get(cash_url, headers=headers, timeout=15)
+            resp.raise_for_status()
+
+            # 3. 处理转义的HTML
+            html = unescape_html(resp.text)
+            soup = BeautifulSoup(html, "html.parser")
+
+            # 4. 解析可提现金额
+            withdrawable = "0.000"
+            non_withdrawable = "0.000"
+
+            # 方法1: 查找包含"可提现金额"的label，然后找到对应的input value
+            labels = soup.find_all("label", class_="col-md-2 col-form-label")
+            for label in labels:
+                if "可提现金额" in label.get_text():
+                    # 找到包含该label的form-group
+                    form_group = label.find_parent("div", class_="form-group row")
+                    if form_group:
+                        # 查找该form-group中的input
+                        input_elem = form_group.find("input", type="text")
+                        if input_elem and input_elem.get("value"):
+                            withdrawable = input_elem["value"].strip()
+                            break
+
+            # 方法2: 查找不可提现金额（text-danger span）
+            danger_span = soup.find("span", class_="text-danger")
+            if danger_span:
+                non_withdrawable = danger_span.get_text().strip()
+
+            self.log(f"查询余额成功: 可提现={withdrawable}, 不可提现={non_withdrawable}")
+
+            return {
+                "success": True,
+                "message": "查询成功",
+                "withdrawable": withdrawable,
+                "non_withdrawable": non_withdrawable
+            }
+
+        except Exception as e:
+            self.log(f"查询余额失败: {str(e)}")
+            return {
+                "success": False,
+                "message": f"查询失败: {str(e)}",
+                "withdrawable": "0.000",
+                "non_withdrawable": "0.000"
+            }
