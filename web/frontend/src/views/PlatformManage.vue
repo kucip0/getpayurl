@@ -89,6 +89,28 @@
               </el-tag>
             </el-form-item>
 
+            <!-- 余额显示区域 -->
+            <el-form-item v-if="platformStore.loginStatus.loggedIn || platformStore.config.has_login" label="账户余额">
+              <div style="display: flex; gap: 20px; align-items: center">
+                <el-button
+                  type="success"
+                  @click="handleGetBalance"
+                  :loading="balanceLoading"
+                  size="small"
+                >
+                  查询余额
+                </el-button>
+                <div v-if="balance.withdrawable !== null" style="display: flex; gap: 20px">
+                  <el-tag type="success" size="large">
+                    可提现：<strong style="font-size: 16px">{{ balance.withdrawable }}</strong> 元
+                  </el-tag>
+                  <el-tag type="warning" size="large">
+                    不可提现：<strong style="font-size: 16px">{{ balance.non_withdrawable }}</strong> 元
+                  </el-tag>
+                </div>
+              </div>
+            </el-form-item>
+
             <el-divider>商品链接</el-divider>
 
             <el-form-item label="商品链接">
@@ -123,17 +145,24 @@ import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Delete } from '@element-plus/icons-vue'
 import { usePlatformStore } from '../stores/platform'
+import { getBalance } from '../api/platforms'
 import PlatformSelector from '../components/PlatformSelector.vue'
 
 const platformStore = usePlatformStore()
 const currentPlatform = ref('')
 const loginLoading = ref(false)
 const saveLoading = ref(false)
+const balanceLoading = ref(false)
 
 const form = ref({
   shop_username: '',
   shop_password: '',
   product_urls: []
+})
+
+const balance = ref({
+  withdrawable: null,
+  non_withdrawable: null
 })
 
 onMounted(async () => {
@@ -208,6 +237,30 @@ const saveConfig = async () => {
     ElMessage.error('配置保存失败')
   } finally {
     saveLoading.value = false
+  }
+}
+
+const handleGetBalance = async () => {
+  if (!currentPlatform.value) {
+    ElMessage.warning('请先选择平台')
+    return
+  }
+
+  balanceLoading.value = true
+  try {
+    const response = await getBalance(currentPlatform.value)
+    
+    if (response.data.success) {
+      balance.value.withdrawable = response.data.withdrawable
+      balance.value.non_withdrawable = response.data.non_withdrawable
+      ElMessage.success('余额查询成功')
+    } else {
+      ElMessage.error(response.data.message || '余额查询失败')
+    }
+  } catch (error) {
+    ElMessage.error(error.response?.data?.detail || '余额查询失败')
+  } finally {
+    balanceLoading.value = false
   }
 }
 </script>

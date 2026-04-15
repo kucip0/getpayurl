@@ -8,6 +8,16 @@ from app.schemas import (
     PlatformInfo, PlatformListResponse,
     ShopLoginRequest, ShopLoginResponse
 )
+
+# 余额查询响应
+from typing import Optional
+from pydantic import BaseModel
+
+class BalanceResponse(BaseModel):
+    success: bool
+    message: str
+    withdrawable: str = "0.000"
+    non_withdrawable: str = "0.000"
 from app.services.houfaka_service import HoufakaService
 from app.services.siyun_service import SiyunService
 
@@ -78,3 +88,21 @@ def shop_login(
             success=False,
             message=str(e)
         )
+
+
+@router.get("/{platform_code}/balance", response_model=BalanceResponse)
+def get_balance(
+    platform_code: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """查询店铺账户余额"""
+    service = get_service(platform_code, current_user.id, db)
+    
+    # 检查服务是否有余额查询方法
+    if not hasattr(service, 'get_balance'):
+        raise HTTPException(status_code=400, detail=f"平台 {platform_code} 不支持余额查询功能")
+    
+    result = service.get_balance()
+    
+    return BalanceResponse(**result)

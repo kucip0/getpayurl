@@ -92,3 +92,7 @@ class BaseService:
     ) -> dict:
         """查询订单列表（子类实现）"""
         raise NotImplementedError
+    
+    def get_balance(self) -> dict:
+        """查询账户余额（子类实现）"""
+        raise NotImplementedError

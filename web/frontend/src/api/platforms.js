@@ -34,3 +34,7 @@ export const modifyPrice = (platformCode, goodsId, newPrice) => {
 export const getOrders = (platformCode, params) => {
   return api.get(`/platforms/${platformCode}/orders`, { params })
 }
+
+export const getBalance = (platformCode) => {
+  return api.get(`/platforms/${platformCode}/balance`)
+}

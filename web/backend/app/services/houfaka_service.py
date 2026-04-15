@@ -607,10 +607,30 @@ class HoufakaService(BaseService):
         """查询订单列表"""
         try:
             # 1. 检查登录态
-            if not self.load_cookies():
+            self.log("DEBUG: 开始加载Cookies...")
+            cookies_loaded = self.load_cookies()
+            self.log(f"DEBUG: Cookies加载结果: {cookies_loaded}")
+            
+            if not cookies_loaded:
                 return {
                     "success": False,
                     "message": "未登录，请先在平台管理中登录店铺",
+                    "orders": [],
+                    "total": 0
+                }
+            
+            # 检查merchant Cookie
+            merchant_cookie = self.session.cookies.get("merchant")
+            self.log(f"DEBUG: merchant Cookie存在: {bool(merchant_cookie)}")
+            if merchant_cookie:
+                self.log(f"DEBUG: merchant Cookie值: {merchant_cookie[:30]}...")
+            else:
+                self.log("DEBUG: merchant Cookie值为空!")
+            
+            if not merchant_cookie:
+                return {
+                    "success": False,
+                    "message": "店铺登录信息丢失，请在平台管理中重新登录",
                     "orders": [],
                     "total": 0
                 }
@@ -637,6 +657,11 @@ class HoufakaService(BaseService):
             
             self.log(f"查询订单: {url}")
             
+            # 调试：检查Cookie
+            merchant_cookie = self.session.cookies.get("merchant")
+            self.log(f"DEBUG: merchant Cookie存在: {bool(merchant_cookie)}")
+            self.log(f"DEBUG: 当前session cookies数量: {len(self.session.cookies)}")
+            
             # 3. 发起请求
             headers = {
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
@@ -656,14 +681,39 @@ class HoufakaService(BaseService):
             resp = self.session.get(url, headers=headers, timeout=15)
             resp.raise_for_status()
             
+            self.log(f"DEBUG: 响应状态码: {resp.status_code}")
+            self.log(f"DEBUG: 响应长度: {len(resp.text)}")
+            
+            # 调试：更准确地检测登录页面
+            # 检查是否被重定向到登录页（查看是否有订单表格）
+            has_order_table = '<table class="table mb-0">' in resp.text or '订单列表' in resp.text
+            has_login_form = 'action="/index/user/doLogin"' in resp.text
+            
+            if not has_order_table and has_login_form:
+                self.log("WARNING: 检测到登录表单且无订单表格，Cookie可能已过期")
+                return {
+                    "success": False,
+                    "message": "店铺登录已过期，请在平台管理中重新登录",
+                    "orders": [],
+                    "total": 0
+                }
+            
             # 4. 处理HTML（处理转义字符）
             html_content = unescape_html(resp.text)
+            self.log(f"DEBUG: 处理后HTML长度: {len(html_content)}")
             
             # 5. 解析订单
             from app.utils.html_parser import parse_order_table
             orders = parse_order_table(html_content)
             
             self.log(f"查询到 {len(orders)} 个订单")
+            
+            # 调试：保存HTML用于检查
+            if len(orders) == 0:
+                debug_file = f"debug_orders_{status}_{start_date}_{end_date}.html"
+                with open(debug_file, 'w', encoding='utf-8') as f:
+                    f.write(html_content)
+                self.log(f"DEBUG: 已保存HTML到 {debug_file}")
             
             # 6. 返回结果
             return {
@@ -680,4 +730,104 @@ class HoufakaService(BaseService):
                 "message": f"查询失败: {str(e)}",
                 "orders": [],
                 "total": 0
+            }
+    
+    def get_balance(self) -> dict:
+        """查询账户余额"""
+        try:
+            # 1. 检查登录态
+            self.log("DEBUG: 开始查询余额...")
+            cookies_loaded = self.load_cookies()
+            self.log(f"DEBUG: Cookies加载结果: {cookies_loaded}")
+            
+            if not cookies_loaded:
+                return {
+                    "success": False,
+                    "message": "未登录，请先在平台管理中登录店铺",
+                    "withdrawable": "0.000",
+                    "non_withdrawable": "0.000"
+                }
+            
+            # 检查merchant Cookie
+            merchant_cookie = self.session.cookies.get("merchant")
+            if not merchant_cookie:
+                return {
+                    "success": False,
+                    "message": "店铺登录信息丢失，请在平台管理中重新登录",
+                    "withdrawable": "0.000",
+                    "non_withdrawable": "0.000"
+                }
+            
+            # 2. 请求提现页面（包含余额信息）
+            url = f"{self.BASE_URL}/merchant/cash/apply.html"
+            self.log(f"查询余额: {url}")
+            
+            headers = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "zh-CN,zh;q=0.9",
+                "Connection": "keep-alive",
+                "Host": "www.houfaka.com",
+                "Referer": f"{self.BASE_URL}/merchant/index/index.html",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-User": "?1",
+                "Upgrade-Insecure-Requests": "1",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+            }
+            
+            resp = self.session.get(url, headers=headers, timeout=15)
+            resp.raise_for_status()
+            
+            self.log(f"DEBUG: 响应状态码: {resp.status_code}")
+            self.log(f"DEBUG: 响应长度: {len(resp.text)}")
+            
+            # 3. 处理HTML
+            html_content = unescape_html(resp.text)
+            
+            # 4. 解析余额信息
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html_content, "html.parser")
+            
+            # 查找可提现金额
+            withdrawable = "0.000"
+            non_withdrawable = "0.000"
+            
+            # 方法1: 查找包含"可提现金额"的label，然后获取同级input的value
+            labels = soup.find_all("label", class_="col-md-2 col-form-label")
+            for label in labels:
+                if "可提现金额" in label.get_text():
+                    # 找到父级row
+                    form_group = label.find_parent("div", class_="form-group row")
+                    if form_group:
+                        input_elem = form_group.find("input", type="text")
+                        if input_elem and input_elem.get("value"):
+                            withdrawable = input_elem["value"].strip()
+                    break
+            
+            # 方法2: 查找不可提现金额（在text-danger span中）
+            danger_span = soup.find("span", class_="text-danger")
+            if danger_span:
+                # 获取span的文本
+                non_withdrawable = danger_span.get_text().strip()
+            
+            self.log(f"可提现金额: {withdrawable}")
+            self.log(f"不可提现金额: {non_withdrawable}")
+            
+            # 5. 返回结果
+            return {
+                "success": True,
+                "message": "查询成功",
+                "withdrawable": withdrawable,
+                "non_withdrawable": non_withdrawable
+            }
+            
+        except Exception as e:
+            self.log(f"查询余额失败: {str(e)}")
+            return {
+                "success": False,
+                "message": f"查询失败: {str(e)}",
+                "withdrawable": "0.000",
+                "non_withdrawable": "0.000"
             }
