@@ -91,22 +91,23 @@
 
             <!-- 余额显示区域 -->
             <el-form-item v-if="platformStore.loginStatus.loggedIn || platformStore.config.has_login" label="账户余额">
-              <div style="display: flex; gap: 20px; align-items: center">
+              <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap">
                 <el-button
                   type="success"
                   @click="handleGetBalance"
                   :loading="balanceLoading"
-                  size="small"
                 >
                   查询余额
                 </el-button>
-                <div v-if="balance.withdrawable !== null" style="display: flex; gap: 20px">
-                  <el-tag type="success" size="large">
-                    可提现：<strong style="font-size: 16px">{{ balance.withdrawable }}</strong> 元
-                  </el-tag>
-                  <el-tag type="warning" size="large">
-                    不可提现：<strong style="font-size: 16px">{{ balance.non_withdrawable }}</strong> 元
-                  </el-tag>
+                <div v-if="balance.withdrawable !== null" style="display: flex; gap: 15px; flex-wrap: wrap">
+                  <div style="display: flex; align-items: center; gap: 8px; background: #1a3a2a; padding: 10px 20px; border-radius: 8px">
+                    <el-tag type="success" effect="dark">可提现</el-tag>
+                    <span style="color: #67c23a; font-size: 20px; font-weight: bold">{{ balance.withdrawable }} 元</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px; background: #3a2a1a; padding: 10px 20px; border-radius: 8px">
+                    <el-tag type="warning" effect="dark">不可提现</el-tag>
+                    <span style="color: #e6a23c; font-size: 20px; font-weight: bold">{{ balance.non_withdrawable }} 元</span>
+                  </div>
                 </div>
               </div>
             </el-form-item>
