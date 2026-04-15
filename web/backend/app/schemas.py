@@ -105,3 +105,29 @@ class ServiceResponse(BaseModel):
     message: str
     data: Optional[dict] = None
     logs: list[str] = []
+
+
+# 订单查询相关
+class OrderItem(BaseModel):
+    """单个订单数据项"""
+    order_no: str                    # 订单号 (如 HOU26041513209L4HU)
+    order_type: str                  # 订单类型 (普通订单/对接订单/跨平台订单)
+    product_name: str                # 商品名称
+    supplier: str = ""               # 供货商 (可能为空)
+    payment_method: str              # 支付方式 (支付宝扫码等)
+    total_price: str                 # 总价
+    actual_price: str                # 实付款
+    buyer_info: str                  # 购买者信息 (手机号+指纹链接)
+    status: str                      # 状态 (已支付/未支付等)
+    card_status: str                 # 取卡状态 (已取/未取/已取部分)
+    card_password: str = ""          # 取卡密码 (可能为空)
+    trade_time: str                  # 交易时间 (如 2026-04-15 13:32:52)
+    order_id: str = ""               # 订单ID (用于fetch链接)
+
+
+class OrderQueryResponse(BaseModel):
+    """订单查询响应"""
+    success: bool
+    message: str
+    orders: list[OrderItem] = []
+    total: int = 0

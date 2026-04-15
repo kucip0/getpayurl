@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models import User, OrderLog
-from app.schemas import PriceRequest, PriceResponse, OrderRequest, OrderResponse, ModifyPriceRequest, ModifyPriceResponse
+from app.schemas import PriceRequest, PriceResponse, OrderRequest, OrderResponse, ModifyPriceRequest, ModifyPriceResponse, OrderQueryResponse
 from app.routers.platforms import get_service
 
 router = APIRouter(prefix="/api/platforms", tags=["订单"])
@@ -87,3 +87,32 @@ def submit_order(
     db.commit()
 
     return OrderResponse(**result)
+
+
+@router.get("/{platform_code}/orders", response_model=OrderQueryResponse)
+def query_orders(
+    platform_code: str,
+    status: int = 1,
+    start_date: str = "",
+    end_date: str = "",
+    pay_type: int = None,
+    order_type: int = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """查询已付款订单列表"""
+    service = get_service(platform_code, current_user.id, db)
+    
+    # 检查服务是否有订单查询方法
+    if not hasattr(service, 'query_orders'):
+        raise HTTPException(status_code=400, detail=f"平台 {platform_code} 不支持订单查询功能")
+    
+    result = service.query_orders(
+        status=status,
+        start_date=start_date,
+        end_date=end_date,
+        pay_type=pay_type,
+        order_type=order_type
+    )
+    
+    return OrderQueryResponse(**result)

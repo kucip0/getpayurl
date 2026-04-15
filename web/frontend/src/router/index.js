@@ -31,6 +31,12 @@ const routes = [
     name: 'OrderProcess',
     component: () => import('../views/OrderProcess.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/order-query',
+    name: 'OrderQuery',
+    component: () => import('../views/OrderQuery.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

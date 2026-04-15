@@ -15,18 +15,25 @@
       
       <el-main>
         <el-row :gutter="20">
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="8">
             <el-card @click="$router.push('/platform')" class="action-card">
               <el-icon :size="50" color="#409eff"><Setting /></el-icon>
               <h3>平台管理</h3>
               <p>配置店铺账号和商品链接</p>
             </el-card>
           </el-col>
-          <el-col :span="12">
+          <el-col :xs="24" :sm="24" :md="8">
             <el-card @click="$router.push('/order')" class="action-card">
               <el-icon :size="50" color="#67c23a"><Money /></el-icon>
               <h3>订单处理</h3>
               <p>生成支付二维码</p>
+            </el-card>
+          </el-col>
+          <el-col :xs="24" :sm="24" :md="8">
+            <el-card @click="$router.push('/order-query')" class="action-card">
+              <el-icon :size="50" color="#e6a23c"><Document /></el-icon>
+              <h3>订单查询</h3>
+              <p>查看已付款订单列表</p>
             </el-card>
           </el-col>
         </el-row>
@@ -47,6 +54,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { Setting, Money, Document } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const authStore = useAuthStore()

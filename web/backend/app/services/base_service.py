@@ -81,3 +81,14 @@ class BaseService:
     def submit_order(self, product_url: str, new_price: float) -> dict:
         """提交订单（子类实现）"""
         raise NotImplementedError
+    
+    def query_orders(
+        self,
+        status: int = 1,
+        start_date: str = "",
+        end_date: str = "",
+        pay_type: Optional[int] = None,
+        order_type: Optional[int] = None
+    ) -> dict:
+        """查询订单列表（子类实现）"""
+        raise NotImplementedError

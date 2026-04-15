@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 import { 
   getPrice as apiGetPrice, 
   submitOrder as apiSubmitOrder,
-  modifyPrice as apiModifyPrice
+  modifyPrice as apiModifyPrice,
+  getOrders as apiGetOrders
 } from '../api/platforms'
 
 export const useOrderStore = defineStore('order', {
@@ -12,6 +13,10 @@ export const useOrderStore = defineStore('order', {
     qrCode: null,
     paymentUrl: null,
     priceInfo: null,
+    // 订单查询相关
+    orderList: [],
+    orderQueryLoading: false,
+    orderQueryParams: {},
   }),
   
   actions: {
@@ -44,6 +49,19 @@ export const useOrderStore = defineStore('order', {
         return response.data
       } finally {
         this.processing = false
+      }
+    },
+    
+    async fetchOrders(platformCode, params) {
+      this.orderQueryLoading = true
+      this.orderQueryParams = params
+      
+      try {
+        const response = await apiGetOrders(platformCode, params)
+        this.orderList = response.data.orders || []
+        return response.data
+      } finally {
+        this.orderQueryLoading = false
       }
     }
   }

@@ -1,0 +1,773 @@
+HTTP/2 200
+server: nginx
+content-type: text/html; charset=utf-8
+vary: Accept-Encoding
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+pragma: no-cache
+strict-transport-security: max-age=31536000
+alt-svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+content-encoding: gzip
+cache-control: must-revalidate, no-cache, no-store
+date: Wed, 15 Apr 2026 07:32:30 GMT
+eo-log-uuid: 14703661003764684670
+eo-cache-status: MISS
+
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <title>商户面板 - 猴发卡网</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="keywords" content="发卡网，自动发卡平台，卡密寄售平台，数字商品寄售，卡密销售平台，虚拟商品发卡，数字卡密交易平台，发卡网寄售，寄售商城，云寄售，虚拟卡券，数字权益，社交电商，知识付费" />
+        <meta name="description" content="猴发卡网自动发卡平台为您提供高效、便捷的自动发卡服务，帮助商户实现快速、准确的订单处理。无论是数字商品、虚拟卡券、权益商品还是知识付费等虚拟产品，猴发卡平台都能确为您提供安全、稳定、快捷的寄售服务，可自配通道，操作简单便捷、稳定24小时不间断为您提供优质的售卖体验。" />
+        <link rel="shortcut icon" href="https://www.houfaka.com/static/upload/6a25b667b566977a/edc383cb06c8d4b4.ico" />
+        <!-- App favicon -->
+        
+
+
+        <!-- Bootstrap Css -->
+        <link href="/static/merchant/default/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
+        <link href="/static/merchant/default/libs/jquery-confirm/css/jquery-confirm.css" rel="stylesheet" type="text/css">
+        <link href="/static/merchant/default/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css">
+        <link href="/static/merchant/default/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+        <link href="/static/merchant/default/libs/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/static/merchant/default/libs/toastr/build/toastr.min.css">
+        <!-- Icons Css -->
+        <link href="/static/merchant/default/css/icons.min.css" rel="stylesheet" type="text/css">
+        <!-- App Css-->
+        <link href="/static/merchant/default/css/app.min.css?v=221025" id="app-style" rel="stylesheet" type="text/css">
+        <link href="/static/merchant/default/css/custom.css?v=221025" id="app-style" rel="stylesheet" type="text/css">
+        <script>
+            document.onkeydown = function () {
+                if (window.event && window.event.keyCode == 123) {
+                    event.keyCode = 0;
+                    event.returnValue = false;
+                }
+            }
+        </script>
+    </head>
+
+
+    <body data-sidebar="dark">
+
+        <!-- <body data-layout="horizontal" data-topbar="dark"> -->
+
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            <header id="page-topbar">
+                <div class="navbar-header">
+                    <div class="d-flex">
+                        <!-- LOGO -->
+                        <div class="navbar-brand-box">
+                            <a href="" class="logo logo-dark">
+                                <span class="logo-sm">
+                                    <img src="https://www.houfaka.com/static/upload/053d650a4f50fd0e/54062156baa9b5a9.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="https://www.houfaka.com/static/upload/053d650a4f50fd0e/54062156baa9b5a9.png" alt="" height="28">
+                                </span>
+                            </a>
+
+                            <a href="" class="logo logo-light">
+                                <span class="logo-sm">
+                                    <img src="https://www.houfaka.com/static/upload/053d650a4f50fd0e/54062156baa9b5a9.png" alt="" height="22">
+                                </span>
+                                <span class="logo-lg">
+                                    <img src="https://www.houfaka.com/static/upload/053d650a4f50fd0e/54062156baa9b5a9.png" alt="" height="28">
+                                </span>
+                            </a>
+                        </div>
+
+                        <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+
+
+                    </div>
+
+                    <div class="d-flex">
+
+                        <div class="dropdown d-inline-block d-lg-none ml-2">
+                            <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="mdi mdi-magnify"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0" aria-labelledby="page-header-search-dropdown">
+
+                                <form class="p-3" action="https://www.houfaka.com/merchant/order/index.html">
+                                    <div class="form-group m-0">
+                                        <div class="input-group">
+                                            <input type="hidden" name='type' value='0'>
+                                            <input type="text" class="form-control" placeholder="输入订单编号 ..." aria-label="Recipient's username">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="dropdown d-none d-lg-inline-block ml-1">
+                            <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="bx bx-customize"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                                <div class="px-lg-2">
+                                    <div class="row no-gutters">
+                                        <div class="col">
+                                            <a class="dropdown-icon-item" href="https://www.houfaka.com/merchant/goods_card/add.html">
+                                                <img src="/static/merchant/default/images/brands/add_card.png" alt="添加卡密">
+                                                <span>添加卡密</span>
+                                            </a>
+                                        </div>
+                                        <div class="col">
+                                            <a class="dropdown-icon-item" href="https://www.houfaka.com/merchant/goods_category/index.html">
+                                                <img src="/static/merchant/default/images/brands/category.png" alt="添加分类">
+                                                <span>添加分类</span>
+                                            </a>
+                                        </div>
+                                        <div class="col">
+                                            <a class="dropdown-icon-item" href="https://www.houfaka.com/merchant/goods/add.html">
+                                                <img src="/static/merchant/default/images/brands/goods.png" alt="添加商品">
+                                                <span>添加商品</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <div class="row no-gutters">
+                                        <div class="col">
+                                            <a class="dropdown-icon-item" href="https://www.houfaka.com/merchant/user/settings.html">
+                                                <img src="/static/merchant/default/images/brands/shop.png" alt="店铺设置">
+                                                <span>店铺设置</span>
+                                            </a>
+                                        </div>
+                                        <div class="col">
+                                            <a class="dropdown-icon-item" href="https://www.houfaka.com/merchant/user/link.html">
+                                                <img src="/static/merchant/default/images/brands/link.png" alt="店铺链接">
+                                                <span>店铺链接</span>
+                                            </a>
+                                        </div>
+                                        <div class="col">
+                                            <a class="dropdown-icon-item" href="https://www.houfaka.com/merchant/cash/index.html">
+                                                <img src="/static/merchant/default/images/brands/cash.png" alt="结算记录">
+                                                <span>结算记录</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown d-none d-lg-inline-block ml-1">
+                            <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
+                                <i class="bx bx-fullscreen"></i>
+                            </button>
+                        </div>
+
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="bx bx-bell"></i>
+                                                            </button>
+                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0" aria-labelledby="page-header-notifications-dropdown">
+                                <div class="p-3">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <h6 class="m-0" key="t-notifications"> 站内消息 </h6>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a href="#!" id="readAllMessage" class="small" key="t-view-all"> 全部已读</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-simplebar="" style="max-height: 230px;">
+
+
+                                    
+                                </div>
+                                <div class="p-2 border-top">
+                                    <a class="btn btn-sm btn-link font-size-14 btn-block text-center" href="https://www.houfaka.com/merchant/message/index.html">
+                                        <i class="mdi mdi-arrow-right-circle mr-1"></i> <span key="t-view-more">查看全部..</span> 
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="rounded-circle header-profile-user" src="//q1.qlogo.cn/g?b=qq&nk=289945633&s=100&t=" alt="yousha01">
+                                <span class="d-none d-xl-inline-block ml-1" key="t-yousha01">yousha01</span>
+                                <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <!-- item-->
+                                <a class="dropdown-item" href="https://www.houfaka.com/merchant/user/settings.html"><i class="bx bx-user font-size-16 align-middle mr-1"></i> <span key="t-商户设置">商户设置</span></a>
+                                <a class="dropdown-item d-block" href="https://www.houfaka.com/merchant/user/password.html"><i class="bx bx-wrench font-size-16 align-middle mr-1"></i> <span key="t-修改密码">修改密码</span></a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="/logout"><i class="bx bx-power-off font-size-16 align-middle mr-1 text-danger"></i> <span key="t-退出登录">退出登录</span></a>
+                            </div>
+                        </div>
+
+                        <div class="dropdown d-inline-block">
+                            <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
+                                <i class="bx bx-cog bx-spin pt-1"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </header>
+
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="vertical-menu">
+
+                <div data-simplebar="" class="h-100">
+
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+                        <!-- Left Menu Start -->
+                        <ul class="metismenu list-unstyled" id="side-menu">
+
+
+                                                        <li class="menu-title" key="t-菜单">菜单</li>
+                                                        <li>
+                                <a href="https://www.houfaka.com/merchant/index/index.html" class="waves-effect">
+                                    <i class="bx bx-home-alt"></i>
+                                    <span key="t-仪表盘">仪表盘</span>
+                                </a>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-box "></i>
+                                    <span key="t-店铺管理">店铺管理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/user/link.html" key="t-店铺链接">店铺链接</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/user/settings.html" key="t-店铺设置">店铺设置</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/user/collect.html" key="t-结算设置">结算设置</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/user/wechat.html" key="t-微信通知">微信通知</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li class="menu-title" key="t-运营">运营</li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-archive "></i>
+                                    <span key="t-商品管理">商品管理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_category/index.html" key="t-商品分类">商品分类</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods/add.html" key="t-添加商品">添加商品</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods/index.html" key="t-商品列表">商品列表</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods/trash.html" key="t-回收站">回收站</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-receipt"></i>
+                                    <span key="t-订单管理">订单管理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/order/index.html" key="t-订单列表">订单列表</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/order/index.html?status=1" key="t-已付款">已付款</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/order/index.html?status=0" key="t-未付款">未付款</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-customize "></i>
+                                    <span key="t-库存管理">库存管理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_card/add.html" key="t-添加库存">添加库存</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_card/index.html" key="t-库存列表">库存列表</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_card/index.html?status=2" key="t-已售出">已售出</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_card/index.html?status=1" key="t-未售出">未售出</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_card/trash.html" key="t-回收站">回收站</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-group "></i>
+                                    <span key="t-供货和代理">供货和代理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/agent/setting.html" key="t-店铺代理设置">店铺代理设置</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/agent/mypool.html" key="t-商品池管理">商品池管理</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/agent/pool.html" key="t-全网商品对接">全网商品对接</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/agent/supplygoods.html" key="t-对接的商品">对接的商品</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/agent/proxylist.html" key="t-下级代理列表">下级代理列表</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/agent/proxyorder.html" key="t-下级代理订单">下级代理订单</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-globe"></i>
+                                    <span key="t-跨平台对接">跨平台对接</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/cross/index.html" key="t-跨平台对接">跨平台对接</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/cross/supplygoods.html" key="t-对接的商品">对接的商品</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-conversation "></i>
+                                    <span key="t-投诉管理">投诉管理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/complaint/index.html?from=1" key="t-自营商品投诉">自营商品投诉</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/complaint/index.html?from=2" key="t-下级代理投诉">下级代理投诉</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-credit-card "></i>
+                                    <span key="t-结算管理">结算管理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/cash/apply.html" key="t-申请提现">申请提现</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/cash/index.html" key="t-提现列表">提现列表</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li class="menu-title" key="t-应用">应用</li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-customize"></i>
+                                    <span key="t-扩展应用">扩展应用</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/plugin/bgdata.html" key="t-实时数据可视化">实时数据可视化</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/plugin/guide.html" key="t-店铺引导页">店铺引导页</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/plugin/oauth2.html" key="t-第三方登录">第三方登录</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/plugin/shopdiy.html" key="t-购卡页DIY">购卡页DIY</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/plugin/payapi.html" key="t-支付API">支付API</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bxs-bar-chart-alt-2"></i>
+                                    <span key="t-生意罗盘">生意罗盘</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/charts/money.html" key="t-收益分析">收益分析</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/charts/ranklist.html" key="t-消费排行">消费排行</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/charts/iplist.html" key="t-店铺访问记录">店铺访问记录</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/charts/channel.html" key="t-渠道分析">渠道分析</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-cog"></i>
+                                    <span key="t-系统管理">系统管理</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/message/index.html" key="t-站内消息">站内消息</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/user/moneylog.html" key="t-流水日志">流水日志</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/user/loginlog.html" key="t-登录日志">登录日志</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/user/password.html" key="t-修改密码">修改密码</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li class="menu-title" key="t-营销">营销</li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-purchase-tag-alt "></i>
+                                    <span key="t-优惠券">优惠券</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_coupon/add.html" key="t-添加优惠券">添加优惠券</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_coupon/index.html" key="t-优惠券列表">优惠券列表</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_coupon/index.html?status=2" key="t-已使用">已使用</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_coupon/index.html?status=1" key="t-未使用">未使用</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/goods_coupon/trash.html" key="t-回收站">回收站</a></li>
+                                                                    </ul>
+                            </li>
+                                                        <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-share-alt"></i>
+                                    <span key="t-推广返利">推广返利</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                                                        <li><a href="https://www.houfaka.com/merchant/spread/index.html" key="t-推广列表">推广列表</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/spread/rebate.html" key="t-返利列表">返利列表</a></li>
+                                                                        <li><a href="https://www.houfaka.com/merchant/invite_code/index.html" key="t-邀请码管理">邀请码管理</a></li>
+                                                                    </ul>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <!-- Sidebar -->
+                </div>
+            </div>
+            <!-- Left Sidebar End -->
+
+
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                
+<div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18">订单列表</h4>
+
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">后台管理</a></li>
+                            <li class="breadcrumb-item active">订单列表</li>
+                        </ol>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-sm-auto">
+
+                                <form class="form-inline" role="form" action="" method="get">
+                                    <div class="form-group">
+                                        <select name="paytype" class="form-control select2">
+                                            <option value="" selected>全部方式</option>
+                                                                                        <option value="1" >支付宝扫码</option>
+                                                                                        <option value="2" >支付宝H5</option>
+                                                                                        <option value="3" >微信扫码</option>
+                                                                                        <option value="4" >微信H5</option>
+                                                                                        <option value="5" >QQ钱包扫码</option>
+                                                                                        <option value="6" >QQ钱包H5</option>
+                                                                                        <option value="7" >网银支付</option>
+                                                                                        <option value="9" >京东钱包</option>
+                                                                                        <option value="10" >度小满支付</option>
+                                                                                        <option value="11" >云闪付</option>
+                                                                                    </select>
+                                    </div>
+                                    <div class="form-group ml-1">
+                                        <select name="status" class="form-control select2">
+                                            <option value="" >全部状态</option>
+                                            <option value="1" selected>已付款</option>
+                                            <option value="0" >未付款</option>
+                                            <option value="2" >已关闭</option>
+                                            <option value="3" >已退款</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group ml-1">
+                                        <select name="cid" class="form-control select2">
+                                            <option value="0" >商品类别</option>
+                                                                                        <option value="10006"  >语聊平台优惠卡密</option>
+                                                                                    </select>
+                                    </div>
+
+                                    <div class="form-group ml-1">
+                                        <select name="order_type" class="form-control select2">
+                                            <option value="" selected>全部类型 </option>
+                                            <option value="0" >普通订单</option>
+                                            <option value="1" >对接订单 </option>
+                                            <option value="2" >跨平台订单 </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group ml-1">
+                                        <select name="type" class="form-control select2">
+                                            <option value="0" selected>订单编号搜索</option>
+                                            <option value="1" >商品名称搜索</option>
+                                            <option value="2" >联系方式搜索</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group ml-1">
+                                        <input class="form-control" type="text" name="keywords" value="" placeholder="请输入关键字">
+                                    </div>
+
+                                    <div class="form-group ml-1">
+                                        <select name="has_send" class="form-control select2">
+                                            <option value="" selected>取卡状态(全部) </option>
+                                            <option value="0" >未取卡</option>
+                                            <option value="1" >已取卡 </option>
+                                            <option value="2" >已取部分 </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group ml-1">
+                                        <input class="form-control input-daterange-datepicker"  type="text" name="date_range" value="04/15/2026 - 04/15/2026" placeholder="点击选择查询日期">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-light waves-effect waves-light ml-1"><i class="bx bx-search mr-1"></i>搜索</button>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>订单号</th>
+                                        <th>订单类型</th>
+                                        <th>商品名称</th>
+                                        <th>供货商</th>
+                                        <th>支付方式</th>
+                                        <th>总价</th>
+                                        <th>实付款</th>
+                                        <th>购买者信息</th>
+                                        <th>状态</th>
+                                        <th>取卡状态</th>
+                                        <th>取卡密码</th>
+                                        <th>交易时间</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                                                        <tr>
+                                        <th><a href="https://www.houfaka.com/merchant/order/signquery.html?id=1040814" target="_blank">HOU26041513209L4HU</a></th>
+                                        <td>
+                                                                                        <span class="badge badge-pill badge-primary">普通订单</span>
+                                                                                    </td>
+                                        <td>
+                                            天弘、新遇、拓友、妙遇、糖芯-通用卡密充值                                            <a class="fetch" href="https://www.houfaka.com/merchant/order/fetchcard.html?id=1040814">（1张）</a>
+                                                                                    </td>
+                                        <td></td>
+                                        <td>支付宝扫码</td>
+                                        <td>1.00</td>
+                                        <td>1.00</td>
+                                        <td>13355559999  <a href="javascript:void(0);" onclick="$.x_show('买家指纹', 'https://www.houfaka.com/merchant/order/buyerinfo.html?id=1040814', 450)">指纹</a></td>
+                                        <td>
+                                                                                        <span class="badge badge-pill badge-success">已支付</span>
+                                                                                    </td>
+                                        <td>
+                                                                                        已取
+                                                                                    </td>
+                                        <td></td>
+                                        <td>2026-04-15 13:32:52</td>
+                                        <td>
+                                                                                    </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav aria-label="...">
+                                                    </nav>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- container-fluid -->
+</div>
+
+
+
+
+
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <script>document.write(new Date().getFullYear())</script> © 当前网站使用【猴发卡网】强力驱动。
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="text-sm-right d-none d-sm-block">
+                                    Design & Develop by Houfaka
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- end main content-->
+
+        </div>
+        <!-- END layout-wrapper -->
+
+        <!-- Right Sidebar -->
+        <div class="right-bar">
+            <div data-simplebar="" class="h-100">
+                <div class="rightbar-title px-3 py-4">
+                    <a href="javascript:void(0);" class="right-bar-toggle float-right">
+                        <i class="mdi mdi-close noti-icon"></i>
+                    </a>
+                    <h6 class="m-0 font-weight-bold">主题设置</h6>
+                </div>
+
+                <!-- Settings -->
+                <hr class="mt-0">
+                <h6 class="text-center mb-0">选择主题</h6>
+
+                <div class="p-4">
+                    <div class="mb-2">
+                        <img src="/static/merchant/default/images/layouts/layout-1.jpg" class="img-fluid img-thumbnail" alt="">
+                    </div>
+                    <div class="custom-control custom-switch mb-3">
+                        <input type="checkbox" name="template-switch" value="default" class="custom-control-input theme-choice" id="light-mode-switch" checked="">
+                               <label class="custom-control-label" for="light-mode-switch">垂直布局</label>
+                    </div>
+
+                    <div class="mb-2">
+                        <img src="/static/merchant/default/images/layouts/layout-2.jpg" class="img-fluid img-thumbnail" alt="">
+                    </div>
+                    <div class="custom-control custom-switch mb-3">
+                        <input type="checkbox" name="template-switch" value="horizontal" class="custom-control-input theme-choice" id="dark-mode-switch" >
+                               <label class="custom-control-label" for="dark-mode-switch">水平布局</label>
+                    </div>
+                </div>
+            </div> <!-- end slimscroll-menu-->
+        </div>
+        <!-- /Right-bar -->
+
+        <!-- Right bar overlay-->
+        <div class="rightbar-overlay"></div>
+
+        <!-- JAVASCRIPT -->
+        <script src="/static/merchant/default/libs/jquery/jquery.min.js"></script>
+        <script src="/static/merchant/default/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/merchant/default/libs/metismenu/metisMenu.min.js"></script>
+        <script src="/static/merchant/default/libs/simplebar/simplebar.min.js"></script>
+        <script src="/static/merchant/default/libs/node-waves/waves.min.js"></script>
+        <script src="/static/merchant/default/libs/jquery-confirm/js/jquery-confirm.js"></script>
+        <script src="/static/merchant/default/libs/layer/layer.js"></script>
+        <script src="/static/merchant/default/libs/select2/js/select2.min.js"></script>
+        <script src="/static/merchant/default/libs/moment/moment.js"></script>
+        <script src="/static/merchant/default/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+        <script src="/static/merchant/default/libs/bootstrap-daterangepicker/daterangepicker.js"></script>
+        <script src="/static/merchant/default/libs/toastr/build/toastr.min.js"></script>
+        <script>
+                                    $(".select2").select2();
+                                    $(document).ready(function () {
+
+                                        $('#readAllMessage').on('click', function () {
+
+                                            $.confirm({
+                                                title: '温馨提示',
+                                                content: '确定要全部已读？',
+                                                type: 'red',
+                                                typeAnimated: true,
+                                                buttons: {
+                                                    tryAgain: {
+                                                        text: '确定',
+                                                        btnClass: 'btn-red',
+                                                        action: function () {
+                                                            var loading = layer.load(1, {shade: [0.1, '#fff']});
+                                                            $.ajax({
+                                                                type: 'post',
+                                                                url: "https://www.houfaka.com/merchant/message/allread.html",
+                                                                dataType: 'json',
+                                                                success: function (info) {
+                                                                    layer.close(loading);
+                                                                    if (info.code == 1) {
+                                                                        location.reload();
+                                                                    } else {
+                                                                        $.alert({
+                                                                            title: '温馨提示!',
+                                                                            content: info.msg
+                                                                        });
+                                                                    }
+                                                                }
+                                                            });
+                                                        }
+                                                    },
+                                                    cancel: {
+                                                        text: '取消',
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    });
+                                    $("input[name='template-switch']").on("change", function (e) {
+                                        $("input[name='template-switch']").prop("checked", false);
+                                        $(this).prop("checked", true);
+
+                                        var template = $(this).val();
+                                        var loading = layer.load(1, {shade: [0.1, '#fff']});
+                                        $.ajax({
+                                            type: 'post',
+                                            url: "https://www.houfaka.com/merchant/user/set_template.html",
+                                            data: {template: template, platform: 'pc'},
+                                            dataType: 'json',
+                                            success: function (info) {
+                                                layer.close(loading);
+                                                if (info.code != 1) {
+                                                    $.alert({
+                                                        title: '温馨提示!',
+                                                        content: info.msg
+                                                    });
+                                                } else {
+                                                    location.reload();
+                                                }
+                                            }
+                                        });
+                                    });
+        </script>
+        <script>
+            $('.input-daterange-datepicker').daterangepicker({
+                buttonClasses: ['btn', 'btn-sm'],
+                applyClass: 'btn-success',
+                cancelClass: 'btn-light',
+                locale: {
+                    applyLabel: '应用',
+                    cancelLabel: '取消',
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十月', '十二月'],
+                    firstDay: 1
+                }
+
+            });
+        </script>
+        
+<script>
+    function notify(e, id)
+    {
+        layer.confirm('确认要设置这个订单已支付吗？该操作不可恢复', function (index) {
+            var loading = layer.load(1, {shade: [0.1, '#fff']});
+            $.ajax({
+                url: "https://www.houfaka.com/merchant/order/notify.html",
+                type: 'post',
+                data: {id: id},
+                success: function (res) {
+                    layer.close(loading);
+                    if (res.code == 1) {
+                        layer.msg(res.msg, {icon: 1, time: 3000});
+                        setTimeout(function () {
+                            location.reload();
+                        }, 3000);
+                    } else {
+                        layer.msg(res.msg, {icon: 2, time: 3000});
+                    }
+                }
+            });
+        });
+    }
+</script>
+
+
+        <!-- App js -->
+        <script src="/static/merchant/default/js/app.js"></script>
+
+            
+<!-- 百度统计 开始 -->
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?faf48e47665edc46bc65a2c20c744d21";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+<!-- 百度统计 结束 -->
+
+</body>
+
+</html>

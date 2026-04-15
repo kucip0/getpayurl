@@ -595,3 +595,89 @@ class HoufakaService(BaseService):
         qr_base64 = generate_qr_base64(url)
         self.log("步骤6: 生成二维码成功")
         return qr_base64
+
+    def query_orders(
+        self,
+        status: int = 1,
+        start_date: str = "",
+        end_date: str = "",
+        pay_type: int = None,
+        order_type: int = None
+    ) -> dict:
+        """查询订单列表"""
+        try:
+            # 1. 检查登录态
+            if not self.load_cookies():
+                return {
+                    "success": False,
+                    "message": "未登录，请先在平台管理中登录店铺",
+                    "orders": [],
+                    "total": 0
+                }
+            
+            # 2. 构建查询URL
+            params = {
+                "paytype": pay_type if pay_type is not None else "",
+                "status": status,
+                "cid": "0",
+                "order_type": order_type if order_type is not None else "",
+                "type": "0",
+                "keywords": "",
+                "has_send": "",
+            }
+            
+            # 添加日期范围
+            if start_date and end_date:
+                params["date_range"] = f"{start_date} - {end_date}"
+            else:
+                params["date_range"] = "0"
+            
+            query_string = urlencode(params)
+            url = f"{self.BASE_URL}/merchant/order/index.html?{query_string}"
+            
+            self.log(f"查询订单: {url}")
+            
+            # 3. 发起请求
+            headers = {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Accept-Language": "zh-CN,zh;q=0.9",
+                "Connection": "keep-alive",
+                "Host": "www.houfaka.com",
+                "Referer": f"{self.BASE_URL}/merchant/order/index.html",
+                "Sec-Fetch-Dest": "document",
+                "Sec-Fetch-Mode": "navigate",
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-User": "?1",
+                "Upgrade-Insecure-Requests": "1",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+            }
+            
+            resp = self.session.get(url, headers=headers, timeout=15)
+            resp.raise_for_status()
+            
+            # 4. 处理HTML（处理转义字符）
+            html_content = unescape_html(resp.text)
+            
+            # 5. 解析订单
+            from app.utils.html_parser import parse_order_table
+            orders = parse_order_table(html_content)
+            
+            self.log(f"查询到 {len(orders)} 个订单")
+            
+            # 6. 返回结果
+            return {
+                "success": True,
+                "message": "查询成功",
+                "orders": orders,
+                "total": len(orders)
+            }
+            
+        except Exception as e:
+            self.log(f"查询订单失败: {str(e)}")
+            return {
+                "success": False,
+                "message": f"查询失败: {str(e)}",
+                "orders": [],
+                "total": 0
+            }

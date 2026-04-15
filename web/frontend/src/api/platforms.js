@@ -30,3 +30,7 @@ export const modifyPrice = (platformCode, goodsId, newPrice) => {
     new_price: newPrice,
   })
 }
+
+export const getOrders = (platformCode, params) => {
+  return api.get(`/platforms/${platformCode}/orders`, { params })
+}
