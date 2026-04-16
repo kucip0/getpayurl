@@ -398,12 +398,18 @@ class MengyanService(BaseService):
 
         # 输出完整HTML响应到文件供调试
         import os
-        debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
-        os.makedirs(debug_dir, exist_ok=True)
-        debug_file = os.path.join(debug_dir, 'step1_response.html')
-        with open(debug_file, 'w', encoding='utf-8') as f:
-            f.write(html)
-        self.log(f"DEBUG1-STEP1: 完整HTML已保存到 {debug_file}")
+        try:
+            debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
+            os.makedirs(debug_dir, exist_ok=True)
+            debug_file = os.path.join(debug_dir, 'step1_response.html')
+            with open(debug_file, 'w', encoding='utf-8') as f:
+                f.write(html)
+            self.log(f"DEBUG1-STEP1: 完整HTML已保存到 {debug_file}")
+        except PermissionError:
+            # 生产环境可能无权限写入debug目录
+            self.log("DEBUG1-STEP1: 跳过保存debug文件（权限不足）")
+        except Exception as e:
+            self.log(f"DEBUG1-STEP1: 保存debug文件失败: {e}")
         self.log(f"DEBUG1-STEP1: HTML前1000字符={html[:1000]}")
 
         # 调试日志：响应Cookie
@@ -622,12 +628,17 @@ class MengyanService(BaseService):
         
         # 保存调试HTML到文件
         import os
-        debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
-        os.makedirs(debug_dir, exist_ok=True)
-        debug_file = os.path.join(debug_dir, 'step2_response.html')
-        with open(debug_file, 'w', encoding='utf-8') as f:
-            f.write(step2_html)
-        self.log(f"DEBUG 2: 完整HTML已保存到 {debug_file}")
+        try:
+            debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
+            os.makedirs(debug_dir, exist_ok=True)
+            debug_file = os.path.join(debug_dir, 'step2_response.html')
+            with open(debug_file, 'w', encoding='utf-8') as f:
+                f.write(step2_html)
+            self.log(f"DEBUG 2: 完整HTML已保存到 {debug_file}")
+        except PermissionError:
+            self.log("DEBUG 2: 跳过保存debug文件（权限不足）")
+        except Exception as e:
+            self.log(f"DEBUG 2: 保存debug文件失败: {e}")
         
         soup = BeautifulSoup(step2_html, "html.parser")
 
@@ -1084,11 +1095,14 @@ class MengyanService(BaseService):
 
             # 保存调试HTML到文件
             import os
-            debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
-            os.makedirs(debug_dir, exist_ok=True)
-            debug_file = os.path.join(debug_dir, 'mengyan_orders_debug.html')
-            with open(debug_file, 'w', encoding='utf-8') as f:
-                f.write(html)
+            try:
+                debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
+                os.makedirs(debug_dir, exist_ok=True)
+                debug_file = os.path.join(debug_dir, 'mengyan_orders_debug.html')
+                with open(debug_file, 'w', encoding='utf-8') as f:
+                    f.write(html)
+            except (PermissionError, OSError):
+                pass  # 生产环境跳过debug文件写入
 
             # 5. 检测是否跳转到登录页
             # 更准确的检测：检查是否真的没有订单表格且有登录表单
