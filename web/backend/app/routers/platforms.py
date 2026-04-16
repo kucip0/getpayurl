@@ -20,12 +20,14 @@ class BalanceResponse(BaseModel):
     non_withdrawable: str = "0.000"
 from app.services.houfaka_service import HoufakaService
 from app.services.siyun_service import SiyunService
+from app.services.mengyan_service import MengyanService
 
 router = APIRouter(prefix="/api/platforms", tags=["平台"])
 
 PLATFORMS = [
     PlatformInfo(code="houfaka", name="猴发卡", host="https://www.houfaka.com"),
     PlatformInfo(code="siyun", name="四云发卡", host="https://shop.4yuns.com"),
+    PlatformInfo(code="mengyan", name="梦言云卡", host="https://www.np4.cn"),
 ]
 
 
@@ -35,6 +37,8 @@ def get_service(platform_code: str, user_id: int, db: Session):
         return HoufakaService(user_id, db)
     elif platform_code == "siyun":
         return SiyunService(user_id, db)
+    elif platform_code == "mengyan":
+        return MengyanService(user_id, db)
     else:
         raise HTTPException(status_code=404, detail="平台不存在")
 
