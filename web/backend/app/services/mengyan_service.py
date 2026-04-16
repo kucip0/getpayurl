@@ -548,7 +548,7 @@ class MengyanService(BaseService):
             "fee_rate": params["fee_rate"],
             "min_fee": params["min_fee"],
             "rate": params["rate"],
-            "pid": "2",
+            "pid": params.get("pid", "47"),  # 梦言云卡使用params中的pid，默认47（支付宝）
         }
 
         # 完整浏览器请求头（与原始项目完全一致）
@@ -565,12 +565,17 @@ class MengyanService(BaseService):
             "Sec-Fetch-Site": "same-origin",
             "Sec-Fetch-Mode": "navigate",
             "Sec-Fetch-User": "?1",
-            "Sec-Fetch-Dest": "document",
-            "Referer": f"{base_url}/details/2873AAA7",  # 与原始项目一致的固定Referer
+            "Sec-Fetch-Dest": "iframe",  # 梦言云卡使用iframe
+            "Referer": product_url,  # 使用实际的商品URL作为Referer
             "Accept-Encoding": "gzip, deflate, br, zstd",
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Priority": "u=0, i",
         }
+
+        # 梦言云卡需要从商品页面获取默认的pid
+        # 如果params中没有pid，使用47（支付宝）
+        if "pid" not in params or not params["pid"]:
+            params["pid"] = "47"  # 梦言云卡默认支付宝
 
         # 输出完整的请求调试信息
         request_url = f"{base_url}/pay/order"
@@ -578,6 +583,7 @@ class MengyanService(BaseService):
         self.log(f"DEBUG 2 (request): 完整请求体={order_data}")
         self.log(f"DEBUG 2 (request): Referer={headers['Referer']}")
         self.log(f"DEBUG 2 (request): Origin={headers['Origin']}")
+        self.log(f"DEBUG 2 (request): Sec-Fetch-Dest={headers['Sec-Fetch-Dest']}")
 
         # 调试日志 - 请求前Cookie状态
         cookie_before = [(c.name, c.value[:10], c.domain, c.path) for c in self.session.cookies]
