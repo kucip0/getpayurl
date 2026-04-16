@@ -589,8 +589,20 @@ class MengyanService(BaseService):
         self.log(f"DEBUG 2: status={resp.status_code}")
         self.log(f"DEBUG 2: cookies={cookie_details}")
 
-        # 处理转义的HTML（与步骤1一致）
-        step2_html = resp.text.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
+        # 处理转义的HTML（先处理HTML实体转义，再处理JSON转义）
+        import html as html_module
+        step2_html = html_module.unescape(resp.text)
+        step2_html = step2_html.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
+        
+        # 保存调试HTML到文件
+        import os
+        debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
+        os.makedirs(debug_dir, exist_ok=True)
+        debug_file = os.path.join(debug_dir, 'step2_response.html')
+        with open(debug_file, 'w', encoding='utf-8') as f:
+            f.write(step2_html)
+        self.log(f"DEBUG 2: 完整HTML已保存到 {debug_file}")
+        
         soup = BeautifulSoup(step2_html, "html.parser")
 
         trade_no_input = soup.find("input", {"name": "trade_no"})
