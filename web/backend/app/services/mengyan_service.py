@@ -588,10 +588,26 @@ class MengyanService(BaseService):
         cookie_details = [(c.name, c.value[:10], c.domain, c.path) for c in self.session.cookies]
         self.log(f"DEBUG 2: status={resp.status_code}")
         self.log(f"DEBUG 2: cookies={cookie_details}")
+        self.log(f"DEBUG 2: content-type={resp.headers.get('content-type', '')}")
+        self.log(f"DEBUG 2: resp.text前100字符={resp.text[:100]}")
 
-        # 处理转义的HTML（先处理HTML实体转义，再处理JSON转义）
+        # 处理转义的HTML
+        # 如果响应被引号包裹，说明是JSON编码的字符串，需要先解码
         import html as html_module
-        step2_html = html_module.unescape(resp.text)
+        raw_text = resp.text
+        
+        # 检查是否被引号包裹（JSON字符串格式）
+        if raw_text.startswith('"') and raw_text.endswith('"'):
+            self.log("DEBUG 2: 检测到JSON编码的HTML字符串，进行解码")
+            try:
+                import json
+                raw_text = json.loads(resp.text)
+            except:
+                self.log("DEBUG 2: JSON解码失败，使用原始文本")
+        
+        # 处理HTML实体转义
+        step2_html = html_module.unescape(raw_text)
+        # 处理JSON风格的转义符
         step2_html = step2_html.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
         
         # 保存调试HTML到文件
@@ -608,7 +624,16 @@ class MengyanService(BaseService):
         trade_no_input = soup.find("input", {"name": "trade_no"})
         if not trade_no_input or not trade_no_input.get("value"):
             # 调试日志：输出响应摘要
-            self.log(f"DEBUG 2: 响应摘要={resp.text[:500]}")
+            self.log(f"DEBUG 2: 页面中没有trade_no字段")
+            self.log(f"DEBUG 2: 原始响应前200字符={resp.text[:200]}")
+            self.log(f"DEBUG 2: 处理后HTML前200字符={step2_html[:200]}")
+            
+            # 检查是否是错误页面
+            if "没有可用的支付渠道" in step2_html:
+                raise Exception("步骤2: 订单提交失败，该商品没有可用的支付渠道")
+            elif "库存" in step2_html:
+                raise Exception("步骤2: 订单提交失败，商品库存不足")
+            
             # 尝试从页面文本中提取（备用方案）
             match = re.search(r'trade_no["\s:=]+([\w]+)', resp.text)
             if match:
