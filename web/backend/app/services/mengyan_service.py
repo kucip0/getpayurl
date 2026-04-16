@@ -572,6 +572,13 @@ class MengyanService(BaseService):
             "Priority": "u=0, i",
         }
 
+        # 输出完整的请求调试信息
+        request_url = f"{base_url}/pay/order"
+        self.log(f"DEBUG 2 (request): URL={request_url}")
+        self.log(f"DEBUG 2 (request): 完整请求体={order_data}")
+        self.log(f"DEBUG 2 (request): Referer={headers['Referer']}")
+        self.log(f"DEBUG 2 (request): Origin={headers['Origin']}")
+
         # 调试日志 - 请求前Cookie状态
         cookie_before = [(c.name, c.value[:10], c.domain, c.path) for c in self.session.cookies]
         self.log(f"DEBUG 2 (pre-request): cookies={cookie_before}")
