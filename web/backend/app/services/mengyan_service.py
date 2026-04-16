@@ -17,7 +17,7 @@ class MengyanService(BaseService):
 
     PLATFORM_CODE = "mengyan"
     BASE_URL = "https://www.np4.cn"
-    TRACKING_COOKIE = "s1c9ae71b"
+    TRACKING_COOKIE = "s0680c9c1"
     FINGERPRINT_ENABLED = True
 
     def login(self, username: str, password: str) -> dict:
@@ -414,26 +414,26 @@ class MengyanService(BaseService):
         set_cookie_header = resp.headers.get('set-cookie', '')
         self.log(f"DEBUG1: Set-Cookie header (first 200 chars)={set_cookie_header[:200]}")
 
-        # 提取 s1c9ae71b cookie
+        # 提取 s0680c9c1 cookie
         cookie_value = None
         for cookie_name, cookie_val in resp.cookies.items():
-            if "s1c9ae71b" in cookie_name.lower():
+            if "s0680c9c1" in cookie_name.lower():
                 cookie_value = cookie_val
                 break
 
         if not cookie_value:
             # 尝试从 set-cookie 头中直接提取
             set_cookies = resp.headers.get("set-cookie", "")
-            match = re.search(r's1c9ae71b=([^;]+)', set_cookies, re.IGNORECASE)
+            match = re.search(r's0680c9c1=([^;]+)', set_cookies, re.IGNORECASE)
             if match:
                 cookie_value = match.group(1)
             else:
-                raise Exception("步骤1: 未找到 s1c9ae71b Cookie")
+                raise Exception("步骤1: 未找到 s0680c9c1 Cookie")
 
-        # 清除session中所有Cookie，只设置s1c9ae71b（与原始项目一致）
+        # 清除session中所有Cookie，只设置s0680c9c1（与原始项目一致）
         self.session.cookies.clear()
-        self.session.cookies.set("s1c9ae71b", cookie_value)
-        self.log(f"步骤1: 清除多余Cookie，只保留 s1c9ae71b={cookie_value[:10]}...")
+        self.session.cookies.set("s0680c9c1", cookie_value)
+        self.log(f"步骤1: 清除多余Cookie，只保留 s0680c9c1={cookie_value[:10]}...")
         self.log(f"DEBUG1: session cookies count={len(self.session.cookies)}")
 
         # DEBUG: log html length
