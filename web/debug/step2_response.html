@@ -1,0 +1,305 @@
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        <title></title>
+        <script src="/static/app/js/jquery-2.2.1.min.js"></script>
+        <script src="/static/app/js/layer.js"></script>
+        <link href="/static/merchant/default/libs/jquery-confirm/css/jquery-confirm.css" rel="stylesheet" type="text/css">
+        <script src="/static/merchant/default/libs/jquery-confirm/js/jquery-confirm.js"></script>
+        <style>
+            body{
+                font-family: "Microsoft Yahei", "微软雅黑", "Pinghei";
+            }
+            button,a{
+                border: none;
+                font-size: 16px;
+            }
+            .order_show{
+                padding:20px;
+            }
+            .order_info{
+                line-height:30px;
+                font-size:14px;
+                color:#666;
+                padding:20px;
+            }
+            .order_pay{
+                line-height:30px;
+                font-size:16px;
+                color:#333;
+                padding:20px;
+                /*border-bottom:1px solid #eee;*/
+            }
+            .order_pay img{
+                float: left;
+                margin-right: 20px;
+            }
+            .order_pay p{
+                margin: 0;
+                float: left;
+            }
+            .order_pay p span{
+                color: crimson;
+            }
+            .order_btn1, .order_btn2 {
+                display: block;
+                text-decoration: none;
+                color: #fff;
+                margin: 10px;
+                float: left;
+                height: 40px;
+                line-height: 40px;
+                width: calc(50% - 20px);
+                text-align: center;
+                border-radius: 3px;
+                font-size: 12px;
+            }
+            .order_btn1{
+                background: crimson;
+            }
+            .order_btn2{
+                background: #ccc;
+            }
+            @media only screen and (min-width: 768px) {
+                .layui-layer-iframe{min-height: 400px;}
+
+            }
+            @media only screen and (max-width: 768px) {
+                .layui-layer-iframe{width: 80%!important;}
+
+            }
+            .note{
+                color: #8c8787;
+                font-size: 13px;
+            }
+        </style>
+    </head>
+
+    <body>
+                <form id="payForm" name="p"  action="/index/pay/payment" target="_blank"> 
+              <input type="hidden" name="trade_no" value="FK2604161850DPWWG">
+            <div class="order_show">
+
+
+                <div style="position: relative;">
+                    <div class="order_box">
+
+                        <div class="order_pay">
+                            <img src="/static/app/images/order_pay.png" alt="">
+                            <p>
+                                支付金额：
+                                <span>99元 </span><br>
+                                支付方式：
+                                <span>易支付支付宝</span>
+                            </p>
+                            <div style="clear: both">
+                            </div>
+                        </div>
+                        <div class="order_info">
+                            订单编号： FK2604161850DPWWG                            <br>
+                            商品名称： 测试66666666                            <br>
+                            购买数量： 1                        </div>
+                        <div class="ymm-prompt form-group">
+                            <p style="padding-left: 16px;">
+                                <input style="display:inline-block;vertical-align: middle;" id="check" class="checkbox" name="agree"
+                                       type="checkbox" checked>
+                                <span class="color1" style="font-size: 12px;">点击同意<a id="agreement" href="#" target="_blank"
+                                                                                     style="margin-top:-1px;display:inline-block;font-size: 12px;text-decoration: none;color: crimson;">《用户协议》</a>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="paybtn" id="d1">
+                            <button class="order_btn1" type="button" id="pay_btn">确认付款</button>
+                            <a onclick="back_url()" class="order_btn2">重新选择</a>
+                        </div>
+                        <div class="paybtn" style="display:none;" id="d2">
+                            <a onclick="back_url()" class="order_btn2">返回商品</a>
+                            <a href="/orderquery?orderid=FK2604161850DPWWG" id="pay" target="_parent" class="order_btn1"> 等待付款中...</a>
+                        </div>
+                        <div class="note">商品问题请先和商家交流，如果处理结果不满意，请于订单当日23点之前联系平台客服，超过时间认定订单没问题。</div>
+
+                    </div>
+                    <div class="collect_box" style="display: none;position: absolute;top:0px;left:0px;width: 100%;height: 100%;">
+                        <style>
+                            .ewm {
+                                /*border: 1px solid #eee;*/
+                                color: #666;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                justify-content: center;
+                                width: 100%;
+                                height: 100%;
+                            }
+                        </style>
+                        <div class="ewm">
+                            <div id="qrcode" style="width:150px;height:150px;"><img id="bindwximg" style="width:150px;height:150px;" src=""></div><br>
+                            <p style="font-size: 14px;text-align:center;margin-top: 30px;font-weight: 700">为方便查询订单，首次下单请关注微信公众号</p>
+                            <p style="font-size: 13px;text-align:center;margin-top: 0px;font-weight: 500;color: #fff; background-color: #34c38f;padding:4px 8px;border-radius: 50px;">扫码完成后将自动跳转支付</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+        <script type="text/javascript">
+            $('#agreement').click(function () {
+                layer.open({
+                    type: 2,
+                    title: '用户协议',
+                    area: ['80%'],
+                    anim: 2,
+                    content: ['/index/index/service_agreement']
+
+                });
+                return false;
+            })
+
+            function guid() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    var r = Math.random() * 16 | 0;
+                    var v = c == 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+
+            var _fingerprint = window.localStorage.getItem("_fingerprint");
+            if (_fingerprint === null || _fingerprint === "")
+            {
+                _fingerprint = guid();
+                window.localStorage.setItem("_fingerprint", _fingerprint);
+            }
+
+            var _wxauth = window.localStorage.getItem("_wxauth"), _wxauth = (_wxauth === null) ? "" : _wxauth;
+
+
+            function oderquery(t) {
+                var orderid = 'FK2604161850DPWWG';
+                $.post('/pay/getOrderStatus', {
+                    orderid: orderid,
+                    token: "162caf82a54334dca4045d2ed0ed2de31776336411"
+                }, function (ret) {
+                    if (ret == 1) {
+                        $("#pay").html("付款成功，查看卡密");
+                    }
+                });
+                t = t + 1;
+                setTimeout('oderquery(' + t + ')', 3000);
+            }
+
+            function scanquery(t) {
+
+                $.ajax({
+                    url: '/index/pay/getWxscanStatus',
+                    type: 'post',
+                    dataType: 'json',
+//                    async: false,
+                    data: {
+                        trade_no: 'FK2604161850DPWWG',
+                        fingerprint: _fingerprint,
+                    },
+                    success: function (res) {
+                        if (res.code == 1) {
+                            window.localStorage.setItem("_wxauth", res.data);
+                            var comfirm = layer.confirm('🤗 恭喜您关注成功，可继续支付啦！', {
+                                btn: ['继续支付'] //按钮
+                            }, function () {
+                                layer.close(comfirm);
+                                $(".order_box").css("opacity", "1");
+                                $(".collect_box").css("display", "none");
+
+                                $("#d1").hide();
+                                $("#d2").show().attr("dis");
+                                setTimeout('oderquery(1)', 3000);
+                                $('#payForm').submit();
+                            });
+
+                        } else {
+                            t = t + 1;
+                            setTimeout('scanquery(' + t + ')', 3000);
+                        }
+                    }
+                });
+
+
+            }
+
+
+            $('#pay_btn').click(function () {
+                if (false === $("#check").is(':checked')) {
+                    layer.msg('请先同意用户协议');
+                    return false;
+                }
+
+
+
+                $.ajax({
+                    url: '/index/pay/check_buyer',
+                    type: 'post',
+                    dataType: 'json',
+                    async:false,
+                    data: {
+                        trade_no: 'FK2604161850DPWWG',
+                        fingerprint: _fingerprint,
+                        wxauth: _wxauth
+                    },
+                    success: function (res) {
+                        if (res.status === "tip")
+                        {
+                            $.alert(res.msg);
+                        } else if (res.status === "collect")
+                        {
+                            $(".order_box").css("opacity", "0.1");
+                            $(".collect_box").css("display", "block");
+                            $('#bindwximg').attr("src", res.qrcode);
+
+                            //轮询查询状态
+
+                            setTimeout('scanquery(1)', 3000);
+                        } else {
+
+                            $("#d1").hide();
+                            $("#d2").show().attr("dis");
+                            setTimeout('oderquery(1)', 3000);
+
+                            $('#payForm').submit();
+
+                        }
+                    }
+                });
+
+
+            });
+
+            function back_url() {
+                try {
+                    parent.$.nyroModalRemove();
+                } catch (err) {
+                    window.history.back();
+                }
+                return false;
+            }
+
+            function query_url() {
+                try {
+                    parent.location.href = '/orderquery?orderid=FK2604161850DPWWG';
+                } catch (err) {
+                    window.location.href = '/orderquery?orderid=FK2604161850DPWWG';
+                }
+                return false;
+            }
+
+
+
+        </script>
+        
+
+        <script type="text/javascript">
+
+        </script>
+    </body>
+
+</html>

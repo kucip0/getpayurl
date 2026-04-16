@@ -328,26 +328,23 @@ class MengyanService(BaseService):
             # 步骤2.5: 指纹验证（四云特有）
             self._step25_check_buyer(trade_no)
 
-            # 步骤3: 获取支付宝表单或重定向地址
-            step3_result = self._step3_get_alipay_form(cookie, trade_no)
+            # 步骤3: 获取支付表单参数
+            step3_result = self._step3_get_payment_form(cookie, trade_no)
 
-            # 步骤3.5: 如果是重定向地址，请求获取支付宝表单
-            if isinstance(step3_result, str):
-                # 四云发卡：步骤3返回的是重定向URL
-                self.log("步骤3.5: 请求重定向地址，获取支付宝表单...")
-                alipay_params = self._step35_get_alipay_form_from_redirect(step3_result, cookie)
-            else:
-                # 猴发卡：步骤3直接返回表单
-                alipay_params = step3_result
+            # 步骤4: 提交到第三方网关，获取支付ID
+            pay_id = self._step4_submit_gateway(step3_result)
 
-            # 步骤4
-            location1, alipay_cookies = self._step4_request_alipay_gateway(alipay_params)
+            # 步骤5: 获取支付宝表单
+            alipay_params = self._step5_get_alipay_form(pay_id)
 
-            # 步骤5
-            final_url = self._step5_follow_redirect(location1, alipay_cookies)
+            # 步骤6: 请求支付宝网关，获取二维码
+            location1, alipay_cookies = self._step6_request_alipay_gateway(alipay_params)
 
-            # 步骤6
-            qr_base64 = self._step6_generate_qrcode(final_url)
+            # 步骤7: 跟随重定向
+            final_url = self._step7_follow_redirect(location1, alipay_cookies)
+
+            # 步骤8: 生成二维码
+            qr_base64 = self._step8_generate_qrcode(final_url)
 
             return {
                 "success": True,
@@ -669,8 +666,8 @@ class MengyanService(BaseService):
         fingerprint = str(uuid.uuid4())
         self.log(f"生成新的设备指纹: {fingerprint[:10]}...")
         
-        # wxauth为空字符串（与原始项目一致）
-        wxauth = ""
+        # wxauth写死为固定JWT token（梦言云卡特有）
+        wxauth = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJodHRwczovL2Zha2EubnA0LmNuIiwiYXVkIjoiMSIsImlhdCI6MTc3NjMzMzA4MSwiZXhwIjoyMDkxNjkzMDgxLCJkYXRhIjp7Im1kNSI6IjAwYTM2YmI5MmVkNmVhMTQ4ODk0MWMyMjFiOTQ2N2RiIiwib3BlbmlkIjoib1JRTGc2eWdUcjEwMWVIUHdyNlQ4b01WVzg2ZyJ9fQ.o1eu8qEeVtKS3QRPDTcnMNwyBG3T7yaalaX3Wt5naLxC3QtOJeMXsavNhYU2oGYhfjXS-IApGJPNzQYwZ87lRA"
 
         check_data = {
             "trade_no": orderid,
@@ -729,24 +726,24 @@ class MengyanService(BaseService):
                 raise
             self.log("步骤2.5: 响应非JSON格式")
 
-    def _step3_get_alipay_form(self, cookie: str, orderid: str) -> str:
-        """步骤3: 获取重定向地址"""
+    def _step3_get_payment_form(self, cookie: str, orderid: str) -> dict:
+        """步骤3: 获取支付表单参数（梦言云卡）"""
         # 拼接完整的URL（包含查询参数）
-        full_url = f"{self.BASE_URL}/index/pay/payment?trade_no={orderid}&agree=on"
+        full_url = f"{self.BASE_URL}/index/pay/payment.html?trade_no={orderid}&tip=0"
         
-        # 完整浏览器请求头（与原始项目一致）
+        # 完整浏览器请求头
         headers = {
-            "sec-ch-ua": '"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"',
+            "sec-ch-ua": '"Google Chrome";v="147", "Not-A.Brand";v="8", "Chromium";v="147"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
             "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             "Sec-Fetch-Site": "same-origin",
             "Sec-Fetch-Mode": "navigate",
             "Sec-Fetch-User": "?1",
             "Sec-Fetch-Dest": "document",
-            "Referer": f"{self.BASE_URL}/pay/order",
+            "Referer": f"{self.BASE_URL}/index/pay/payment?trade_no={orderid}&agree=on",
             "Accept-Encoding": "gzip, deflate, br, zstd",
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Priority": "u=0, i",
@@ -755,68 +752,145 @@ class MengyanService(BaseService):
         resp = self.session.get(
             full_url,
             headers=headers,
-            timeout=15,
-            allow_redirects=False
+            timeout=15
         )
+        resp.raise_for_status()
 
-        # 处理 302 重定向
-        if resp.status_code in (302, 301):
-            location = resp.headers.get("Location")
-            if not location:
-                raise Exception("步骤3: 响应头中无 Location 字段")
-            self.log(f"步骤3 重定向地址: {location}")
-            return location
+        # 处理转义的HTML
+        import html as html_module
+        raw_text = resp.text
         
-        if resp.status_code != 200:
-            raise Exception(f"步骤3请求失败: HTTP {resp.status_code}")
-
-        # 如果不是重定向，尝试直接解析表单（兼容猴发卡）
-        html = unescape_html(resp.text)
-        soup = BeautifulSoup(html, "html.parser")
-        form = soup.find("form", {"id": "alipaysubmit"})
+        # 检查是否被引号包裹（JSON字符串格式）
+        if raw_text.startswith('"') and raw_text.endswith('"'):
+            try:
+                import json
+                raw_text = json.loads(resp.text)
+            except:
+                pass
+        
+        html_content = html_module.unescape(raw_text)
+        html_content = html_content.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
+        
+        soup = BeautifulSoup(html_content, "html.parser")
+        
+        # 查找 form[name="form1"]
+        form = soup.find("form", {"name": "form1"})
         if not form:
-            raise Exception(f"步骤3: 未找到支付宝表单。\n响应体: {resp.text[:200]}")
+            raise Exception(f"步骤3: 未找到form1表单。\n响应体: {resp.text[:300]}")
+        
+        # 提取表单参数
+        pay_params = {}
+        for inp in form.find_all("input", {"type": "hidden"}):
+            name = inp.get("name")
+            value = inp.get("value")
+            if name and value is not None:
+                pay_params[name] = value
+        
+        if not pay_params:
+            raise Exception("步骤3: 表单参数为空")
+        
+        # 验证sign参数
+        if "sign" not in pay_params:
+            raise Exception("步骤3: 表单中无sign参数")
+        
+        self.log(f"步骤3: 获取支付表单成功, sign={pay_params.get('sign', '')[:20]}...")
+        return pay_params
 
-        self.log("步骤3: 获取支付宝表单成功")
-        return {"direct_form": True}
-
-    def _step35_get_alipay_form_from_redirect(self, redirect_url: str, cookie: str) -> dict:
-        """步骤3.5: 请求重定向地址获取支付宝表单（四云发卡专用）"""
-        self.log(f"步骤3.5 URL: {redirect_url}")
+    def _step4_submit_gateway(self, pay_params: dict) -> str:
+        """步骤4: 提交到第三方网关，获取支付ID（梦言云卡）"""
+        # 梦言云卡使用第三方网关 www.xkku.cn
+        gateway_url = "https://www.xkku.cn/submit.php"
         
         # 完整浏览器请求头
         headers = {
-            "sec-ch-ua": '"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"',
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cache-Control": "max-age=0",
+            "sec-ch-ua": '"Google Chrome";v="147", "Not-A.Brand";v="8", "Chromium";v="147"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "Origin": self.BASE_URL,
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Sec-Fetch-Site": "cross-site",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Dest": "document",
+            "Referer": f"{self.BASE_URL}/",
+            "Accept-Encoding": "gzip, deflate, br, zstd",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "Priority": "u=0, i",
+        }
+        
+        self.log(f"步骤4请求体: money={pay_params.get('money', '')}, out_trade_no={pay_params.get('out_trade_no', '')}")
+        
+        resp = self.session.post(
+            gateway_url,
+            data=pay_params,
+            headers=headers,
+            timeout=15
+        )
+        resp.raise_for_status()
+        
+        # 处理HTML转义
+        import html as html_module
+        html_content = html_module.unescape(resp.text)
+        html_content = html_content.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
+        
+        # 从JavaScript中提取支付ID
+        # 例如: window.location.replace('/pay/qrcodepc/2026041618013048086/');
+        import re
+        match = re.search(r"/pay/qrcodepc/(\d+)/", html_content)
+        if not match:
+            # 尝试其他模式
+            match = re.search(r"/pay/submitpc/(\d+)/", html_content)
+        
+        if not match:
+            raise Exception(f"步骤4: 未找到支付ID。\n响应体: {resp.text[:500]}")
+        
+        pay_id = match.group(1)
+        self.log(f"步骤4: 提交网关成功, pay_id={pay_id}")
+        return pay_id
+
+    def _step5_get_alipay_form(self, pay_id: str) -> dict:
+        """步骤5: 获取支付宝表单（梦言云卡）"""
+        # 请求URL
+        full_url = f"https://www.xkku.cn/pay/submitpc/{pay_id}/"
+        
+        # 完整浏览器请求头
+        headers = {
+            "sec-ch-ua": '"Google Chrome";v="147", "Not-A.Brand";v="8", "Chromium";v="147"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
             "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             "Sec-Fetch-Site": "same-origin",
             "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-User": "?1",
-            "Sec-Fetch-Dest": "document",
-            "Referer": f"{self.BASE_URL}/index/pay/payment",
+            "Sec-Fetch-Dest": "iframe",
+            "Referer": f"https://www.xkku.cn/pay/qrcodepc/{pay_id}/",
             "Accept-Encoding": "gzip, deflate, br, zstd",
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Priority": "u=0, i",
         }
         
         resp = self.session.get(
-            redirect_url,
+            full_url,
             headers=headers,
             timeout=15
         )
+        resp.raise_for_status()
         
-        if resp.status_code != 200:
-            raise Exception(f"步骤3.5请求失败: HTTP {resp.status_code}")
+        # 处理HTML转义
+        import html as html_module
+        html_content = html_module.unescape(resp.text)
+        html_content = html_content.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
         
-        # 解析 HTML，查找支付宝表单 form#alipaysubmit
-        html = unescape_html(resp.text)
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(html_content, "html.parser")
+        
+        # 查找支付宝表单 form#alipaysubmit
         form = soup.find("form", {"id": "alipaysubmit"})
         if not form:
-            raise Exception(f"步骤3.5: 未找到支付宝表单。\n响应体: {resp.text[:200]}")
+            raise Exception(f"步骤5: 未找到支付宝表单。\n响应体: {resp.text[:300]}")
         
         # 提取表单参数
         alipay_params = {}
@@ -827,21 +901,21 @@ class MengyanService(BaseService):
                 alipay_params[name] = value
         
         if not alipay_params:
-            raise Exception("步骤3.5: 支付宝表单参数为空")
+            raise Exception("步骤5: 支付宝表单参数为空")
         
-        self.log("步骤3.5: 获取支付宝表单成功")
+        self.log(f"步骤5: 获取支付宝表单成功, method={alipay_params.get('method', '')}")
         return alipay_params
 
-    def _step4_request_alipay_gateway(self, alipay_params: dict) -> Tuple[str, dict]:
-        """步骤4: 请求支付宝网关，获取第一次重定向地址"""
-        gateway_url = "https://openapi.alipay.com/gateway.do?charset=utf-8"
+    def _step6_request_alipay_gateway(self, alipay_params: dict) -> Tuple[str, dict]:
+        """步骤6: 请求支付宝网关，获取第一次重定向地址（梦言云卡）"""
+        gateway_url = "https://openapi.alipay.com/gateway.do?charset=UTF-8"
 
         # 按真实请求顺序重组参数（使用OrderedDict）
         ordered_params = OrderedDict()
         param_order = [
-            "app_id", "method", "format", "return_url", "charset",
-            "sign_type", "timestamp", "version", "notify_url",
-            "biz_content", "sign",
+            "app_id", "version", "alipay_sdk", "charset", "format",
+            "sign_type", "method", "timestamp", "notify_url",
+            "return_url", "biz_content", "sign",
         ]
         for key in param_order:
             if key in alipay_params:
@@ -852,12 +926,9 @@ class MengyanService(BaseService):
             if key not in ordered_params:
                 ordered_params[key] = val
 
-        # 固定参数覆盖
-        ordered_params["method"] = "alipay.trade.wap.pay"
-        ordered_params["charset"] = "utf-8"
-
-        # 四云特有的notify_url
-        ordered_params["notify_url"] = "http://not.pay.4yun.4yuns.com/pay/Alipay_Wap/notify"
+        # 固定参数覆盖（梦言云卡使用page.pay而不是wap.pay）
+        ordered_params["method"] = "alipay.trade.page.pay"
+        ordered_params["charset"] = "UTF-8"
 
         # 修改 biz_content 中的 product_code
         if "biz_content" in ordered_params:
@@ -865,7 +936,7 @@ class MengyanService(BaseService):
                 biz = json.loads(ordered_params["biz_content"])
             except (json.JSONDecodeError, TypeError):
                 biz = {}
-            biz["product_code"] = "QUICK_WAP_WAY"
+            biz["product_code"] = "FAST_INSTANT_TRADE_PAY"
             ordered_params["biz_content"] = json.dumps(biz, separators=(",", ":"), ensure_ascii=True)
 
         # URL 编码参数
@@ -875,23 +946,23 @@ class MengyanService(BaseService):
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Cache-Control": "max-age=0",
-            "sec-ch-ua": '"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"',
+            "sec-ch-ua": '"Google Chrome";v="147", "Not-A.Brand";v="8", "Chromium";v="147"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
-            "Origin": self.BASE_URL,
+            "Origin": "https://www.xkku.cn",
             "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
             "Sec-Fetch-Site": "cross-site",
             "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Dest": "document",
-            "Referer": f"{self.BASE_URL}/",
+            "Sec-Fetch-Dest": "iframe",
+            "Referer": "https://www.xkku.cn/",
             "Accept-Encoding": "gzip, deflate, br, zstd",
             "Accept-Language": "zh-CN,zh;q=0.9",
             "Priority": "u=0, i",
         }
 
-        self.log(f"步骤4请求体: {encoded_data[:100]}...")
+        self.log(f"步骤6请求体: {encoded_data[:100]}...")
 
         resp = self.session.post(
             gateway_url,
@@ -903,20 +974,20 @@ class MengyanService(BaseService):
 
         if resp.status_code not in (302, 301):
             raise Exception(
-                f"步骤4: 预期302重定向，实际HTTP {resp.status_code}\n"
+                f"步骤6: 预期302重定向，实际HTTP {resp.status_code}\n"
                 f"响应摘要: {resp.text[:200]}"
             )
 
         location = resp.headers.get("Location")
         if not location:
-            raise Exception("步骤4: 响应头中无Location字段")
+            raise Exception("步骤6: 响应头中无Location字段")
 
         alipay_cookies = dict(resp.cookies)
-        self.log("步骤4: 请求支付宝网关成功")
+        self.log("步骤6: 请求支付宝网关成功")
         return location, alipay_cookies
 
-    def _step5_follow_redirect(self, location: str, alipay_cookies: dict) -> str:
-        """步骤5: 跟随重定向"""
+    def _step7_follow_redirect(self, location: str, alipay_cookies: dict) -> str:
+        """步骤7: 跟随重定向（梦言云卡）"""
         all_cookies = {}
         for k, v in self.session.cookies.items():
             all_cookies[k] = v
@@ -934,14 +1005,14 @@ class MengyanService(BaseService):
         else:
             final_url = resp.url
 
-        self.log("步骤5: 跟随重定向成功")
+        self.log("步骤7: 跟随重定向成功")
         return final_url
 
-    def _step6_generate_qrcode(self, url: str) -> str:
-        """步骤6: 生成二维码"""
+    def _step8_generate_qrcode(self, url: str) -> str:
+        """步骤8: 生成二维码"""
         from app.utils.qr_generator import generate_qr_base64
         qr_base64 = generate_qr_base64(url)
-        self.log("步骤6: 生成二维码成功")
+        self.log("步骤8: 生成二维码成功")
         return qr_base64
 
     def query_orders(
