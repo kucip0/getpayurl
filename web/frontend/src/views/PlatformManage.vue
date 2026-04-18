@@ -65,6 +65,33 @@
               />
             </el-form-item>
 
+            <!-- 验证码（仅新发卡平台需要） -->
+            <el-form-item v-if="currentPlatform === 'xinfaka'" label="验证码">
+              <div style="display: flex; gap: 10px; align-items: center">
+                <el-input 
+                  v-model="form.verify_code" 
+                  placeholder="请输入验证码" 
+                  style="flex: 1"
+                  maxlength="4"
+                />
+                <el-button 
+                  @click="handleGetCaptcha" 
+                  :loading="captchaLoading"
+                  style="flex-shrink: 0"
+                >
+                  获取验证码
+                </el-button>
+                <img 
+                  v-if="captchaImage" 
+                  :src="captchaImage" 
+                  alt="验证码"
+                  style="height: 40px; cursor: pointer; border-radius: 4px"
+                  @click="handleGetCaptcha"
+                  title="点击刷新验证码"
+                />
+              </div>
+            </el-form-item>
+
             <el-form-item>
               <el-button
                 type="primary"
@@ -146,7 +173,7 @@ import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Delete } from '@element-plus/icons-vue'
 import { usePlatformStore } from '../stores/platform'
-import { getBalance } from '../api/platforms'
+import { getBalance, getCaptcha } from '../api/platforms'
 import PlatformSelector from '../components/PlatformSelector.vue'
 
 const platformStore = usePlatformStore()
@@ -154,10 +181,13 @@ const currentPlatform = ref('')
 const loginLoading = ref(false)
 const saveLoading = ref(false)
 const balanceLoading = ref(false)
+const captchaLoading = ref(false)
+const captchaImage = ref('')
 
 const form = ref({
   shop_username: '',
   shop_password: '',
+  verify_code: '',
   product_urls: []
 })
 
@@ -176,7 +206,11 @@ const handlePlatformChange = async (platformCode) => {
 
   form.value.shop_username = platformStore.config.shop_username || ''
   form.value.shop_password = ''
+  form.value.verify_code = ''
   form.value.product_urls = [...platformStore.config.product_urls]
+  
+  // 清空验证码
+  captchaImage.value = ''
   
   // 根据配置更新登录状态显示
   if (platformStore.config.has_login) {
@@ -198,16 +232,26 @@ const handleShopLogin = async () => {
     return
   }
 
+  // 新发卡平台需要验证码
+  if (currentPlatform.value === 'xinfaka' && !form.value.verify_code) {
+    ElMessage.warning('请输入验证码')
+    return
+  }
+
   loginLoading.value = true
   try {
     const result = await platformStore.shopLogin(
       currentPlatform.value,
       form.value.shop_username,
-      form.value.shop_password
+      form.value.shop_password,
+      form.value.verify_code
     )
 
     if (result.success) {
       ElMessage.success(result.message)
+      // 清空验证码
+      form.value.verify_code = ''
+      captchaImage.value = ''
     } else {
       ElMessage.error(result.message)
     }
@@ -215,6 +259,45 @@ const handleShopLogin = async () => {
     ElMessage.error('登录失败')
   } finally {
     loginLoading.value = false
+  }
+}
+
+const handleGetCaptcha = async () => {
+  if (!currentPlatform.value) {
+    ElMessage.warning('请先选择平台')
+    return
+  }
+
+  if (currentPlatform.value !== 'xinfaka') {
+    ElMessage.warning('仅新发卡平台需要验证码')
+    return
+  }
+
+  captchaLoading.value = true
+  try {
+    const response = await getCaptcha(currentPlatform.value)
+    
+    if (response.data.success) {
+      // 将 hex 转换为 base64 图片
+      const hex = response.data.captcha_base64
+      const bytes = new Uint8Array(hex.length / 2)
+      for (let i = 0; i < hex.length; i += 2) {
+        bytes[i / 2] = parseInt(hex.substr(i, 2), 16)
+      }
+      const blob = new Blob([bytes], { type: 'image/png' })
+      captchaImage.value = URL.createObjectURL(blob)
+      
+      // 清空验证码输入
+      form.value.verify_code = ''
+      
+      ElMessage.success('验证码获取成功')
+    } else {
+      ElMessage.error('获取验证码失败')
+    }
+  } catch (error) {
+    ElMessage.error(error.response?.data?.detail || '获取验证码失败')
+  } finally {
+    captchaLoading.value = false
   }
 }
 

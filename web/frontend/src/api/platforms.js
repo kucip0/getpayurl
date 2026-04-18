@@ -4,11 +4,16 @@ export const getPlatforms = () => {
   return api.get('/platforms')
 }
 
-export const shopLogin = (platformCode, username, password) => {
+export const shopLogin = (platformCode, username, password, verifyCode = '') => {
   return api.post(`/platforms/${platformCode}/login`, {
     username,
     password,
+    verify_code: verifyCode,
   })
+}
+
+export const getCaptcha = (platformCode) => {
+  return api.get(`/platforms/${platformCode}/captcha`)
 }
 
 export const getPrice = (platformCode, productUrl) => {

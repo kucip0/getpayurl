@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -21,6 +21,7 @@ class BalanceResponse(BaseModel):
 from app.services.houfaka_service import HoufakaService
 from app.services.siyun_service import SiyunService
 from app.services.mengyan_service import MengyanService
+from app.services.xinfaka_service import XinfakaService
 
 router = APIRouter(prefix="/api/platforms", tags=["平台"])
 
@@ -28,6 +29,7 @@ PLATFORMS = [
     PlatformInfo(code="houfaka", name="猴发卡", host="https://www.houfaka.com"),
     PlatformInfo(code="siyun", name="四云发卡", host="https://shop.4yuns.com"),
     PlatformInfo(code="mengyan", name="梦言云卡", host="https://www.np4.cn"),
+    PlatformInfo(code="xinfaka", name="新发卡", host="https://www.xinfaka.com"),
 ]
 
 
@@ -39,6 +41,8 @@ def get_service(platform_code: str, user_id: int, db: Session):
         return SiyunService(user_id, db)
     elif platform_code == "mengyan":
         return MengyanService(user_id, db)
+    elif platform_code == "xinfaka":
+        return XinfakaService(user_id, db)
     else:
         raise HTTPException(status_code=404, detail="平台不存在")
 
@@ -80,7 +84,21 @@ def shop_login(
     db.commit()
 
     try:
-        result = service.login(login_data.username, login_data.password)
+        # 新发卡平台需要验证码，使用特殊流程
+        if platform_code == "xinfaka":
+            verify_code = getattr(login_data, 'verify_code', '')
+            if not verify_code:
+                return ShopLoginResponse(
+                    success=False,
+                    message="新发卡平台需要验证码，请先获取验证码"
+                )
+            
+            # 使用保持 session 的登录方法
+            result = service.login_with_captcha_session(login_data.username, login_data.password, verify_code)
+        else:
+            # 其他平台正常登录
+            result = service.login(login_data.username, login_data.password)
+        
         service.save_cookies()
         return ShopLoginResponse(
             success=True,
@@ -110,3 +128,32 @@ def get_balance(
     result = service.get_balance()
     
     return BalanceResponse(**result)
+
+
+@router.get("/{platform_code}/captcha")
+def get_captcha(
+    platform_code: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """获取验证码图片和CSRF Token（仅新发卡平台需要）"""
+    from fastapi.responses import JSONResponse
+    
+    service = get_service(platform_code, current_user.id, db)
+    
+    # 检查服务是否有获取验证码方法
+    if not hasattr(service, 'get_captcha_image'):
+        raise HTTPException(status_code=400, detail=f"平台 {platform_code} 不需要验证码")
+    
+    try:
+        # 获取验证码图片
+        captcha_data = service.get_captcha_image()
+        
+        # 返回图片和 CSRF Token
+        return JSONResponse(content={
+            "success": True,
+            "captcha_base64": captcha_data.hex(),  # 转换为hex传输
+            "csrf_token": getattr(service, 'captcha_csrf_token', '')
+        })
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

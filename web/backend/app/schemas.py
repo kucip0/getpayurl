@@ -39,6 +39,7 @@ class PlatformListResponse(BaseModel):
 class ShopLoginRequest(BaseModel):
     username: str
     password: str
+    verify_code: Optional[str] = ""  # 验证码（可选）
 
 
 class ShopLoginResponse(BaseModel):
