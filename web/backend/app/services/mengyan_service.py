@@ -46,11 +46,16 @@ class MengyanService(BaseService):
     FINGERPRINT_ENABLED = True
 
     def __init__(self, user_id: int, db):
+        # 在父类初始化前设置NO_PROXY环境变量
+        import os
+        os.environ['NO_PROXY'] = '*'
+        os.environ['no_proxy'] = '*'
+        
         super().__init__(user_id, db)
         # 梦言云卡需要特殊的SSL配置（第三方网关www.xkku.cn需要宽松SSL）
         self.session.mount('https://', MengyanSSLAdapter())
-        # 禁用代理，避免系统代理干扰（198.18.x.x 假IP问题）
-        self.session.trust_env = False
+        # 明确设置session不使用代理
+        self.session.proxies = {}
 
     def login(self, username: str, password: str) -> dict:
         """登录梦言云卡店铺"""
