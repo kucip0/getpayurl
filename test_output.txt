@@ -1,0 +1,66 @@
+C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'www.xinfaka.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'www.xinfaka.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'www.xinfaka.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'www.xinfaka.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'www.yiyipay.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+C:\Users\Administrator\AppData\Local\Programs\Python\Python311\Lib\site-packages\urllib3\connectionpool.py:1097: InsecureRequestWarning: Unverified HTTPS request is being made to host 'openapi.alipay.com'. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.io/en/latest/advanced-usage.html#tls-warnings
+  warnings.warn(
+步骤1: 访问商品页面...
+CSRF Token: ttHQEu2qF5WUzuCuaorz...
+商品ID: 1100, shopId: MdXlhKEtaiJLGsPxDr/8...
+
+步骤2: 创建订单...
+订单创建响应: {'code': 0, 'msg': '操作成功', 'data': {'url': 'https://www.xinfaka.com/paymentconfirm/XFK260419173428759286'}, 'success': True}
+订单号: XFK260419173428759286
+
+步骤3: 访问支付页面...
+/payment 状态码: 302
+重定向1: https://www.xinfaka.com/disburse/XFK260419173428759286
+/disburse 状态码: 302
+重定向2: https://www.yiyipay.com/payment/YY260419173429999940
+yiypipay 状态码: 200
+
+找到支付宝表单!
+提取到 13 个参数:
+  alipay_public_key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArCIsZt...
+  merchant_private_key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQ...
+  app_id: 2021006112648674
+  method: alipay.trade.wap.pay
+  format: JSON
+  charset: utf8
+  sign_type: RSA2
+  timestamp: 2026-04-19 17:34:29
+  version: 1.0
+  return_url: https://www.yiyipay.com/store/pay/return/YY2604191...
+  notify_url: https://www.yiyipay.com/store/pay/notify/AlipayWap...
+  biz_content: {"out_trade_no":"YY260419173429999940","product_co...
+  sign: JGLEaEQ+Z93BK6j6W4Dwwc94a+k6GjRVnaYz/Q4SBb2JPMVCVj...
+
+步骤4: 提交到支付宝网关...
+
+biz_content 解析: {'out_trade_no': 'YY260419173429999940', 'product_code': 'QUICK_WAP_WAY', 'total_amount': '1.00', 'subject': 'XFK260419173428759286'}
+修改后 biz_content: {"out_trade_no":"YY260419173429999940","product_code":"QUICK_WAP_WAY","total_amount":"1.00","subject":"XFK260419173428759286"}
+
+编码后数据长度: 3073
+
+支付宝网关响应:
+  状态码: 200
+  Headers: {'Server': 'Spanner', 'Date': 'Sun, 19 Apr 2026 09:34:30 GMT', 'Content-Type': 'text/html;charset=GBK', 'Content-Length': '5184', 'Connection': 'keep-alive', 'Set-Cookie': 'JSESSIONID=0A5D6590C36F4779249FE68D272D93DA; Path=/; HttpOnly, zone=GZ00G; Domain=.alipay.com; Path=/, ALIPAYJSESSIONID=GZ00XRwsnQMKfwfSjAOP1tvSP5jtIEsuperapiGZ00; Domain=.alipay.com; Path=/, ctoken=UdPG2BXgMcD87FjL; Domain=.alipay.com; Path=/, zone=GZ00G; Domain=.alipay.com; Path=/, spanner=QYWluecDo0qTW1TifANacKd/CGgSrarwXt2T4qEYgj0=;path=/;secure;', 'Vary': 'Origin', 'Access-Control-Allow-Origin': 'https://www.yiyipay.com', 'Access-Control-Allow-Credentials': 'true', 'Content-Language': 'zh-CN', 'Content-Encoding': 'gzip', 'Via': 'spanner-internet-cz20m-34091.ea179[200]', 'Origin-Agent-Cluster': '?0'}
+  响应内容: <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>支付宝 - 网上支付 安全快速！</title>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<meta http-equiv="x-ua-compatible" content="ie=7" />
+<meta name="description" content="中国最大的第三方电子支付服务提供商" />
+<meta name="keywords" content="网上购物/网上支付/安全支付/安全购物/购物，安全/支付/支付宝,在线/付款,收款/网上,贸易/网上贸易" />
+
+
+<link rel="icon
+
+未收到重定向响应,可能是参数错误或签名验证失败

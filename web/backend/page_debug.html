@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="zh-cn" style="height: 100%;">
+<head>
+    <meta charset="utf-8" />
+    <title>小妮子的店 - 寄售平台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta content="发卡网、发卡网官网、自动发卡网、发卡网平台、自动发卡网平台、在线发卡网、自助发卡网、自动发卡平台、虚拟发卡平台" name="description"  />
+    <meta name="keywords" content="新发卡,发卡网,自动发卡网,发卡网平台,自动发卡,自动发卡平台,正规自动发卡平台" />
+    <meta name="csrf-token" content="2GyKKLjqY420z6I51HoHKzLZbI26nyZyyeizYZrK">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="https://qiniu.liyan666.com/e85b80041bed739c6e60441ba3c67db0.png">
+    <link href="/static/plugins/layui/css/layui.css?v=1.2.5"  rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/addons/default_payment_template/css/shop_mobile.css?v=1.2.5" rel="stylesheet">
+    <script src="/static/common/js/jquery.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body class="xsh-body" id="LAY_home" style="   background-color: #f5f5f5;height: 100%;">
+
+<div class="top" style="">
+
+            <div class="right toLogin" ><span style="color: rgb(255, 84, 51);"> 登录/注册</span>, 查看购买订单</div>
+    </div>
+<div class="sinfo" style=" top: 18%;position: fixed;right:0; z-index: 999;">
+    <ul class="link" style="font-size: 12px;">
+        <li style="background-color: #1e9fff">
+            <a href="/orderquery" target="_blank" style="color: #ffffff">查询订单</a>
+        </li>
+        <li style="background-color: #f16145;">
+            <a href="/complaint" target="_blank" style="color: #ffffff">订单投诉</a>
+        </li>
+        <li style="background-color: #a233c6;">
+            <a href="javascript:void (0);" style="color: #ffffff"  id="protocol" lay-on="test-count-down">购买协议</a>
+        </li>
+        <li style="background-color: #2f363c;">
+            <a href="javascript:void (0);" style="color: #ffffff"  id="notice">商家公告</a>
+        </li>
+
+
+                    <li style="background-color: #009688;">
+                <a style="color:#fff;cursor:pointer;" onclick="(q='33156982',i=document.createElement('textarea'),i.value=q,i.style.cssText='opacity:0;position:fixed;',document.body.append(i),i.select(),document.execCommand('copy'),i.remove(),t=document.createElement('div'),t.innerHTML='QQ '+q+' 已复制',t.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 32px;background:#00e676;color:white;border-radius:8px;font-size:20px;box-shadow:0 4px 20px rgba(0,230,118,0.3);z-index:9999;',document.body.append(t),setTimeout(()=>t.remove(),5e3))">客服QQ</a>
+            </li>
+
+                    </ul>
+</div>
+<!---->
+
+<div class="banner xsh-width" style=" height:60px;">
+    <img src="/addons/default_payment_template/images/logo.png" class="xsh-logo" style="height: 75px;margin-top: -21px;float: left;">
+    <div class="seller_content" >
+        <p class="layui-badge  layui-bg-black seller_name" style="">
+            小妮子的店
+        </p>
+        <div class="clear"></div>
+            </div>
+
+    <div class="clear"></div>
+</div>
+
+<input type="hidden" id="shopId" value="MdXlhKEtaiJLGsPxDr/8mw==">
+<input type="hidden" id="member_id" value="0">
+<input type="hidden" id="umoney" value="0">
+<input type="hidden" id="vip_discount" value="">
+<input type="hidden" id="combination_pay_time" value="5">
+<input type="hidden" id="dmoney" value="0">
+<input type="hidden" id="is_login" value="0">
+<input type="hidden" id="cateId" value="0">
+<input type="hidden" id="agentId" value="0">
+<input type="hidden" id="GoodsId" value="1100">
+<input type="hidden" id="isDan" value="1">
+<input type="hidden" id="smsPrice" value="0.50">
+<input type="hidden" id="take_card_type" value="0">
+<input type="hidden" name="is_xh" id="is_xh"  value="0">
+<input type="hidden" name="start_nums" id="start_nums" value="">
+<input type="hidden" name="kami_id" id="kami_id" value="">
+<input type="hidden" name="goodsPrice" id="goodsPrice" value="0">
+<input type="hidden" name="totalPrice" id="totalPrice" value="0">
+<input type="hidden" name="dkPrice" id="dkPrice" value="0">
+<input type="number" hidden='hidden' name="sms_price" id="sms_price" value="0.50">
+<input type="hidden" name="sms_payer" id="sms_payer" value="1">
+<input type="hidden" name="xhPrice" id="xhPrice" value="0">
+<input type="hidden" name="is_yh" id="is_yh" value="0">
+<input type="hidden" name="yh_price" id="yh_price" value="0">
+<input type="hidden" name="coupon_type" id="coupon_type" value="1">
+<input type="hidden" name="coupon_denomination" id="coupon_denomination" value="0">
+
+<input type="hidden" name="limits_min" id="limits_min" value="1">
+<input type="hidden" name="limits_max" id="limits_max" value="999">
+<input type="hidden" name="cards_stock_count" id="cards_stock_count" value="0">
+<input type="hidden" name="wholesale_discount" id="wholesale_discount" value="0">
+<input type="hidden" name="reach" id="reach" value="0">
+<input type="hidden" name="songNum" id="songNum" value="0">
+<input type="hidden" name="is_sms" id="is_sms" value="0">
+<input type="hidden" name="balance_deduction" id="balance_deduction" value="0">
+<input type="hidden" name="is_dk" id="is_dk" value="0">
+<input type="hidden" name="payId" id="payId" value="0">
+<input type="hidden" name="payType" id="payType" value="1">
+<input type="hidden" name="fee_payer" id="fee_payer" value="1">
+<input type="hidden" name="rate_fee" id="rate_fee" value="0">
+<input type="hidden" name="pay_first" id="pay_first" value="0">
+<input type="hidden" name="isMobile" id="isMobile"  value="1">
+<input type="hidden" name="is_buy_protocol" id="is_buy_protocol"  value="0">
+<input type="hidden" name="is_notice" id="is_notice"  value="">
+<input type="hidden" name="transaction_min_fee" id="transaction_min_fee"  value="0">
+<input type="hidden"  id="vip_goods"  value="0">
+<input type="hidden"  id="vipInfo"  value="">
+<input type="hidden"  id="shop_notice"  value="">
+<input type="hidden"  id="buy_protocol"  value="&lt;p&gt;&lt;span style=&quot;color:#1abc9c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;1：扫码付款后没有出卡请联系商户补单&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span style=&quot;color:#e74c3c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;2：发现违法商品可向网站客服进行举报，&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;span style=&quot;color:#e74c3c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;举报成立者将获得该链接的全部卡密&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span style=&quot;color:#f39c12;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;&lt;img lay-on=&quot;photots&quot; src=&quot;https://qiniu.8u9.top/a608817744f13635/ceb96f19e3ceb325.jpg&quot; style=&quot;max-width: 100%; border-width: 0px; border-style: solid; width: 300px; height: 400px;&quot; title=&quot;image&quot; /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;">
+<input type="hidden"  id="auto_notice"  value="0">
+<input type="hidden"  id="auto_protocol"  value="0">
+<input type="hidden"  id="protocol_second"  value="0">
+<input type="hidden"  id="visit_password"  value="">
+<input type="hidden"  id="added_services"  value="3"><div class="content xsh-width" style=" ">
+    <div style="padding:10px;">
+        <div >
+            <div  style="float: left;line-height: 30px;">
+                <i class="layui-icon layui-icon-cart-simple" style="font-size: 14px;color: #1A8279;font-weight: 800;">
+                    <span style=" font-weight: 600;color: #0C0C0C;margin-left: 5px;">所有商品</span>
+                </i>
+            </div>
+            <span class="goodCount" style="margin-left: 10px;color: #515151; line-height: 35px;font-size: 12px;">在售商品<span style="color: red;" id="goodsCount">0</span>个</span>
+            
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="cat" style="padding: 0 10px;">
+        <ul >
+            
+        </ul>
+    </div>
+
+    <div class="goods clear">
+        <ul class="flow-default" id="LAY_demo1" style="">
+
+        </ul>
+    </div>
+
+
+
+    <div class="desc clear" style="display: none;margin-left: 10px;">
+
+        <i style="font-weight: 700;color: #555;font-size: 14px;" class="layui-icon layui-icon-about"> 商品说明:</i>
+
+        <p style="margin-top: 5px;" id="goodsContent" class="goodsContent"></p>
+    </div>
+    <!--选号开始-->
+    <div id="jiaose_box" class="pick_box" style="display: none;padding: 5px ;">
+        <div class="jsTitle" style="margin-top: 5px;">
+
+        </div>
+        <div class="jhBtn" id='selectAccount' style="margin-top: 10px;font-size: 12px;line-height: 28px;">
+            <span class=" layui-bg-green left-page"  id="getS" style="cursor: pointer;background-color: #009688!important;padding: 5px;border-radius: 5px;">上一组</span>
+            <span class=" layui-bg-green right-page"  id="getE" style="cursor: pointer;background-color: #009688!important;padding: 5px;border-radius: 5px;">下一组</span>
+            <span class=" layui-bg-green pick-desc"   style="background-color: #009688!important;padding:  5px;border-radius: 5px;"> 自选角色名字+<span id="xh_price">0.00</span>元 (选中自动复制，可到WeGame查看战绩)</span>
+
+
+
+            <div style="clear:both;"></div>
+             <div style="margin-top:5px;">
+                <input placeholder="请输入想要查询的昵称或其它信息"  id="pick_account" style="color:#555;background: 0 0;border: 1px solid #009688;height: 19px;padding: 2px 5px;width: 200px;">
+                <a class="layui-btn layui-btn-sm  " id="pick_search"  style="background: #009688;height: 25px;line-height: 25px;margin-top: -2px;">立即搜索</a>
+            </div>
+           
+        </div>
+        <div class="jsTab" id="account_list" style="display: none;">
+
+            <div style="clear:both;"></div>
+        </div>
+
+        <div class="jsDetail" id="pick_info" style="margin-top:0;">
+
+        </div>
+
+
+        <div class="h_zdy"></div>
+    </div>
+</div>
+<div class="buyClass layui-form"  style="">
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+        <legend  class="goodsName">尚未选择商品</legend>
+    </fieldset>
+    <div class="payInfo-inner">
+        <div    style="">
+            <div  class="jsq"  style="height: 30px;line-height: 30px;">
+                <div style="margin-left: 20px; ">
+                    <span  style="color: #999999;margin-right: 10px;font-size: 12px;">数量</span>
+
+                    <i id="jian" style="font-size: 13px;font-weight: 800;margin-right: 5px;cursor: pointer;" class="layui-icon layui-icon-subtraction"></i>
+                    <input  type="text" name="quantity" id="quantity" maxlength="9" value="1"  onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"  class="buyNum">
+                    <i id='jia' style="font-size: 13px;font-weight: 800;margin-left: 5px;cursor: pointer;" class="layui-icon layui-icon-addition"></i>
+                    <span class="stock_str"  style="font-size: 12px;font-weight: 400;color: #555; margin-left: 16px;white-space: nowrap;">  <span id="kucun" style="color: #f2270b">0</span> </span>
+                </div>
+            </div>
+
+        </div>
+        <div  class="proName" style="">
+            <p style="font-size:12px;  margin-left: 20px;color: #999999;height: 30px;line-height: 30px;"> 购买信息：<span  class="goodsInfo">未选中商品  </span></p>
+        </div>
+
+    </div>
+</div>
+<div class="PayContent layui-form xsh-width"  style="">
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;  display:none; ">
+        <legend>增值服务</legend>
+    </fieldset>
+    <div class="layui-form-item" id="activity" style="display:none;">
+        <label class="layui-form-label">优惠活动:</label>
+        <div class="layui-input-block" style="line-height: 38px;">
+            <span class="layui-badge layui-bg-purple" id="discount_tips" style="font-size: 12px;cursor: pointer;">买多优惠</span>
+            <span class="layui-badge layui-bg-red"    id="reach_tips" style="font-size: 12px;cursor: pointer;">买多赠送</span>
+        </div>
+        <p id="discount_tips_str" style="display: none;"></p>
+        <p id="reach_tips_str" style="display: none;"></p>
+    </div>
+    <div class="layui-form-item" style="  display:none; ">
+        <label class="layui-form-label">接收卡密:</label>
+        <div class="layui-input-block">
+             <input type="checkbox" id="email_notice" lay-filter="email_notice" title="邮箱" lay-skin="primary" value="1"  >
+             <input type="checkbox" id="sms_notice" lay-filter="sms_notice" title="短信" lay-skin="primary"  value="1"  >
+        </div>
+    </div>
+    <div class="layui-form-item  additional " id="receive_div" style="display:none;">
+        <div class="layui-inline " style="margin-top: 5px;">
+            <label class="layui-form-label required" id="notice_title"></label>
+            <div class="layui-input-inline" style="width: 500px;">
+                <input type="text"  data-key="1" id="sms_receive" autocomplete="off" placeholder="请输入相应接收卡密方式" class="layui-input" style="border-radius: 5px;color: #555;">
+                <tip id="sms_tip" style="margin-left: 10px;color: #515151;line-height: 35px;font-size: 12px;">使用该服务,会收取<span style="color: red;" class="smsPrice">0.50</span>元费用</tip>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item  additional coupon" style="display: none;">
+
+        <div class="layui-inline " style="margin-top: 5px;" >
+            <label class="layui-form-label">优惠券码:</label>
+            <div class="layui-input-inline" style="width: 500px;">
+                <input type="text" name="coupon" id="coupon" autocomplete="off" placeholder="请输入你的优惠券" class="layui-input" style="border-radius: 5px;color: #555;">
+            </div>
+        </div>
+    </div>
+    <div id="contact_html">
+
+    </div>
+    <div class="layui-form-item  additional"  id="card_password" style="display: none;">
+
+        <div class="layui-inline" style="margin-top: 5px;">
+            <label class="layui-form-label">取卡密码：</label>
+            <div class="layui-input-inline" style="width: 500px;">
+                <input type="text" name="take_card_password" id="take_card_password"  autocomplete="off" placeholder="输入您的取卡密码(请自行定义)" class="layui-input" style="border-radius: 5px;color: #555;">
+            </div>
+        </div>
+    </div>
+
+
+    <fieldset class="layui-elem-field layui-field-title" style="">
+
+        <legend style="margin-bottom: 10px;">支付方式</legend>
+        <ul  style="width:90%;    margin-left: 5%;min-height: 40px;" class="payType clear">
+                            <li data-id="983" data-type="2" data-ident="demo" data-rate="0.06" data-fee="0" style="float: left;cursor: pointer;margin-left: 2%; border: 1px solid #ffffff; width: 30%;">
+                    <img style="height:30px;" src="/static/common/images/paylogo/icon_wx.jpg">
+                </li>
+                            <li data-id="983" data-type="2" data-ident="demo" data-rate="0.06" data-fee="0" style="float: left;cursor: pointer;margin-left: 2%; border: 1px solid #ffffff; width: 30%;">
+                    <img style="height:30px;" src="/static/common/images/paylogo/icon_zfb.jpg">
+                </li>
+                    </ul>
+        <div class="clear yue layui-form" style="    margin-left:9%;display: none;font-size: 12px;    margin-top: 10px;" >
+            可使用余额抵扣：
+            <span style="font-size: 14px; font-weight: 500;  color: #f86444;line-height: 22px;">¥</span>
+            <span  class="dkPrice" style="font-size: 14px;font-weight: 500;color: #f86444;line-height: 22px;">2.5</span>
+            元
+            <input type="checkbox"  name="switchDk" id="switchDk"  lay-skin="switch" lay-filter="switchDk" lay-text="抵扣|不抵扣">
+        </div>
+
+
+        <div class="clear" style="width: 96%;margin-left: 2%;">
+
+
+            <a class="layui-btn layui-btn-fluid" id="toPay" style="right: 0;background: #a233c6;margin-top: 20px;margin-bottom: 10px;">
+                <span style="font-weight: 600;" id="ppp">支付金额 : </span>
+                <span style=" font-weight: 500; font-size: 16px">¥</span>
+                <span id="price" style="font-weight: 500;font-size: 14px;">0.00</span>
+                <span id="fee_str" style="font-weight: 600;font-size: 12px;text-align: right;display: none;" > （含手续费:￥<span id="fee">0.12</span>） </span>
+            </a>
+        </div>
+    </fieldset>
+
+</div>
+
+
+
+
+<div style="visibility: hidden;height: 50px;">
+
+</div>
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?e61993ec7a83480d69419d1d50dd713a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+
+    function loginAfter(data){
+        window.location.reload();
+
+    };
+</script>
+
+
+
+
+
+
+<script src="/addons/default_payment_template/js/shop.js?v=1.2.5"></script>
+<script src="/static/common/js/clipboard.js?v=1.2.5"></script>
+<script src="/static/common/js/qrcode.min.js?v=1.2.5"></script>
+
+<script src="/static/plugins/layui/layui.js?v=1.2.5"></script>
+
+
+</body>
+</html>

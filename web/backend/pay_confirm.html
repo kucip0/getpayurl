@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="csrf-token" content="jfzYLvb3drdU6M7bYoq3lm8VV2Mw4EIAhuEzywvX">
+    <title>发卡网 - 付款详情</title>
+    <meta name="keywords" content="新发卡,发卡网,自动发卡网,发卡网平台,自动发卡,自动发卡平台,正规自动发卡平台" />
+    <meta content="发卡网、发卡网官网、自动发卡网、发卡网平台、自动发卡网平台、在线发卡网、自助发卡网、自动发卡平台、虚拟发卡平台" name="description"  />
+    <link rel="shortcut icon" href="https://qiniu.liyan666.com/e85b80041bed739c6e60441ba3c67db0.png">
+    <link rel="stylesheet" href="/static/common/css/main.css?v=1.2.5" media="all">
+    <link rel="stylesheet" href="/static/common/css/main_mobile.css?v=1.2.5" media="all">
+    <link href="/static/plugins/layui/css/layui.css?v=1.2.5"  rel="stylesheet" type="text/css" />
+    <script src="/static/common/xsh/dist/assets/libs/jquery/jquery.min.js?v=1.2.5"></script>
+    <script src="/static/common/js/qrcode.min.js?v=1.2.5"></script>
+    <script src="/static/plugins/layui/layui.js?v=1.2.5"></script>
+</head>
+<body>
+
+<style>
+
+    .layui-layer-molv .layui-layer-btn .layui-layer-btn1 {
+        background: #fff!important;
+    }
+    .layui-form-switch {
+        margin-top: 0;
+        margin-left: 10px;
+        height: 18px;
+        line-height: 18px;
+    }
+    .layui-form-checkbox[lay-skin=primary]{
+        padding-left: 0!important;
+    }
+    .layui-form-switch i {
+        top: 1px;
+    }
+
+    .order_show{
+        padding:20px;
+    }
+    .order_info{
+        line-height:30px;
+        font-size:14px;
+        color:#666;
+        padding:20px;
+    }
+    .order_pay{
+        line-height:30px;
+        font-size:16px;
+        color:#333;
+        padding:20px;
+        /*border-bottom:1px solid #eee;*/
+    }
+    .order_pay img{
+        float: left;
+        margin-right: 20px;
+    }
+    .order_pay p{
+        margin: 0;
+        float: left;
+    }
+    .order_pay p span{
+        color: crimson;
+    }
+
+    .note{
+        color: #8c8787;
+        font-size: 13px;
+    }
+</style>
+
+
+
+<form class="layui-form layui-box"   lay-filter="form">
+
+    <div class="order_show">
+        <div class="order_pay">
+            <img src="/static/common/images/order_pay.png" alt="">
+            <p>
+                付款金额：
+                <span style="font-size:26px;">1 </span>元
+                <br>
+                付款方式：
+                <span>支付宝H5一意</span>
+            </p>
+            <div style="clear: both">
+            </div>
+        </div>
+        <div class="order_info">
+            订单编号：XFK260419165329759200
+            <br>
+            商品名称：遇乐美、心见、星遇、蒎心-卡密
+            <br>
+                            商品单价：<span>1.00 元</span>
+                        <br>
+            购买数量：<span style="">1</span> 张             <br>
+                                                商品总价：1.00 元
+                                        <br>
+                                                                                        付款金额：<span style="color:red; font-size: 18px;">1.00</span> 元              <br>
+
+        </div>
+        <div class="ymm-prompt form-group">
+            <p style="padding-left: 16px;">
+                <input type="checkbox"  id="check" name="agree" lay-skin="primary" title='' checked="">
+                <span class="color1" style="font-size: 12px;">点击确认付款即为同意<a id="agreement" href="javascript:;"  style="margin-top:-1px;display:inline-block;font-size: 12px;text-decoration: none;color: crimson;">《购买协议》</a></span>
+
+            </p>
+        </div>
+
+        <div class="note" style="padding: 10px 20px;">商品问题请先和商家交流，如果处理结果不满意，请于订单当日23点之前联系平台客服，超过时间认定订单没问题。</div>
+        <span style="font-size: 20px; font-weight: bold; color: red;">有两个支付宝，如果显示风控就换一个下单，有4个微信接口，如果显示风控就重复下单，每次都会切换一个微信</span>
+    </div>
+    <div style="display:none;" id="purchase_agreement">发卡网_数字产品服务商：<br>
+2025-06-29商户资金清算完毕。已经开通自动结算的商户，满1元次日自动结算！<br>
+如无疑问，请及时删除聊天记录和转账记录。<br><img src='https://qiniu.liyan666.com/9a6929e709ada07ad74e924f91a93f98.png' style='max-width: 200px;margin-top: 20px;margin-left: 0%;'></div>
+    <button type="submit" class="layui-btn layui-btn-sm layui-hide" lay-fitler="submit" lay-submit="" lay-filter="*">提交</button>
+</form>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?e61993ec7a83480d69419d1d50dd713a";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script type="text/javascript">
+    var can = true;
+    layui.use(['form'],function (){
+
+        var form = layui.form,layer = layui.layer,util = layui.util;
+        form.on('submit(*)', function(data){
+            if (false === $("#check").is(':checked')) {
+                layer.msg('请先阅读并同意购买协议');
+                return false;
+            }
+            if(can){
+                oderquery(0);
+            }
+                        window.open("https://www.xinfaka.com/payment/XFK260419165329759200");
+            
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+        $('#agreement').click(function () {
+            let xy = '<div style="padding: 10px;">'+ $("#purchase_agreement").html() +'</div>';
+            let area = [];
+            area = ['90%', '90%'];
+            layer.open({
+                type: 1,
+                title: '购买协议',
+                area: area,
+                anim: 2,
+                content: xy,
+                closeBtn : false,
+                btn:['我同意']
+            });
+        });
+        function toPay(trade_no){
+            let loading = '';
+            loading = layer.load();
+            $.ajax({
+                headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                type: "POST",
+                url: "/localorder/"+trade_no,
+                data: {},
+                dataType: "json",
+                success: function (res) {
+                    if (res.code === 0) {
+                        layer.alert('已付款成功！', function(index){
+                           window.open(res.data.url);
+                            parent.location.reload();
+                        });
+                       
+                    } else {
+                        layer.msg(res.msg,{shade: [0.5, '#393D49'],time:1500},function () {
+                            layer.close(loading);
+                        });
+                    }
+                },
+                complete:function(){
+                    layer.close(loading);
+                },
+                error: function () {
+                    layer.msg('网络请求失败',{shade: [0.5, '#393D49'],time:1500},function () {
+                        layer.close(loading);
+                    });
+                }
+            });
+            return false;
+        }
+        util.on('lay-on', {
+
+            photots: function(){
+                let img = $(this).attr('src');
+                let data = [ {
+                    "alt": "商品说明",
+                    "pid": 1,
+                    "src": img,
+                }];
+                parent.layer.photos({
+                    photos: {
+                        "title": false,
+                        "start": 0,
+                        "data": data
+                    }
+                });
+            },
+
+        });
+    });
+
+
+
+
+
+    function oderquery(t) {
+        can = false;
+        var orderid = 'XFK260419165329759200';
+        $.post('/checkorder/'+orderid, {}, function (ret) {
+            if (ret == 1) {
+                layer.alert('已付款成功！', function(index){
+                    window.open("/orderquery?value="+orderid);
+                    parent.location.reload();
+                });
+            }
+        });
+        t = t + 1;
+        setTimeout('oderquery(' + t + ')', 3000);
+    }
+
+</script>
+</body>
+</html>

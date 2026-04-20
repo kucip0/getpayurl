@@ -529,9 +529,9 @@ class XinfakaService(BaseService):
         }
 
     def _get_pay_channel_id(self, goods_info: dict, csrf_token: str) -> str:
-        """动态获取支付渠道ID（支付宝 channel_type=2）
+        """动态获取支付渠道ID（支付宝 - 通过image字段检测）
         
-        请求 POST /goods/getrate 获取支付渠道列表，提取 channel_type=2 的渠道ID
+        请求 POST /goods/getrate 获取支付渠道列表，提取image包含"zfb"的渠道ID
         """
         url = f"{self.BASE_URL}/goods/getrate"
         
@@ -548,6 +548,7 @@ class XinfakaService(BaseService):
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Origin": self.BASE_URL,
             "Referer": f"{self.BASE_URL}/",
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
         }
         
         # 打印详细调试日志
@@ -582,33 +583,36 @@ class XinfakaService(BaseService):
         
         resp.raise_for_status()
         
-        # 解析响应HTML，提取支付渠道
-        html = resp.text
+        # 解析JSON响应
+        result = resp.json()
+        self.log(f"【调试】JSON解析结果: {result}")
         
-        # 使用正则表达式提取 data-id 和 data-type
-        # 格式: <li data-id="983" data-type="2" ...
-        pattern = r'data-id="(\d+)"\s+data-type="(\d+)"'
-        matches = re.findall(pattern, html)
+        if not result.get("success") or not result.get("data"):
+            self.log(f"警告: 响应中没有渠道数据，使用默认payId=13")
+            return "13"
         
-        self.log(f"【调试】正则匹配结果: {matches}")
-        
-        if not matches:
-            self.log(f"警告: 未找到支付渠道，使用默认payId=13")
-            return "13"  # fallback 到默认值
-        
-        # 查找 channel_type=2 (支付宝) 的渠道
+        # 遍历渠道列表，查找image包含"zfb"的渠道（支付宝）
+        channels = result["data"]
         alipay_channel_id = None
-        for channel_id, channel_type in matches:
-            if channel_type == "2":  # channel_type=2 代表支付宝
-                alipay_channel_id = channel_id
+        
+        for channel in channels:
+            channel_id = channel.get("channel_id")
+            image = channel.get("image", "")
+            self.log(f"【调试】检查渠道: channel_id={channel_id}, image={image}")
+            
+            if "zfb" in image:  # image路径包含"zfb"表示支付宝
+                alipay_channel_id = str(channel_id)
+                self.log(f"【调试】找到支付宝渠道: channel_id={alipay_channel_id}")
                 break
         
         if alipay_channel_id:
             self.log(f"找到支付宝支付渠道ID: {alipay_channel_id}")
             return alipay_channel_id
         else:
-            self.log(f"警告: 未找到支付宝渠道(channel_type=2)，使用第一个渠道")
-            return matches[0][0]  # 使用第一个渠道
+            self.log(f"警告: 未找到支付宝渠道(image包含zfb)，使用第一个渠道")
+            if channels:
+                return str(channels[0].get("channel_id", "13"))
+            return "13"
 
     def _mobile_step2_create_order(self, product_url: str, goods_info: dict, csrf_token: str, new_price: float, pay_id: str) -> str:
         """步骤2: 创建订单 POST /goods/createorder (使用动态获取的payId)"""
@@ -637,6 +641,7 @@ class XinfakaService(BaseService):
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "Origin": self.BASE_URL,
             "Referer": product_url,
+            "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
         }
         
         # 打印详细调试日志

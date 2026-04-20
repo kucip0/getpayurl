@@ -1,0 +1,92 @@
+1.
+=====================================
+POST /gateway.do?charset=utf8 HTTP/2
+host: openapi.alipay.com
+content-length: 3046
+cache-control: max-age=0
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+origin: https://www.yiyipay.com
+content-type: application/x-www-form-urlencoded
+upgrade-insecure-requests: 1
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+sec-fetch-site: cross-site
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+referer: https://www.yiyipay.com/
+accept-encoding: gzip, deflate, br, zstd
+accept-language: zh-CN,zh;q=0.9
+priority: u=0, i
+
+alipay_public_key=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoVCtFzO07OhR%2BDMz9Hy3zlkEFJcFZYaWG5PeaR7mpdq%2Fg2uGN2nBxsdzYnSryBPqE4e5tImB3%2Bno1auX5G%2B7UymQ%2BXjHnnMMRC0JUjhr%2FPq07dsVUYGrA2p%2BYbkBZRAEqd8uspZ2w%2F02FDNdyAR0Mr3NzZBucI3iJQBYeYlH0t4TiZhzOHbZTFI59ONiRbZ59AVE7Im6Dv4tB2clhQtaggYjSymYp2bUTblRZNzypPqecBuikbiBCsv24P%2F2KLFf0%2FyrCGvA1aNPEW9RtvOnfxqpVmPj5wET2BYZKAJFBqnveOdlimQmUHjZYw8V%2Bw4WeJzKfms75zkuG6k0cdZT%2FwIDAQAB&merchant_private_key=MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCIxcw91t4JkGwoFQnnaM9CXj%2FAxkkQHSBYFuZgeGG7QjLXuzTL6PcXgU4BytPfqrlOh10xPVQpnikuPp8uFs2OLPNUFpoSZTsVQ%2B3esBH8K5wYKD2%2Fvw2Vwu0InvPCvWxsRQPitkL1jTCsZueWbciMBuyeeWvHQSEjrW8xMoWTpBj1pERIagzbTHIJWov9bJHRI8MgjJouq%2FqTy%2FwOeRluGdVUslH6iNUGdZr4IM%2Fb2Id16GPRwoy6pDre0cC1UOPpcz3cIGaUsRVEVIy6RzPZXY0F%2FDqwrNED%2FCHb3G1oFGVMar6p3a3%2FrwOqcdPTHNajH0%2FxbGhrKEPEH1f0AeKtAgMBAAECggEADai7Uf2wZQIgWwxm1c54zGb%2FNPBYgZx3C3UWAtJi6EGfND5E8oxMiPNn5%2FPqnu683OPV4cH%2FMrzR3gVw%2FjhWxPkmP%2BKV9npXoTMMgW3SDf4I87ypFgotgCRcabz%2BGRezyUhHMBAFteIo1z7bqAFEwv86CEWWBusxNQ%2FwB9jE0E6wGpvT1AdkboXm%2FoBtihzM4QwseIHYJneeSLA9lrIgvzWzU7muoiOjx2%2BUySPcMoo%2FS3bW0ZSXeCxbGhS7B2VSVTm2h%2FLYpchUt1ri57xAf5o08zc4Q4PbR2fK4Nz0mYr1c%2Bd6yYypgFpyjKjzWrAObETEGkT6VIN8aHEtmIdiYQKBgQDfsSi8PuBCZ%2Bm8Yhpek8uLn%2BHHMrGIBXGB4uE4hfDTWy2sOdj%2FSVCj0ZK2X1eyUU2LWop3wUxeuWM2lFDnrb1HKhVoOxLdM1cO36mO9JWDt2Ov%2FrP%2FX6m8KTcnD7%2B4l%2B2qna3sZNCdoFKvp8r5%2FO2kO2HVKvLgdgN6ky8yDJOiOQKBgQCchtyEP7PH82RfCh0rPX7Mx33s4f3vTGaaAQpvZufPvcsWoGIXDPhIjfk34Y0aAVpzdFh5Z79mGnM6aFCJs6nq9CsdBmvRFydQXqjye69A%2BhdpbjkdcaDV6QEMI2GvW1XmktohM0aZMStShROqP9CTgxzJFGzpuRJx0E3S%2FoI0FQKBgCCFaR61JXWCFgFFYgAODLGn9PM484aLBA2WJphJINIZl3JKlrnGtuqaNXI%2BOkm6eEOiTi9K8wdyfHIa7ghAwhvuil40%2BHEgXa%2FT5JrcBEC6EMwtg43FIrAwbcxIBd%2BYdv0vH3IW1h2UiXDwPBpMI2CVIYwUSmtHvQm9DEeCfJRBAoGBAIgKEhgCwX7Tw%2FVx9d4B6XWTIJfD5o6XaUkKBIbD%2Bk8sVhkJNZdxF0z%2Fz41Iw%2FjJGlLj2I1TpR7ZeDJYPT8g3los8lecoBIuvGV2kAGHi86%2BTaC9QnibrDyd8OIa0ii1ChiGo3xdc0trV4q1zFyYb%2B%2F08Qy2at5LkoNGloz91C3tAoGBAJPWDpsYmqK3TAG7%2BRrIONKqEF0gal1qFOf3Tx3v9dz0V3RA6P6p1yb%2BTvsfmDH6%2FyViAUiZUgk3RA%2F42NTuGcYPCOn7bZHsaQR6u74ccpCCZPpnaKtc22MK1O4mHqFEzmbw%2BpZysGN8Z%2BwR31u7Boj131um0ldS5Sjlc2eoWxcM&app_id=2021006108627131&method=alipay.trade.wap.pay&format=JSON&charset=utf8&sign_type=RSA2&timestamp=2026-04-20+09%3A25%3A39&version=1.0&return_url=https%3A%2F%2Fwww.yiyipay.com%2Fstore%2Fpay%2Freturn%2FYY260420092539999971&notify_url=https%3A%2F%2Fwww.yiyipay.com%2Fstore%2Fpay%2Fnotify%2FAlipayWap%2F2&biz_content=%7B%22out_trade_no%22%3A%22YY260420092539999971%22%2C%22product_code%22%3A%22QUICK_WAP_WAY%22%2C%22total_amount%22%3A%221.00%22%2C%22subject%22%3A%22XFK260420092529759211%22%7D&sign=CL1fh0TjpMsaqyLzNT259QzJo5YEfVPMA7oDCzjKS94Vs0TY3eMcm7Qks8QXp%2BW1LTWi3jU6UYGSiQSdyV8LZPervsYnrQ1up8dkHAB%2BjvMeetomntZNrJSdtJGUyQcKvcX2k%2BkF58Gn5ry2eMFs7%2B7zxrB3KisGzFeX%2BqToH45OS8xBbNEDOHwFRPnbrDoxzwwKLMf4JIJ8qv%2BlYcGWhEY4dx6B4ToL1EOQPZUB65C63MBDG9nI157M3ddsQ1wdI98%2By7YuhXMm5113jeEgfUKGKR9zc0ZvzbeCBAU54gEFGCnI22Uk8ZX%2FhQqSlN9RWMzaKWJ%2FFyvubZSGZpn%2F2w%3D%3D
+
+HTTP/2 302
+server: Spanner
+date: Mon, 20 Apr 2026 01:25:40 GMT
+content-length: 0
+location: https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_50c91121563dcdcf62c9da1afa5685bc&alipay_exterface_invoke_assign_sign=h_ms%2Fx4d_q3_ju_m_sh_r_e_i_k2m_z%2B_rifto2_jt_jo_tzr_n1l_k_m750d_u_m_w_u_j0s0k_q%3D%3D
+set-cookie: JSESSIONID=34CCE3BB862E98E967C57AB31243A025; Path=/; HttpOnly
+set-cookie: zone=GZ00H; Domain=.alipay.com; Path=/
+set-cookie: ALIPAYJSESSIONID=GZ00O2VnKhbBJUaHXBeB9N4R95XoGJsuperapiGZ00; Domain=.alipay.com; Path=/
+set-cookie: ctoken=ybHB7kWuBHeNnw8y; Domain=.alipay.com; Path=/
+access-control-allow-origin: https://www.yiyipay.com
+vary: Origin
+access-control-allow-credentials: true
+trace_id: 21b7679517766483406358442e44a2
+invoke_id: 50c91121563dcdcf62c9da1afa5685bc
+set-cookie: zone=GZ00H; Domain=.alipay.com; Path=/
+set-cookie: spanner=LTHWNL/4N0DCrqhdX04jsw8HZv4HRQ7XXt2T4qEYgj0=;path=/;secure;
+via: spanner-internet-cz50b-29023.sa127[302]
+origin-agent-cluster: ?0
+
+2.取这个包的302重定向地址。
+=============================
+
+GET /cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_50c91121563dcdcf62c9da1afa5685bc&alipay_exterface_invoke_assign_sign=h_ms%2Fx4d_q3_ju_m_sh_r_e_i_k2m_z%2B_rifto2_jt_jo_tzr_n1l_k_m750d_u_m_w_u_j0s0k_q%3D%3D HTTP/1.1
+Host: mclient.alipay.com
+Connection: keep-alive
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: cross-site
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+Referer: https://www.yiyipay.com/
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: zone=GZ00H; ALIPAYJSESSIONID=GZ00O2VnKhbBJUaHXBeB9N4R95XoGJsuperapiGZ00; ctoken=ybHB7kWuBHeNnw8y
+
+HTTP/1.1 302 Found
+Server: Tengine
+Transfer-Encoding: chunked
+Connection: keep-alive
+date: Mon, 20 Apr 2026 01:25:40 GMT
+set-cookie: JSESSIONID=74D67D4F709189D18E8C409EA7DCE59D; Path=/; HttpOnly
+set-cookie: awid=RZ42PNRaeRZK5CMMU1nCRrbCRO4GRcmobileclientgwRZ42; Domain=.alipay.com; Path=/
+set-cookie: ctoken=VZBhNAHJmo9MYjEa; Domain=.alipay.com; Path=/
+set-cookie: zone=RZ42A; Domain=.alipay.com; Path=/
+strict-transport-security: max-age=31536000
+set-cookie: JSESSIONID=RZ42PNRaeRZK5CMMU1nCRrbCRO4GRcmobileclientgwRZ42; Path=; Secure; HttpOnly
+set-cookie: cookieToken=82eeab001d7f4ed79acd3f1b8833e39a; Domain=.alipay.com; Expires=Sun, 19-Jul-2026 09:25:40 GMT; Path=/; HttpOnly
+location: https://mclient.alipay.com/h5pay/landing/index.html?h5_request_token=RZZFB00pobaXaiqsPCResdQyA3zwO0mobilecashierRZZFB00&query_params=alipay_exterface_invoke_assign_sign%3Dh_ms%252Fx4d_q3_ju_m_sh_r_e_i_k2m_z%252B_rifto2_jt_jo_tzr_n1l_k_m750d_u_m_w_u_j0s0k_q%253D%253D%26awid%3DRZ42PNRaeRZK5CMMU1nCRrbCRO4GRcmobileclientgwRZ42%26alipay_exterface_invoke_assign_target%3Dinvoke_50c91121563dcdcf62c9da1afa5685bc&referer=https%3A%2F%2Fwww.yiyipay.com%2F&app_name=mc&targetDispatchSystem=unitradeprod&serverParams=emlkPTk5O25kcHQ9ZGM2OTtjYz15O3RlbmFudE5hbWU9TVpGQlczQ04%3D&cookieToken=82eeab001d7f4ed79acd3f1b8833e39a
+content-language: zh-CN
+set-cookie: spanner=sZ7BQ+66KDunyvYn8k/guFrYlnke0ODH;path=/;secure;
+via: spanner-internet-cz20k-116.et2[302], ens-cache52.l2eo166-17[74,0], cache10.cn2061[94,0], cache1.cn2061[99,0]
+origin-agent-cluster: ?0
+x-alicdn-da-ups-status: endOs,0,302
+ali-cdn-origin-error-code: endOs,302,0
+timing-allow-origin: *, *
+eagleid: 7519999517766483408893520e, 7519999517766483408893520e
+x-er-version: S090011524858
+x-ldcid-level: -
+x-user-group: -
+x-unio-error: 2001
+server-timing: e1;dur=96
+
+
