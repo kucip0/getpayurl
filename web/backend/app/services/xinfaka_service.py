@@ -529,7 +529,7 @@ class XinfakaService(BaseService):
         # 生成随机联系方式
         contact = f"1{random.randint(3,9)}{''.join([str(random.randint(0,9)) for _ in range(9)])}"
         
-        # 构建订单数据 - 使用 payId=18 (支付宝移动端H5支付)
+        # 构建订单数据 - 使用 payId=13 (支付宝PC端扫码支付，与真实请求一致)
         order_data = {
             "GoodsId": goods_info["goods_id"],
             "quantity": "1",
@@ -537,7 +537,7 @@ class XinfakaService(BaseService):
             "is_sms": "0",
             "sms_receive": "",
             "take_card_password": "",
-            "payId": "18",  # 支付宝移动端H5支付
+            "payId": "13",  # 支付宝PC端扫码支付（与真实请求一致）
             "payType": "1",  # 支付宝
             "coupon": "",
             "is_xh": "0",
@@ -649,7 +649,11 @@ class XinfakaService(BaseService):
         self.log(f"重定向2: {url3[:80]}...")
         
         # 第3次: www.yiyipay.com -> 200 (包含支付宝表单)
-        resp3 = self.session.get(url3, headers=headers, timeout=15)
+        # 根据抓包，Referer 应该是发卡平台首页
+        headers3 = headers.copy()
+        headers3["Referer"] = f"{self.BASE_URL}/"
+        
+        resp3 = self.session.get(url3, headers=headers3, timeout=15)
         resp3.raise_for_status()
         
         # 解析HTML,提取支付宝表单参数

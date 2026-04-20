@@ -1,35 +1,488 @@
-GET /merchant/order/list?page=1&limit=20&lay=pay&goods_name=&trade_no=&channel_type=&channel_id=&status=1&contact=&sms_receive=&ip=&created_at=&success_at= HTTP/1.1
-Host: www.xinfaka.com
+1.获取cookie和参数
+
+GET /single/8CBF9B0DD7D4 HTTP/1.1
+Host: www.qukapu.com
 Connection: keep-alive
-sec-ch-ua-platform: "Windows"
-X-Requested-With: XMLHttpRequest
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
-Accept: application/json, text/javascript, */*; q=0.01
 sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-sec-ch-ua-mobile: ?0
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://www.xinfaka.com/merchant/order/list
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "iOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br, zstd
 Accept-Language: zh-CN,zh;q=0.9
-Cookie: Hm_lvt_e61993ec7a83480d69419d1d50dd713a=1776648325; HMACCOUNT=63FBB5F2AEE89BC0; remember_merchant_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6Ik41aEl4Y3V6YlA1dmdLMVZGRVo0bnc9PSIsInZhbHVlIjoid0h5ZVZvd0ZRL1V4SjY0M09hQVFYU0ZkS1oyYVgvd3VnRWZQcVNyVlR3d1dYV2VqQzVhN1h6MFNDa0ZiVmtscVdtRkphWms3blRNSTM4dW9sT1NKL1h4ZHZYOFVZaGpwL0tTc29XZEt6SDIxTWFvanZpUnQxREtvYjcwVTltL2lzTW1pdjI3bkdIYXF3N1o4SHRtakZHekFMWi9sUU5vL1JZZ2ZxZ1N2VUhpSndUWHFUaTBkSzF3bHhIbWtxcXhZRjZDNyt6dnhpeUJzOUtQcnpGMFJrTng4NVlab0lXWjBreDZEN04yNzczZz0iLCJtYWMiOiI5OWJhYjIyODA2ZWJiMjM3Y2MzYTBmZGU3MDVjMDZmZTQ4MGNjNzVkNmMxMWNlOWI5ZDZiMWVhYmI1OWI1ZjhiIiwidGFnIjoiIn0%3D; Hm_lpvt_e61993ec7a83480d69419d1d50dd713a=1776675167; XSRF-TOKEN=eyJpdiI6IjJsY0t5b2NhLzNUVHFuMHJDbnFZRXc9PSIsInZhbHVlIjoiN3VkQ2VQYmxCVlRTMWVsaDlIbzVodlArNlFhaHVUL05QZUJYUEJOYU9XenZCV3AzREd4R29HYldlVWpsSW5jQUg4ZGNIOEVVSHQzMStQeS95SmRxeGZvUm5XK0MwKzJ6OERVNVd2WEJKNXYzZ2RTaVNBQk5EY3BmS3FndktuVkoiLCJtYWMiOiJmMTAwYjgxMjc1Y2RjZWVlZWE5ZjQ0OTdmYWU4YzBjZWZjZTQ5ODNhYzQ1NDkxNGY1ZTVlNTYxMzcwNmM1YjRmIiwidGFnIjoiIn0%3D; xsh_session=eyJpdiI6IkN1N2NhcnZseUJlcDFtWnpIQWRvMnc9PSIsInZhbHVlIjoiY0ZwN0NyMW5ZZWozcUh0YWQrWE1WK1pHZlFzTzVhRnRRTnhxNk5oRjFOZXNTbkx0SmNxZW9oT3B0dzR6K2pXNmtXU1VGSk1zUzZvWEoraytRYjJxZzFYT0JHbWd5YVlIcHF2UG1oRFdwWXkrRFd2VVFjbU1PeWlYaVN1R1hRa04iLCJtYWMiOiJmMTE0MGQ2MTE1ZTY3MTQ3NWM5ZDVjMjFlZjcwN2RjYWQwZTU0NzM3ODljNTM3N2U5MTRlYTUyZjk2ODU2OGVmIiwidGFnIjoiIn0%3D
+Cookie: Hm_lvt_3151cf57d122e3860e1f9426a2746f72=1776676276; HMACCOUNT=65CE649B7C78D7EA; Hm_lpvt_3151cf57d122e3860e1f9426a2746f72=1776677808; XSRF-TOKEN=eyJpdiI6IlFwZ2p5THVaejJKNlZQTktIMTlHbUE9PSIsInZhbHVlIjoiTFdwZ1Y3QVNWQjJGZVp3ZEhtQnFLOVM4NDRObTl6UnBxdDdkL1dKdDYyQjlHTWdOdVBRTXVFbXFFK05EUGVWRmZrQytzVmFwaDhUeTgySnM4QVArdUxOSUJ2eE5JZ1B2T1o3c1pSbHI1WXlScm1KZ1B4VkVCckhQUk5acXY1UGciLCJtYWMiOiJjM2E3NWQxZWQ5OTMyYmIzZjk3NDdhNGU0NmQ1NzBjOGQ0N2YxNDlmNGMzMTNhNzBjY2I2OWE3MTRjYWE3OTIxIiwidGFnIjoiIn0%3D; xsh_session=eyJpdiI6IjdINTdCYVdGMmgwK2lPSXpzdnN1T0E9PSIsInZhbHVlIjoiK0lQWWFab3QzYW1WSEgxeHdmQjlONkU4TXMrckdEdkJFaHd1TmxkTytNKzhCdHJLMVJxWUFrcEsvU0d3cU96YTl2ODBlMjRoM2F0Q0o0WWZ4N2k5UFludGFudTUwOUk0c0FpTDdORHdITGw5NzBVanBTb0t0dXpoZ205L0Zpek0iLCJtYWMiOiJhNTg4MTViOTIzYmQxN2Q0MTZkNmUwNjU1YjJiYzFlMzgzZDAzNWU5YWVhM2ZmMjM2NTFkZGZlNmNkNWM4MmNlIiwidGFnIjoiIn0%3D
 
 HTTP/1.1 200 OK
 Server: nginx
-Content-Type: application/json
+Content-Type: text/html; charset=UTF-8
 Vary: Accept-Encoding
-Date: Mon, 20 Apr 2026 08:53:10 GMT
-Set-Cookie: XSRF-TOKEN=eyJpdiI6Imx3OUtlcVY0SE53Q0xCZmpOdnZyWGc9PSIsInZhbHVlIjoiY0tpVCtHRWRRUnNvZkNvdEFkZDJ5VHNOVm1CSW9PeU5jSS9MMEoyR2YrYXNPcGtoWER0Z3F4UG5FdmFZeEhEaGlqNC9DZUZtN0VkSUhWS09vRkNhTHpYS3FLWjMrV2hkNUVhSW53cC9CdkRwR2F0TlpTM0d3b2xMOXRlN25HNy8iLCJtYWMiOiI4NDk2MDMwOWY4ZmY4ZWJlODUwZjAwY2EzM2ZjNDA2OTFiNmNlMjg3YjY5NDBjZGVhOTM1MjRlMTk0Y2FkMDRmIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 10:53:10 GMT; Max-Age=7200; path=/; samesite=lax
-Set-Cookie: xsh_session=eyJpdiI6Ik14aHo2Wkdqb2hFVzkzNFRWSFY4SVE9PSIsInZhbHVlIjoiWDRSZmFXMEk0NHB1SzRIVkJyZkFZcjhRWk5BM0FieFdsR0ZKWkFyQm5HWGFyVTRDb002WDkyT0NKalFqb2tTVzVscmlNUEg2ZTR2MmFQblI4Rll1em5iWWk4ZkNBSE5JaE9sOEpTTFUvVGdxby9nek00TnVmU0RJOGYzaW9zWUIiLCJtYWMiOiI3ZWJlZjQ1YzlhYWIyN2EyNTc2NjU1ZGFlOTkxYTI4NjNmODQ3NjY2OTdlMzhhMDdlZDMzODRkZDgyNWQ5MDNhIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 10:53:10 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+Date: Mon, 20 Apr 2026 09:37:17 GMT
+Set-Cookie: XSRF-TOKEN=eyJpdiI6InVxWjFUSzREcUkvOHprRDZEQ0JNSHc9PSIsInZhbHVlIjoiaStIeHpJM3JUZGZJNzZkU2p4elpPZGhtendRb0NUMG1PVHVSaE1POUEzaDRDeElHdlZFemNYZk5xalRqK0hrbS9UVE9HaE5ReEpHZC9KR0JJTWZ1ODBOdTE1bmFaRFhobFByTnE4NnhTM3pqcnFreEwvSWxRWDI5dnBQNVpyT28iLCJtYWMiOiJjNGEwMDc5MWZmMzBlZTQ3MjFjMDgwNGY0NmZlMjhjM2Q5NGI3NTI0N2U0MzkxZDVjOTkxN2FjYWUyYWE5MzVjIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 11:37:17 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: xsh_session=eyJpdiI6InNvbkc0TlkveEdQekJpOGUrQWJXTlE9PSIsInZhbHVlIjoiUHdYelQvSHZzSGdxQlN3ZHMwUytCalVjQlh2eW5DT0VuSkJZQ20wRXkvKzRpZUlRZkgwRDVUbGFSRkpVdmVPYThJdFNySisyUkpRY0dMRDNER2NxWklpaHorektGZWJ2SlpnMTl3QWljSGxyYzkyRXYvNy9QRmw5NVdzZmduQnMiLCJtYWMiOiI3YjhjZjc1YjJjNTdjNTkyZTAyNTU0ZGU4OTBlZmI1N2YwODU0MTNlYjE1Y2QwNzM4N2VlODI3ZDQ5MTQwNmRjIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 11:37:17 GMT; Max-Age=7200; path=/; httponly; samesite=lax
 Strict-Transport-Security: max-age=31536000
 Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
 Content-Encoding: gzip
 X-Cache-Lookup: Cache Miss
 Cache-Control: private, no-cache
 Transfer-Encoding: chunked
-X-NWS-LOG-UUID: 1769301048915018697
+X-NWS-LOG-UUID: 17955878777468073178
 Connection: keep-alive
 X-Cache-Lookup: Cache Miss
 
-{"msg":"\u83b7\u53d6\u6210\u529f","code":0,"count":1,"data":[{"id":25463,"user_id":2408,"goods_id":1100,"trade_no":"XFK260420165105759291","paytype":4,"is_platform_black":0,"is_block":0,"channel_type":"1","channel_id":18,"channel_account_id":29,"goods_name":"\u9047\u4e50\u7f8e\u3001\u5fc3\u89c1\u3001\u661f\u9047\u3001\u848e\u5fc3-\u5361\u5bc6","goods_price":"0.10","quantity":1,"song_quantity":0,"total_price":"0.10","take_card_type":0,"take_card_password":"","contact":"","sms_receive":"","costfee":"0.0006","kami_id":"","status":1,"is_freeze":0,"created_at":"2026-04-20 16:51:05","create_ip":"27.151.236.16","success_at":"2026-04-20 16:51:20","stock_notify":0,"sendout":0,"finally_money":"0.00","rebate":"0.00","is_api":0,"orderno":"","param":null,"open_id":"","cards_count":0,"is_complaint":0,"can_refund":0,"deleted_at":null,"song_goods_id":0,"song_goods_quantity":0,"channel_text":"\u7cfb\u7edf\uff1a\u652f\u4ed8\u5b9dH5\u4e00\u610f","contact_info":"-","can_after":1}],"count_items":{"all":25,"all_class":"","pay":1,"pay_class":"layui-this","unpay":0,"unpay_class":"","cancellation":24,"cancellation_class":"","refund":0,"refund_class":""}}
+<!doctype html>
+<html lang="zh-cn" style="height: 100%;">
+<head>
+    <meta charset="utf-8" />
+    <title>尤拉小铺 - 寄售平台2025-iphone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
+    <meta content="发卡网、发卡网官网、自动发卡网、发卡网平台、自动发卡网平台、在线发卡网、自助发卡网、自动发卡平台、虚拟发卡平台" name="description"  />
+    <meta name="keywords" content="趣卡铺,发卡网,自动发卡网,发卡网平台,自动发卡,自动发卡平台,正规自动发卡平台" />
+    <meta name="csrf-token" content="of0oqcgygFQFnjChX4sDP3H1bPAK2EFcf4OIRM5F">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="https://qiniu.liyan666.com/b729cd73b47ac99eb8a101dca5995e0f.png">
+    <link href="/static/plugins/layui/css/layui.css?v=1.2.5"  rel="stylesheet" type="text/css" />
+    <link type="text/css" href="/addons/default_payment_template/css/shop_mobile.css?v=1.2.5" rel="stylesheet">
+    <script src="/static/common/js/jquery.js"></script>
+    <style>
+
+    </style>
+</head>
+
+<body class="xsh-body" id="LAY_home" style="   background-color: #f5f5f5;height: 100%;">
+
+<div class="top" style="">
+
+            <div class="right toLogin" ><span style="color: rgb(255, 84, 51);"> 登录/注册</span>, 查看购买订单</div>
+    </div>
+<div class="sinfo" style=" top: 18%;position: fixed;right:0; z-index: 999;">
+    <ul class="link" style="font-size: 12px;">
+        <li style="background-color: #1e9fff">
+            <a href="/orderquery" target="_blank" style="color: #ffffff">查询订单</a>
+        </li>
+        <li style="background-color: #f16145;">
+            <a href="/complaint" target="_blank" style="color: #ffffff">订单投诉</a>
+        </li>
+        <li style="background-color: #a233c6;">
+            <a href="javascript:void (0);" style="color: #ffffff"  id="protocol" lay-on="test-count-down">购买协议</a>
+        </li>
+        <li style="background-color: #2f363c;">
+            <a href="javascript:void (0);" style="color: #ffffff"  id="notice">商家公告</a>
+        </li>
+
+
+                    <li style="background-color: #009688;">
+                <a style="color:#fff;cursor:pointer;" onclick="(q='958344296',i=document.createElement('textarea'),i.value=q,i.style.cssText='opacity:0;position:fixed;',document.body.append(i),i.select(),document.execCommand('copy'),i.remove(),t=document.createElement('div'),t.innerHTML='QQ '+q+' 已复制',t.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 32px;background:#00e676;color:white;border-radius:8px;font-size:20px;box-shadow:0 4px 20px rgba(0,230,118,0.3);z-index:9999;',document.body.append(t),setTimeout(()=>t.remove(),5e3))">客服QQ</a>
+            </li>
+
+                    </ul>
+</div>
+<!---->
+
+<div class="banner xsh-width" style=" height:60px;">
+    <img src="/addons/default_payment_template/images/logo.png" class="xsh-logo" style="height: 75px;margin-top: -21px;float: left;">
+    <div class="seller_content" >
+        <p class="layui-badge  layui-bg-black seller_name" style="">
+            尤拉小铺
+        </p>
+        <div class="clear"></div>
+            </div>
+
+    <div class="clear"></div>
+</div>
+
+<input type="hidden" id="shopId" value="2fKPESf42ZWOPttQod0tsQ==">
+<input type="hidden" id="member_id" value="0">
+<input type="hidden" id="umoney" value="0">
+<input type="hidden" id="vip_discount" value="">
+<input type="hidden" id="combination_pay_time" value="5">
+<input type="hidden" id="dmoney" value="0">
+<input type="hidden" id="is_login" value="0">
+<input type="hidden" id="cateId" value="0">
+<input type="hidden" id="agentId" value="0">
+<input type="hidden" id="GoodsId" value="6653">
+<input type="hidden" id="isDan" value="1">
+<input type="hidden" id="smsPrice" value="0.50">
+<input type="hidden" id="take_card_type" value="0">
+<input type="hidden" name="is_xh" id="is_xh"  value="0">
+<input type="hidden" name="start_nums" id="start_nums" value="">
+<input type="hidden" name="kami_id" id="kami_id" value="">
+<input type="hidden" name="goodsPrice" id="goodsPrice" value="0">
+<input type="hidden" name="totalPrice" id="totalPrice" value="0">
+<input type="hidden" name="dkPrice" id="dkPrice" value="0">
+<input type="number" hidden='hidden' name="sms_price" id="sms_price" value="0.50">
+<input type="hidden" name="sms_payer" id="sms_payer" value="1">
+<input type="hidden" name="xhPrice" id="xhPrice" value="0">
+<input type="hidden" name="is_yh" id="is_yh" value="0">
+<input type="hidden" name="yh_price" id="yh_price" value="0">
+<input type="hidden" name="coupon_type" id="coupon_type" value="1">
+<input type="hidden" name="coupon_denomination" id="coupon_denomination" value="0">
+
+<input type="hidden" name="limits_min" id="limits_min" value="1">
+<input type="hidden" name="limits_max" id="limits_max" value="999">
+<input type="hidden" name="cards_stock_count" id="cards_stock_count" value="0">
+<input type="hidden" name="wholesale_discount" id="wholesale_discount" value="0">
+<input type="hidden" name="reach" id="reach" value="0">
+<input type="hidden" name="songNum" id="songNum" value="0">
+<input type="hidden" name="is_sms" id="is_sms" value="0">
+<input type="hidden" name="balance_deduction" id="balance_deduction" value="0">
+<input type="hidden" name="is_dk" id="is_dk" value="0">
+<input type="hidden" name="payId" id="payId" value="0">
+<input type="hidden" name="payType" id="payType" value="1">
+<input type="hidden" name="fee_payer" id="fee_payer" value="1">
+<input type="hidden" name="rate_fee" id="rate_fee" value="0">
+<input type="hidden" name="pay_first" id="pay_first" value="0">
+<input type="hidden" name="isMobile" id="isMobile"  value="1">
+<input type="hidden" name="is_buy_protocol" id="is_buy_protocol"  value="0">
+<input type="hidden" name="is_notice" id="is_notice"  value="">
+<input type="hidden" name="transaction_min_fee" id="transaction_min_fee"  value="0">
+<input type="hidden"  id="vip_goods"  value="0">
+<input type="hidden"  id="vipInfo"  value="">
+<input type="hidden"  id="shop_notice"  value="">
+<input type="hidden"  id="buy_protocol"  value="&lt;p&gt;&lt;span style=&quot;color:#1abc9c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;1：扫码付款后没有出卡请联系商户补单&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span style=&quot;color:#e74c3c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;2：发现违法商品可向网站客服进行举报，&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;span style=&quot;color:#e74c3c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;举报成立者将获得该链接的全部卡密&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
+
+&lt;p&gt;&amp;nbsp;&lt;/p&gt;
+
+&lt;p&gt;&lt;span style=&quot;color:#f39c12;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;&lt;img lay-on=&quot;photots&quot; src=&quot;https://qiniu.8u9.top/a608817744f13635/ceb96f19e3ceb325.jpg&quot; style=&quot;max-width: 100%; border-width: 0px; border-style: solid; margin: 0px; width: 300px; height: 400px;&quot; title=&quot;image&quot; /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;">
+<input type="hidden"  id="auto_notice"  value="0">
+<input type="hidden"  id="auto_protocol"  value="0">
+<input type="hidden"  id="protocol_second"  value="0">
+<input type="hidden"  id="visit_password"  value="">
+<input type="hidden"  id="added_services"  value="3"><div class="content xsh-width" style=" ">
+    <div style="padding:10px;">
+        <div >
+            <div  style="float: left;line-height: 30px;">
+                <i class="layui-icon layui-icon-cart-simple" style="font-size: 14px;color: #1A8279;font-weight: 800;">
+                    <span style=" font-weight: 600;color: #0C0C0C;margin-left: 5px;">所有商品</span>
+                </i>
+            </div>
+            <span class="goodCount" style="margin-left: 10px;color: #515151; line-height: 35px;font-size: 12px;">在售商品<span style="color: red;" id="goodsCount">0</span>个</span>
+            
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="cat" style="padding: 0 10px;">
+        <ul >
+            
+        </ul>
+    </div>
+
+    <div class="goods clear">
+        <ul class="flow-default" id="LAY_demo1" style="">
+
+        </ul>
+    </div>
+
+
+
+    <div class="desc clear" style="display: none;margin-left: 10px;">
+
+        <i style="font-weight: 700;color: #555;font-size: 14px;" class="layui-icon layui-icon-about"> 商品说明:</i>
+
+        <p style="margin-top: 5px;" id="goodsContent" class="goodsContent"></p>
+    </div>
+    <!--选号开始-->
+    <div id="jiaose_box" class="pick_box" style="display: none;padding: 5px ;">
+        <div class="jsTitle" style="margin-top: 5px;">
+
+        </div>
+        <div class="jhBtn" id='selectAccount' style="margin-top: 10px;font-size: 12px;line-height: 28px;">
+            <span class=" layui-bg-green left-page"  id="getS" style="cursor: pointer;background-color: #009688!important;padding: 5px;border-radius: 5px;">上一组</span>
+            <span class=" layui-bg-green right-page"  id="getE" style="cursor: pointer;background-color: #009688!important;padding: 5px;border-radius: 5px;">下一组</span>
+            <span class=" layui-bg-green pick-desc"   style="background-color: #009688!important;padding:  5px;border-radius: 5px;"> 自选角色名字+<span id="xh_price">0.00</span>元 (选中自动复制，可到WeGame查看战绩)</span>
+
+
+
+            <div style="clear:both;"></div>
+             <div style="margin-top:5px;">
+                <input placeholder="请输入想要查询的昵称或其它信息"  id="pick_account" style="color:#555;background: 0 0;border: 1px solid #009688;height: 19px;padding: 2px 5px;width: 200px;">
+                <a class="layui-btn layui-btn-sm  " id="pick_search"  style="background: #009688;height: 25px;line-height: 25px;margin-top: -2px;">立即搜索</a>
+            </div>
+           
+        </div>
+        <div class="jsTab" id="account_list" style="display: none;">
+
+            <div style="clear:both;"></div>
+        </div>
+
+        <div class="jsDetail" id="pick_info" style="margin-top:0;">
+
+        </div>
+
+
+        <div class="h_zdy"></div>
+    </div>
+</div>
+<div class="buyClass layui-form"  style="">
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
+        <legend  class="goodsName">尚未选择商品</legend>
+    </fieldset>
+    <div class="payInfo-inner">
+        <div    style="">
+            <div  class="jsq"  style="height: 30px;line-height: 30px;">
+                <div style="margin-left: 20px; ">
+                    <span  style="color: #999999;margin-right: 10px;font-size: 12px;">数量</span>
+
+                    <i id="jian" style="font-size: 13px;font-weight: 800;margin-right: 5px;cursor: pointer;" class="layui-icon layui-icon-subtraction"></i>
+                    <input  type="text" name="quantity" id="quantity" maxlength="9" value="1"  onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"  class="buyNum">
+                    <i id='jia' style="font-size: 13px;font-weight: 800;margin-left: 5px;cursor: pointer;" class="layui-icon layui-icon-addition"></i>
+                    <span class="stock_str"  style="font-size: 12px;font-weight: 400;color: #555; margin-left: 16px;white-space: nowrap;">  <span id="kucun" style="color: #f2270b">0</span> </span>
+                </div>
+            </div>
+
+        </div>
+        <div  class="proName" style="">
+            <p style="font-size:12px;  margin-left: 20px;color: #999999;height: 30px;line-height: 30px;"> 购买信息：<span  class="goodsInfo">未选中商品  </span></p>
+        </div>
+
+    </div>
+</div>
+<div class="PayContent layui-form xsh-width"  style="">
+
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;  display:none; ">
+        <legend>增值服务</legend>
+    </fieldset>
+    <div class="layui-form-item" id="activity" style="display:none;">
+        <label class="layui-form-label">优惠活动:</label>
+        <div class="layui-input-block" style="line-height: 38px;">
+            <span class="layui-badge layui-bg-purple" id="discount_tips" style="font-size: 12px;cursor: pointer;">买多优惠</span>
+            <span class="layui-badge layui-bg-red"    id="reach_tips" style="font-size: 12px;cursor: pointer;">买多赠送</span>
+        </div>
+        <p id="discount_tips_str" style="display: none;"></p>
+        <p id="reach_tips_str" style="display: none;"></p>
+    </div>
+    <div class="layui-form-item" style="  display:none; ">
+        <label class="layui-form-label">接收卡密:</label>
+        <div class="layui-input-block">
+             <input type="checkbox" id="email_notice" lay-filter="email_notice" title="邮箱" lay-skin="primary" value="1"  >
+             <input type="checkbox" id="sms_notice" lay-filter="sms_notice" title="短信" lay-skin="primary"  value="1"  >
+        </div>
+    </div>
+    <div class="layui-form-item  additional " id="receive_div" style="display:none;">
+        <div class="layui-inline " style="margin-top: 5px;">
+            <label class="layui-form-label required" id="notice_title"></label>
+            <div class="layui-input-inline" style="width: 500px;">
+                <input type="text"  data-key="1" id="sms_receive" autocomplete="off" placeholder="请输入相应接收卡密方式" class="layui-input" style="border-radius: 5px;color: #555;">
+                <tip id="sms_tip" style="margin-left: 10px;color: #515151;line-height: 35px;font-size: 12px;">使用该服务,会收取<span style="color: red;" class="smsPrice">0.50</span>元费用</tip>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item  additional coupon" style="display: none;">
+
+        <div class="layui-inline " style="margin-top: 5px;" >
+            <label class="layui-form-label">优惠券码:</label>
+            <div class="layui-input-inline" style="width: 500px;">
+                <input type="text" name="coupon" id="coupon" autocomplete="off" placeholder="请输入你的优惠券" class="layui-input" style="border-radius: 5px;color: #555;">
+            </div>
+        </div>
+    </div>
+    <div id="contact_html">
+
+    </div>
+    <div class="layui-form-item  additional"  id="card_password" style="display: none;">
+
+        <div class="layui-inline" style="margin-top: 5px;">
+            <label class="layui-form-label">取卡密码：</label>
+            <div class="layui-input-inline" style="width: 500px;">
+                <input type="text" name="take_card_password" id="take_card_password"  autocomplete="off" placeholder="输入您的取卡密码(请自行定义)" class="layui-input" style="border-radius: 5px;color: #555;">
+            </div>
+        </div>
+    </div>
+
+
+    <fieldset class="layui-elem-field layui-field-title" style="">
+
+        <legend style="margin-bottom: 10px;">支付方式</legend>
+        <ul  style="width:90%;    margin-left: 5%;min-height: 40px;" class="payType clear">
+                            <li data-id="983" data-type="2" data-ident="demo" data-rate="0.06" data-fee="0" style="float: left;cursor: pointer;margin-left: 2%; border: 1px solid #ffffff; width: 30%;">
+                    <img style="height:30px;" src="/static/common/images/paylogo/icon_wx.jpg">
+                </li>
+                            <li data-id="983" data-type="2" data-ident="demo" data-rate="0.06" data-fee="0" style="float: left;cursor: pointer;margin-left: 2%; border: 1px solid #ffffff; width: 30%;">
+                    <img style="height:30px;" src="/static/common/images/paylogo/icon_zfb.jpg">
+                </li>
+                    </ul>
+        <div class="clear yue layui-form" style="    margin-left:9%;display: none;font-size: 12px;    margin-top: 10px;" >
+            可使用余额抵扣：
+            <span style="font-size: 14px; font-weight: 500;  color: #f86444;line-height: 22px;">¥</span>
+            <span  class="dkPrice" style="font-size: 14px;font-weight: 500;color: #f86444;line-height: 22px;">2.5</span>
+            元
+            <input type="checkbox"  name="switchDk" id="switchDk"  lay-skin="switch" lay-filter="switchDk" lay-text="抵扣|不抵扣">
+        </div>
+
+
+        <div class="clear" style="width: 96%;margin-left: 2%;">
+
+
+            <a class="layui-btn layui-btn-fluid" id="toPay" style="right: 0;background: #a233c6;margin-top: 20px;margin-bottom: 10px;">
+                <span style="font-weight: 600;" id="ppp">支付金额 : </span>
+                <span style=" font-weight: 500; font-size: 16px">¥</span>
+                <span id="price" style="font-weight: 500;font-size: 14px;">0.00</span>
+                <span id="fee_str" style="font-weight: 600;font-size: 12px;text-align: right;display: none;" > （含手续费:￥<span id="fee">0.12</span>） </span>
+            </a>
+        </div>
+    </fieldset>
+
+</div>
+
+
+
+
+<div style="visibility: hidden;height: 50px;">
+
+</div>
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3151cf57d122e3860e1f9426a2746f72";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+
+    function loginAfter(data){
+        window.location.reload();
+
+    };
+</script>
+
+
+
+
+
+
+<script src="/addons/default_payment_template/js/shop.js?v=1.2.5"></script>
+<script src="/static/common/js/clipboard.js?v=1.2.5"></script>
+<script src="/static/common/js/qrcode.min.js?v=1.2.5"></script>
+
+<script src="/static/plugins/layui/layui.js?v=1.2.5"></script>
+
+
+</body>
+</html>
+
+2.创建订单
+POST /goods/createorder HTTP/1.1
+Host: www.qukapu.com
+Connection: keep-alive
+Content-Length: 169
+sec-ch-ua-platform: "iOS"
+X-CSRF-TOKEN: of0oqcgygFQFnjChX4sDP3H1bPAK2EFcf4OIRM5F
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?1
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: application/json, text/javascript, */*; q=0.01
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Origin: https://www.qukapu.com
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://www.qukapu.com/single/8CBF9B0DD7D4
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: Hm_lvt_3151cf57d122e3860e1f9426a2746f72=1776676276; HMACCOUNT=65CE649B7C78D7EA; Hm_lpvt_3151cf57d122e3860e1f9426a2746f72=1776677838; XSRF-TOKEN=eyJpdiI6IlNEY1dsdGpCN2xFbmkrdjZ0djhXMkE9PSIsInZhbHVlIjoiRGkvTnM5NVNUZm9PODhUcVBhY3lYRXFzb3lNTnVRaUJNb3ExTnhLRU82MHdoUjlSZU1IWFo1S0JRVjkxanJGa2FjcnRncXEwN2hDRjZrQWdsR1pDYjZsejVsUENQWEY0Ung5cTArVklHUE9yOE00cDRwYnM2QWU0MUovaTVyT2MiLCJtYWMiOiJjM2FhZTVkYTM5ZDFmZDI2YzQzZDQ2ODFmMmNlYzMwMjNkNWMyMzU2YmRjYzA4YWUwZDhiYmVjYTU4YmRlZDcxIiwidGFnIjoiIn0%3D; xsh_session=eyJpdiI6ImlMbTIrZkhaQ3JYUlhCYUtQT3hyRnc9PSIsInZhbHVlIjoiL3VPbnUrS2dlelpqbVdyYUNMSnRIR2NJYWRKbzNzR2NCcnZaN0pCOWZxczVhUEZGbWtKemU0Vjk3NzVBVjJGQXZiNkU5YXFreUpsWkQxTkY5UUY3cU02dzNGV2FEVVJLT1BINGF4d01lell3RXQrbFljRUV1YjlLY3pHTFVESFQiLCJtYWMiOiJhMmU1Nzk3OGMyOWQ3ZTllMjIyNGIzZWFiYjg0MWM0ODNlOWJmOWQ1NTI5NDA2Y2RjNTMxMWY5M2NhN2RiY2YwIiwidGFnIjoiIn0%3D
+
+GoodsId=6653&quantity=1&shopId=2fKPESf42ZWOPttQod0tsQ%3D%3D&is_sms=0&sms_receive=&take_card_password=&payId=13&payType=1&coupon=&is_xh=0&kami_id=&is_dk=0&visit_password=
+
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: application/json
+Vary: Accept-Encoding
+Date: Mon, 20 Apr 2026 09:37:22 GMT
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IlNDVXc5d2k5K1lvSUdsS2hQZC9aYXc9PSIsInZhbHVlIjoiWWhQNWVLdHo2UlJsTitTUmZLMzE2Wnp2bVRBcDFHS2poRGVFRm5Rb2kvTnl5ZmJmVWtzeDArVzIyMkxKSGN0MjgrWTRpbm1iWHN1bEg1VVF6d1JxNWw2em9qR2hNQ2I3bVNFalZYZGs2Z2RhSzI1WmNBQVhYSTdVZG5lNzdYV3QiLCJtYWMiOiI3M2I3ZjViOWJkYWFmYzRhNDFjNzRhZjczZWU4ZGVkYTAzYzQ5Y2Q0OTE3NWZlM2I3Y2MwMzI2MmQ4YTY3MTA1IiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 11:37:22 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: xsh_session=eyJpdiI6IkQ5OHBiSG1icXZaZkQwSjhmRndFQnc9PSIsInZhbHVlIjoiS2FZL1V2ZEJWV0U0cWFYL0gyYjdSd1pwRXBDZ1lzV1hxRVM1clliQUtQaUhTUXl0bFZHamxtWEF6bjUzeW1JeUc3Z3RWT1o4a09GOHExdXk2cGNOWlVNMVF0M3A0WEUzY1FLRGFKQTJuUHNFK3FwUC9mdEtRWnNhSW9UREtMdWgiLCJtYWMiOiJjNmQ0MGU5NTViMzEzMzYyM2I5OTQ1NzM1OGFlZGJkNWRmOGVhYjI4OTc4NDcwMjkyM2IwNDk1NDkzNDgyOTIxIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 11:37:22 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
+X-Cache-Lookup: Cache Miss
+Cache-Control: private, no-cache
+Transfer-Encoding: chunked
+X-NWS-LOG-UUID: 2752384700671230446
+Connection: keep-alive
+X-Cache-Lookup: Cache Miss
+
+{"code":0,"msg":"\u64cd\u4f5c\u6210\u529f","data":{"url":"https:\/\/www.qukapu.com\/paymentconfirm\/QKP260420173722833486"},"success":true}
+
+
+
+3.获取重定向地址
+GET /disburse/QKP260420173722833486 HTTP/1.1
+Host: www.qukapu.com
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+Referer: https://www.qukapu.com/paymentconfirm/QKP260420173722833486
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: Hm_lvt_3151cf57d122e3860e1f9426a2746f72=1776676276; HMACCOUNT=65CE649B7C78D7EA; Hm_lpvt_3151cf57d122e3860e1f9426a2746f72=1776677844; XSRF-TOKEN=eyJpdiI6ImcyYUZYN3ptN0pvWGEwWWF4OXlERGc9PSIsInZhbHVlIjoiUlpwMFEzTDNrakFlVWo3SE1MaTFlejQwejYxRkNJNXJyK2VSZGkvdWYvNEV4WDl6dnBBTWthMGlrd0ZpL1Q2V2ZIUjcyRnJIY2JCTHJxcGYvSytObmNSVmpLRUFrY0dJUUlOYVBhcFM1RDFKaVpSOTRuOUlNVEkwMEkvTUNlWGkiLCJtYWMiOiIwMmI3MDM4OGQ3MmVhMDdkNzIzMGRkOTg5ZGY2YzU5MDU1NTc2MDZkZjg5MTM3YjJhNzdmMDdjMzczNzA2N2U1IiwidGFnIjoiIn0%3D; xsh_session=eyJpdiI6IjV1QVFGWmZsdlEzWndSMm9kTEU2UEE9PSIsInZhbHVlIjoiWEFlREdNUWV1c0hUM2ZVNThNalhEcVlGYjRDcWtJRno0TzI4ZzNreUVNWUZ5Q0sycHZyemUySWdXZEVGTjZZTXl5NUdWMWl1ZEFCQjkra0gxaGFUeVd1U3M1amlEU2pqd296R2pGRFB5SWhVT2EyWFJVaUNYSHdyLytXSURBL3EiLCJtYWMiOiJlY2M0N2QyZTFjMTg1NjYxNzY5Njg4NDRmMzdkMDdjYWI4YTk5ZGZlY2ExN2JlYmMwNWIwZmIxNzgzMjViNjAzIiwidGFnIjoiIn0%3D
+
+HTTP/1.1 302 Found
+Server: nginx
+Content-Type: text/html; charset=UTF-8
+location: https://www.yiyipay.com/payment/YY260420173726999913
+Date: Mon, 20 Apr 2026 09:37:26 GMT
+Set-Cookie: XSRF-TOKEN=eyJpdiI6IjJKQnQ2U3JnUnYrVGo2UytTaDdodVE9PSIsInZhbHVlIjoiSjBNQnl1WEJhM2ZCejdWQ21yODBsNzRqNjY1bXlvd0xTTm9ZbGU0YXlGaHB5emZaNGQvM2R3V1BQcFhJL0tDQVAyT2NqTUM2VVFyKzJBUVpNOHd2M0xhcjB3NUdIdWdLZU9xeEhEaFBKcXgwYkRPT3d2NVVyV2wyNnFGZVZEZTIiLCJtYWMiOiI3Njg4NzA4OTE3NGU5NTNlMTQ1ZWNkM2IyNTMyM2VjNjIyN2I1ZTQzMzllYWRhMTEwMmQ2YWFiYTNmMjkyNTE1IiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 11:37:26 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: xsh_session=eyJpdiI6IjJqc09tOFY3VDNEcGtDc1VmNWJOSGc9PSIsInZhbHVlIjoiZ29uYkpXakxPOHUxRXJ0TW5GaDZicmcvVjVScUxxVDNmTmZ0TXJJSk5KZDJ4OWE5a0NHbzFOL1I0WjNZKzRGVmZVMHQxVHgybGFjU0JaanFmRW1ER24wVzdRU0NYaXpSTkFodjFETUZ6Y0FUdU1DQVVubUlrcjB6bEp2Uzd0dmciLCJtYWMiOiI1M2U5YjdhMzNiNGQ1NDMzY2IxM2ZjNWM5NTkzOWViNWMxZjY3NDgwMDhjMTg5OGM3ZDNkOTc0ZWJhOTcyY2UyIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 11:37:26 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+X-Cache-Lookup: Cache Miss
+Cache-Control: private, no-cache
+Transfer-Encoding: chunked
+X-NWS-LOG-UUID: 13935801912299136489
+Connection: keep-alive
+X-Cache-Lookup: Cache Miss
+
+1
+
+
+4.获取支付宝网络参数
+GET /payment/YY260420173726999913 HTTP/2
+host: www.yiyipay.com
+upgrade-insecure-requests: 1
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+sec-fetch-site: cross-site
+sec-fetch-mode: navigate
+sec-fetch-user: ?1
+sec-fetch-dest: document
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+referer: https://www.qukapu.com/
+accept-encoding: gzip, deflate, br, zstd
+accept-language: zh-CN,zh;q=0.9
+priority: u=0, i
+
+HTTP/2 200
+server: nginx
+content-type: text/html; charset=UTF-8
+vary: Accept-Encoding
+cache-control: no-cache, private
+date: Mon, 20 Apr 2026 09:37:27 GMT
+set-cookie: XSRF-TOKEN=eyJpdiI6ImZvai9ETzhZVUcvMmtaYWhKZjJ3MlE9PSIsInZhbHVlIjoiN3QxekFmSXVSYTV3eUVSRG5lWEJFY2I3VTdpS2FpVWQ4eWk0b1VENHNMT1loZHZ5eWxKTVRvNnMvTTRvUE1JY3VwS2N5ME5wN1ZjMk1iaVVyM2U0ZmdNYk1tVWVwaE81LzBLU0tjQWlPMTJFKzFJTi91bU9ONHRjd0FHZzJ4WVUiLCJtYWMiOiI2ZTM0MTJmZTZlNmQ5Y2IwNjRlM2Y4NjkyNDljMzNiZDZlNGU4YmNiMGQwNTE4MmVhMmEwMGM2NGUwYWY5ZjZlIn0%3D; expires=Mon, 20-Apr-2026 11:37:27 GMT; Max-Age=7200; path=/; samesite=lax
+set-cookie: _session=eyJpdiI6IlpDUVVDVEd0TnNpOWNUVzRsc0hjUEE9PSIsInZhbHVlIjoiT0ZTakovTUtBUTc3cThhRysvdjE4ZkdaMllBUGdiY3Nxa1p4VkpVM0QwOG13ZjNJZW5JUy9vSVFGY3Y4L0RYT2J6Szh3T2J3d3dVdngzdXVsZTBESUQrWWM0UHVoanAxY0QrdldyRytRbi9ab3FjU011OFBaT3NTaFF1REROV3QiLCJtYWMiOiJmZWY3ODQwYjFlZDFmMTI2OTY5NmQ1ZjYzZGZiODBhZDc1ZWM5Njc4ODMwOWQ3OTE5NjVmOGMyMTlhZDE3NWMxIn0%3D; expires=Mon, 20-Apr-2026 11:37:27 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+strict-transport-security: max-age=31536000
+content-encoding: gzip
+
+<form id='alipaysubmit' name='alipaysubmit' action='https://openapi.alipay.com/gateway.do?charset=utf8' method='POST'><input type='hidden' name='alipay_public_key' value='MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArCIsZt7n//APXiXMzm59E8mc3gePAKCWRKxOvMUIqOf4/EYvyodWvo/wWuhBx/hVwD/SaaqyYWEDbkELgcbLoomErRlWJAkgr2rLJB4/7S9NmyyLqQPHq+lyG2XBewUwoVbdhZhCOn+88JPNagLtYR/kHe/KAsXisUcwsG72s0ZR7a4Zkc9hCCY7d+J/zx+w6qAnYQ6J/RrP1WehSOz90jhNuLaa/WQ9EQ7d1w0OnApzFdFoBX82LG/e/0dOvf8+Y5XeFB4cd3u0ivm+r59PiuTzEQw756o4/6tCM7xOCsgmhGLgOid/o1SBSgMkBuM8Tgb9x73VWBGBIuzT9BVYBwIDAQAB'/><input type='hidden' name='merchant_private_key' value='MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCAHT0m7loEkc2U8bN+8C8G1QVzpYyesg7y1Z25LI8Js5mMz1xlyEGltsBVftQ7+mKVdAx+M1jEpmaiQ+/b5yRjVOav4GHWN4xnP5xdFa9uBX9TKMUd7pXhdao9Un9mIxn+J58iyGDtnKOUA2qWbuLEXknfS6vJLAiNwOlOYydd0U7vWnzdqzBb8Tnk/KS66MsCok9BnySQKZ3xoqFU0Nz/KpepBDqkBwi3AzUQzp0KAfb3U4dVFWcAOPg30nP+GDEM5HRHS9VvLaw+ssDZ59BMQCs6sUnLwIiMg0iHt3BGH/q3QwE+I1RnXrUKq11qJkebVN5JnQD0kHdwC8Lzndp/AgMBAAECggEAcimb9LUxQiErMS6w5MzjGxN4aDV9uWyyJXJ1ui0ayWphyjh9/bUVyrWvboA2X7wfXU6sU0kuMQ6XJsGjXDH9GwbtCozIojudwePNUqWgTkpXy6LpBGM27FIOAdch78IXx4NHK5ejyBltKthggu0M5i+fZHvp+LpkZO0i+dchnVc6hDgmwKWW/mE7VFFLztfs+vM6VTFuZjVl7Aa0iO/KM9FQwCIekXKZG/CoNvbMoJRCq5THqUgsqm4Sxp5zMIacT3Zw6BkyVrU1s/Ea042BjqVicl2Oq2WgODKlcPjL1NaAcc6SUzVPQxYC/UhbOH4hBFBOrVbm3O3RUnrx1zLIAQKBgQDnsrkUs1TIlGeuy0KK1hLlsP2gHEJpl+/aLhhW/Oppwem02L55zuXBJ2983BDdF+J0t3og6daJxbEyNSgPt6fbMHbDf3NEgNceeBsg7gdfXWTJro6aw+IJer4Wl6DOZeww9GMyGAX3orLfiEv+GMsRkoTLKSSi5VVedhG444NVXwKBgQCNjTTJaCTs4c12qpMavCPEIasvCfUNWNuWcvezntwgUlBvtmEcxDjMnfuBC4FGpYeT7LRIjI+0v4h8slp2cfNvbzaPrrFQVdPDmdCmxj8sfwc2PSlFpU7ODZ6hTK1M80Ty0zhxt/dWWVapPQcIWB5cUYn+qDsekZhROZt5yB9u4QKBgE6qbJJtrKyJToaXNlmDA1l+9S2mSpolXucZ3WOzbTdJAjtHl6wtpe4loIGpCgS29kkgflOscQ3H1DiyuY5UkaYm1zvbCtzITcFnj/ZnOpOTVwPuwzYiqZ0EUoPDKXLKQh4A66j3ZRdF4ytn0D1OV6v4riN4LZss+AYhWjUG8fFLAoGAa7cLd0RP7Q67OlT9EjgfA24XhPkPyDNZDji4c7AslE/vM8NWTPyouFR0AbQOkQL/k7ppSlfkN0gVBcb2/fEirSa1H0txVM+rEMqos3BivGqBw21xTbVIrZZBoz7lFYx9aEcBSdATYFslji2Jf3kGyXunBelg65chkJXE0TxPZyECgYEAl33EtoVO97cSado2nfNP5ilWJV9vC5SVtrqE6PmnxykSzyXOruB+NqM++BUeH/46XzSARvBmHdG8qzfbCTsdv6j0BjMXkjAO5sJKwZ8WGS/S8mfgUMzmNicN/0dQZFu2IiwNyGHlm50L2RKYJfFxmastzKH4BFMcWOGubOP436k='/><input type='hidden' name='app_id' value='2021006112648674'/><input type='hidden' name='method' value='alipay.trade.wap.pay'/><input type='hidden' name='format' value='JSON'/><input type='hidden' name='charset' value='utf8'/><input type='hidden' name='sign_type' value='RSA2'/><input type='hidden' name='timestamp' value='2026-04-20 17:37:26'/><input type='hidden' name='version' value='1.0'/><input type='hidden' name='return_url' value='https://www.yiyipay.com/store/pay/return/YY260420173726999913'/><input type='hidden' name='notify_url' value='https://www.yiyipay.com/store/pay/notify/AlipayWap/2'/><input type='hidden' name='biz_content' value='{"out_trade_no":"YY260420173726999913","product_code":"QUICK_WAP_WAY","total_amount":"3.00","subject":"QKP260420173722833486"}'/><input type='hidden' name='sign' value='atC3QOcFihzwjfKS8yRxpJ2DsG8J+BwsYCdcf0x+6yEXQOozSvXpMSGHPL6KWTEQ1cgJH7AXH9q1cRDwLqhI3KCXgklIn/2e9QKZ042SRyrXueWGV/UK8vZko0p7i66fPUVU3Hzpfmm3V5YdzI/q4nMeV0HhYMtOFDV4gSIOKAJQuZ7jO65Q+eoundAcdawbH2az9iY+JlqABAZL86VQq8/XdoXIGGBUH27lypGYhN8xGonDCx130vUUaE/FzKWppb8mhuckW3U9k43qOr5Biz6T5ks9iEYEDUlSSb/mwwtFx4dw/9o9DWPELkbvxMQrUgTnVrc9QYn3c3o6OqpUoA=='/><input type='submit' value='ok' style='display:none;''></form><script>document.forms['alipaysubmit'].submit();</script>
