@@ -2,14 +2,34 @@ import json
 import random
 import re
 import uuid
+import ssl
 from typing import Tuple, Optional
 from collections import OrderedDict
 from urllib.parse import urlencode, urlparse
 
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.ssl_ import create_urllib3_context
 from bs4 import BeautifulSoup
 
 from app.services.base_service import BaseService
 from app.utils.html_parser import unescape_html
+
+
+class MengyanSSLAdapter(HTTPAdapter):
+    """自定义HTTP适配器，为梦言云卡配置兼容的SSL"""
+    def init_poolmanager(self, connections, *args, **kwargs):
+        # 创建自定义SSL上下文
+        context = create_urllib3_context()
+        # 使用更宽松的加密套件列表
+        context.set_ciphers('ALL:@SECLEVEL=0')
+        # 禁用主机名验证
+        context.check_hostname = False
+        # 禁用证书验证
+        context.verify_mode = ssl.CERT_NONE
+        
+        kwargs['ssl_context'] = context
+        super().init_poolmanager(connections, *args, **kwargs)
 
 
 class MengyanService(BaseService):
@@ -19,6 +39,11 @@ class MengyanService(BaseService):
     BASE_URL = "https://www.np4.cn"
     TRACKING_COOKIE = "s0680c9c1"
     FINGERPRINT_ENABLED = True
+
+    def __init__(self, user_id: int, db):
+        super().__init__(user_id, db)
+        # 梦言云卡需要特殊的SSL配置（第三方网关www.xkku.cn需要宽松SSL）
+        self.session.mount('https://', MengyanSSLAdapter())
 
     def login(self, username: str, password: str) -> dict:
         """登录梦言云卡店铺"""
