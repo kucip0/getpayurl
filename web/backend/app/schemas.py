@@ -40,6 +40,7 @@ class ShopLoginRequest(BaseModel):
     username: str
     password: str
     verify_code: Optional[str] = ""  # 验证码（可选）
+    csrf_token: Optional[str] = ""   # CSRF Token（新发卡平台必需）
 
 
 class ShopLoginResponse(BaseModel):

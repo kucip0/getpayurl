@@ -33,8 +33,8 @@ export const usePlatformStore = defineStore('platform', {
       await this.loadConfig(platformCode)
     },
     
-    async shopLogin(platformCode, username, password) {
-      const response = await apiShopLogin(platformCode, username, password)
+    async shopLogin(platformCode, username, password, verifyCode = '', csrfToken = '') {
+      const response = await apiShopLogin(platformCode, username, password, verifyCode, csrfToken)
       this.loginStatus = {
         loggedIn: response.data.success,
         shopName: response.data.shop_name || '',

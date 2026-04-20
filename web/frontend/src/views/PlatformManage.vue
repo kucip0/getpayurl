@@ -70,9 +70,9 @@
               <div style="display: flex; gap: 10px; align-items: center">
                 <el-input 
                   v-model="form.verify_code" 
-                  placeholder="请输入验证码" 
+                  placeholder="请输入验证码（点击图片刷新）" 
                   style="flex: 1"
-                  maxlength="4"
+                  @keyup.enter="handleShopLogin"
                 />
                 <el-button 
                   @click="handleGetCaptcha" 
@@ -90,6 +90,7 @@
                   title="点击刷新验证码"
                 />
               </div>
+              <span style="font-size: 12px; color: #e6a23c">⚠️ 提示：请先点击"获取验证码"，然后根据显示的图片输入验证码</span>
             </el-form-item>
 
             <el-form-item>
@@ -188,6 +189,7 @@ const form = ref({
   shop_username: '',
   shop_password: '',
   verify_code: '',
+  csrf_token: '',  // 保存验证码对应的 CSRF Token
   product_urls: []
 })
 
@@ -244,7 +246,8 @@ const handleShopLogin = async () => {
       currentPlatform.value,
       form.value.shop_username,
       form.value.shop_password,
-      form.value.verify_code
+      form.value.verify_code,
+      form.value.csrf_token  // 传递 CSRF Token
     )
 
     if (result.success) {
@@ -278,6 +281,9 @@ const handleGetCaptcha = async () => {
     const response = await getCaptcha(currentPlatform.value)
     
     if (response.data.success) {
+      // 保存 CSRF Token
+      form.value.csrf_token = response.data.csrf_token
+      
       // 将 hex 转换为 base64 图片
       const hex = response.data.captcha_base64
       const bytes = new Uint8Array(hex.length / 2)
@@ -290,7 +296,7 @@ const handleGetCaptcha = async () => {
       // 清空验证码输入
       form.value.verify_code = ''
       
-      ElMessage.success('验证码获取成功')
+      ElMessage.success('验证码获取成功，请输入图片中的验证码')
     } else {
       ElMessage.error('获取验证码失败')
     }

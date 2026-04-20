@@ -21,67 +21,119 @@ class XinfakaService(BaseService):
     def __init__(self, user_id: int, db):
         super().__init__(user_id, db)
         self.captcha_csrf_token = ""  # 保存 CSRF Token
+        self.captcha_cookies = {}  # 保存验证码请求的cookies
+    
+    def log(self, message: str):
+        """重写日志方法，同时输出到控制台和logs列表"""
+        super().log(message)
+        print(f"\033[33m[Xinfaka调试]\033[0m {message}", flush=True)
+    
+    def set_captcha_session(self, csrf_token: str, cookies: dict):
+        """设置验证码请求的session（前端获取验证码后调用）"""
+        self.captcha_csrf_token = csrf_token
+        self.captcha_cookies = cookies
+        self.log(f"设置验证码Session: CSRF Token={csrf_token[:30]}..., Cookies={list(cookies.keys())}")
+    
+    def load_captcha_session(self):
+        """从数据库加载验证码session cookies"""
+        self.log(f"尝试加载验证码Session, captcha_cookies={self.captcha_cookies}")
+        if self.captcha_cookies:
+            # 清除所有现有cookies
+            self.session.cookies.clear()
+            # 使用字典方式设置cookies（避免重复cookie问题）
+            from requests.cookies import create_cookie
+            for key, value in self.captcha_cookies.items():
+                # 直接设置cookie，不指定domain和path（让requests自动处理）
+                cookie = create_cookie(key, value)
+                self.session.cookies.set_cookie(cookie)
+            self.log(f"已加载验证码Session Cookies: {list(self.captcha_cookies.keys())}")
+            self.log(f"当前Session所有Cookies: {dict(self.session.cookies)}")
+            self.log(f"CSRF Token: {self.captcha_csrf_token[:30] if self.captcha_csrf_token else '未设置'}...")
 
-    def login(self, username: str, password: str, verify_code: str = "") -> dict:
-        """登录新发卡平台
-        
-        Args:
-            username: 手机号
-            password: 密码
-            verify_code: 验证码（可选，如果不提供则尝试不带验证码的登录）
-        """
+    def login(self, username: str, password: str, verify_code: str = "", csrf_token: str = "") -> dict:
+        """登录新发卡平台（使用缓存的session）"""
         try:
-            # 1. 访问登录页面获取 CSRF Token（如果还没有）
-            if not hasattr(self, 'captcha_csrf_token') or not self.captcha_csrf_token:
-                resp = self.session.get(f"{self.BASE_URL}/merchant/login")
-                resp.raise_for_status()
-
-                # 2. 从 meta 标签提取 CSRF Token
-                html = resp.text
-                match = re.search(r'name="csrf-token"\s+content="([^"]+)"', html)
-                if not match:
-                    raise Exception("无法获取 CSRF Token")
-
-                self.captcha_csrf_token = match.group(1)
-                self.log("获取 CSRF Token 成功")
+            if not verify_code:
+                raise Exception("请输入验证码")
+            if not csrf_token:
+                raise Exception("缺少CSRF Token")
             
-            csrf_token = self.captcha_csrf_token
+            self.log(f"CSRF Token: {csrf_token[:50]}...")
+            self.log(f"当前Cookies: {dict(self.session.cookies)}")
 
-            # 3. POST 登录
             login_data = {
                 "mobile": username,
                 "password": password,
+                "verify_code": verify_code,
+                "keeplogin": "0",
+                "_token": csrf_token,
             }
-            
-            # 如果提供了验证码，添加到请求中
-            if verify_code:
-                login_data["verify_code"] = verify_code
-                self.log("使用验证码登录")
-            else:
-                self.log("警告：新发卡平台需要验证码，尝试不带验证码的登录")
 
-            headers = {
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "X-CSRF-TOKEN": csrf_token,
-                "X-Requested-With": "XMLHttpRequest",
-                "Accept": "application/json, text/javascript, */*; q=0.01",
-                "Origin": self.BASE_URL,
-                "Referer": f"{self.BASE_URL}/merchant/login",
-            }
+            self.log("=" * 80)
+            self.log("【登录请求】")
+            self.log(f"  URL: {self.BASE_URL}/hp2025/merchant/login")
+            self.log(f"  请求体: mobile={username}, verify_code={verify_code}")
+            self.log(f"  Cookies: {dict(self.session.cookies)}")
+            self.log("=" * 80)
 
             resp = self.session.post(
-                f"{self.BASE_URL}/merchant/login",
+                f"{self.BASE_URL}/hp2025/merchant/login",
                 data=login_data,
-                headers=headers,
                 timeout=15
             )
+            
+            self.log("=" * 80)
+            self.log("【登录响应】")
+            self.log(f"  状态码: {resp.status_code}")
+            self.log(f"  返回Cookies: {dict(resp.cookies)}")
+            self.log(f"  响应: {resp.text[:200]}")
+            self.log("=" * 80)
+            
             resp.raise_for_status()
             result = resp.json()
+            self.log(f"登录响应JSON: {json.dumps(result, ensure_ascii=False)}")
 
-            # 调试日志
-            self.log(f"登录响应: {result}")
+            if result.get("code") != 0:
+                error_msg = result.get("msg", "登录失败")
+                data = result.get("data", {})
+                if isinstance(data, dict) and data.get("type") in [1, 2]:
+                    login_type = data["type"]
+                    type_name = "SMS" if login_type == 1 else "Email"
+                    value = data.get("value", "")
+                    raise Exception(f"需要{type_name}二级验证,验证账号: {value}")
+                raise Exception(f"登录失败: {error_msg}")
 
-            # 4. 检查响应
+            xsh_cookie = self.session.cookies.get("xsh_session")
+            if not xsh_cookie and not dict(self.session.cookies):
+                raise Exception("登录失败: 服务器未返回Cookie")
+            
+            self.log("登录成功")
+            return {
+                "success": True,
+                "message": "登录成功",
+                "shop_name": username,
+            }
+
+        except Exception as e:
+            self.log(f"登录失败: {str(e)}")
+            raise
+            
+            # ===== 输出登录响应详情 =====
+            self.log("=" * 80)
+            self.log("【登录响应】详情:")
+            self.log(f"  状态码: {resp.status_code}")
+            self.log(f"  响应头: {dict(resp.headers)}")
+            self.log(f"  返回Cookies: {dict(resp.cookies)}")
+            self.log(f"  响应后Session所有Cookies: {dict(self.session.cookies)}")
+            self.log(f"  响应内容: {resp.text[:300]}")
+            self.log("=" * 80)
+            
+            resp.raise_for_status()
+            result = resp.json()
+            
+            self.log(f"登录响应JSON: {json.dumps(result, ensure_ascii=False)}")
+
+            # 5. 检查响应
             if result.get("code") != 0:
                 error_msg = result.get("msg", "登录失败")
                 
@@ -91,18 +143,17 @@ class XinfakaService(BaseService):
                     login_type = data["type"]
                     type_name = "SMS" if login_type == 1 else "Email"
                     value = data.get("value", "")
-                    raise Exception(f"需要{type_name}二级验证，验证账号: {value}")
+                    raise Exception(f"需要{type_name}二级验证,验证账号: {value}")
                 
                 raise Exception(f"登录失败: {error_msg}")
 
-            # 5. 验证 Cookie
-            merchant_cookie = self.session.cookies.get("merchant")
-            if not merchant_cookie:
-                # 新发卡可能使用不同的 Cookie 名称
+            # 6. 验证 Cookie (xsh_session 或 remember_merchant_*)
+            xsh_cookie = self.session.cookies.get("xsh_session")
+            if not xsh_cookie:
                 all_cookies = dict(self.session.cookies)
                 if not all_cookies:
-                    raise Exception("登录失败: 无 Cookie")
-                self.log("登录成功（Cookie 检查通过）")
+                    raise Exception("登录失败: 服务器未返回 Cookie")
+                self.log("登录成功(Cookie 检查通过)")
             else:
                 self.log("登录成功")
 
@@ -117,93 +168,104 @@ class XinfakaService(BaseService):
             raise
 
     def get_captcha_image(self) -> bytes:
-        """获取验证码图片（保持 session 一致性，用于后续登录）"""
+        """获取验证码图片(同时获得CSRF Token)"""
         try:
-            # 清除旧的 session，确保获取新的 CSRF Token
+            # 清除旧的 session,确保获取新的 CSRF Token
             self.session.cookies.clear()
             self.captcha_csrf_token = ""
             
-            # 访问登录页面获取 CSRF Token 和 Session
-            resp = self.session.get(f"{self.BASE_URL}/merchant/login")
-            resp.raise_for_status()
+            # 获取验证码图片(响应会设置 XSRF-TOKEN Cookie)
+            import random
+            captcha_url = f"{self.BASE_URL}/captcha/default?{random.random()}"
             
-            # 从 meta 标签提取 CSRF Token
-            html = resp.text
-            match = re.search(r'name="csrf-token"\s+content="([^"]+)"', html)
-            if match:
-                self.captcha_csrf_token = match.group(1)
-                self.log("获取 CSRF Token 成功")
+            # ===== 输出请求详情 =====
+            self.log("=" * 80)
+            self.log("【获取验证码】请求详情:")
+            self.log(f"  请求URL: {captcha_url}")
+            self.log(f"  请求方法: GET")
+            self.log(f"  请求头: {dict(self.session.headers)}")
+            self.log(f"  当前Cookies: {dict(self.session.cookies)}")
+            self.log("=" * 80)
             
-            # 获取验证码图片（使用同一个 session）
-            captcha_url = f"{self.BASE_URL}/captcha/merchantlogin?{random.random()}"
             resp = self.session.get(captcha_url, timeout=15)
             resp.raise_for_status()
             
-            self.log(f"验证码图片获取成功，大小: {len(resp.content)} bytes")
+            # ===== 输出响应详情 =====
+            self.log("【获取验证码】响应详情:")
+            self.log(f"  状态码: {resp.status_code}")
+            self.log(f"  响应头: {dict(resp.headers)}")
+            self.log(f"  返回Cookies: {dict(resp.cookies)}")
+            self.log(f"  响应后Session所有Cookies: {dict(self.session.cookies)}")
+            self.log(f"  响应内容大小: {len(resp.content)} bytes")
+            
+            # 从 Cookie 中获取 CSRF Token (XSRF-TOKEN)
+            csrf_token = self.session.cookies.get("XSRF-TOKEN")
+            if csrf_token:
+                from urllib.parse import unquote
+                # URL解码
+                csrf_token = unquote(csrf_token)
+                self.captcha_csrf_token = csrf_token
+                self.log(f"  CSRF Token (解码后): {csrf_token[:50]}...")
+                self.log(f"  CSRF Token 长度: {len(csrf_token)}")
+            else:
+                self.log("  警告: 未获取到 CSRF Token")
+            
+            self.log("=" * 80)
             return resp.content
         except Exception as e:
             self.log(f"获取验证码失败: {str(e)}")
             raise
 
     def login_with_captcha_session(self, username: str, password: str, verify_code: str) -> dict:
-        """使用已获取验证码的 session 登录（保持 session 一致性）
+        """使用已获取验证码的 session 登录(保持 session 一致性)
         
-        这个方法必须在 get_captcha_image() 之后调用，使用同一个 session
+        这个方法必须在 get_captcha_image() 之后调用,使用同一个 session
         """
         # 直接使用已保存的 CSRF Token 和 session
         if not self.captcha_csrf_token:
             raise Exception("请先获取验证码")
         
         try:
-            # POST 登录（使用同一个 session）
+            # POST 登录(使用同一个 session)
             login_data = {
                 "mobile": username,
                 "password": password,
                 "verify_code": verify_code,
+                "keeplogin": "0",
+                "_token": self.captcha_csrf_token,
             }
 
-            headers = {
-                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                "X-CSRF-TOKEN": self.captcha_csrf_token,
-                "X-Requested-With": "XMLHttpRequest",
-                "Accept": "application/json, text/javascript, */*; q=0.01",
-                "Origin": self.BASE_URL,
-                "Referer": f"{self.BASE_URL}/merchant/login",
-            }
-
+            # 使用 multipart/form-data (根据抓包)
             resp = self.session.post(
-                f"{self.BASE_URL}/merchant/login",
+                f"{self.BASE_URL}/hp2025/merchant/login",
                 data=login_data,
-                headers=headers,
                 timeout=15
             )
             resp.raise_for_status()
             result = resp.json()
 
-            # 调试日志
             self.log(f"登录响应: {result}")
 
             # 检查响应
             if result.get("code") != 0:
                 error_msg = result.get("msg", "登录失败")
                 
-                # 检查是否需要二级验证
                 data = result.get("data", {})
                 if isinstance(data, dict) and data.get("type") in [1, 2]:
                     login_type = data["type"]
                     type_name = "SMS" if login_type == 1 else "Email"
                     value = data.get("value", "")
-                    raise Exception(f"需要{type_name}二级验证，验证账号: {value}")
+                    raise Exception(f"需要{type_name}二级验证,验证账号: {value}")
                 
                 raise Exception(f"登录失败: {error_msg}")
 
             # 验证 Cookie
-            merchant_cookie = self.session.cookies.get("merchant")
-            if not merchant_cookie:
+            xsh_cookie = self.session.cookies.get("xsh_session")
+            if not xsh_cookie:
                 all_cookies = dict(self.session.cookies)
                 if not all_cookies:
                     raise Exception("登录失败: 无 Cookie")
-                self.log("登录成功（Cookie 检查通过）")
+                self.log("登录成功(Cookie 检查通过)")
             else:
                 self.log("登录成功")
 
@@ -218,83 +280,89 @@ class XinfakaService(BaseService):
             raise
 
     def get_product_price(self, product_url: str) -> dict:
-        """获取商品价格"""
+        """获取商品价格和信息(使用/goods/getinfo API)"""
         try:
-            resp = self.session.get(product_url)
+            # 步骤1: 访问商品页面获取shopId和CSRF Token
+            resp = self.session.get(product_url, timeout=15)
             resp.raise_for_status()
-
-            # 处理转义的HTML
-            html = resp.text.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
             
+            html = resp.text
+            
+            # 提取 CSRF Token
+            csrf_match = re.search(r'name="csrf-token"\s+content="([^"]+)"', html)
+            csrf_token = csrf_match.group(1) if csrf_match else ""
+            
+            # 提取 shopId (从隐藏input)
             soup = BeautifulSoup(html, "html.parser")
-
-            # 提取商品参数（从隐藏input）
-            params = {}
-            for input_elem in soup.find_all("input", attrs={"name": True}):
-                name = input_elem["name"]
-                value = input_elem.get("value", "")
-                params[name] = value
-
-            # 提取商品ID
-            goodid = params.get("goodid")
-            if not goodid:
-                raise Exception("未找到商品ID")
-
-            # 提取价格
-            price_span = soup.find("span", class_="card__detail_price")
-            if not price_span:
-                raise Exception("未找到商品价格")
+            shop_id_input = soup.find("input", {"id": "shopId"})
+            if not shop_id_input:
+                raise Exception("未找到 shopId")
+            shop_id = shop_id_input.get("value")
             
-            price_text = price_span.get_text().strip()
-            original_price = float(price_text.replace("￥", "").replace("¥", ""))
-
-            # 提取库存
-            stock = 0
-            stock_span = soup.find("span", class_="card__detail_stock")
-            if stock_span:
-                stock_text = stock_span.get_text().strip()
-                stock_match = re.search(r'(\d+)', stock_text)
-                if stock_match:
-                    stock = int(stock_match.group(1))
-                elif "少量" in stock_text or "充足" in stock_text:
-                    stock = 999
-
-            # 提取商品名称
-            product_name = "未知商品"
-            goods_box = soup.find("div", class_="goods_box")
-            if goods_box:
-                h3_tag = goods_box.find("h3")
-                if h3_tag:
-                    product_name = h3_tag.get_text().strip()
-
-            # 填充默认值
-            params.setdefault("feePayer", "2")
-            params.setdefault("fee_rate", "0.05")
-            params.setdefault("min_fee", "0.1")
-            params.setdefault("rate", "100")
-
+            # 提取商品ID (从URL或页面)
+            # URL格式: https://www.xinfaka.com/single/8BF70AA3E39D
+            # 但实际API使用的是数字ID,需要从页面获取
+            goods_id_input = soup.find("input", {"id": "GoodsId"})
+            if not goods_id_input:
+                raise Exception("未找到商品ID")
+            goods_id = goods_id_input.get("value")
+            
+            self.log(f"商品信息: shopId={shop_id[:20]}..., goodsId={goods_id}")
+            
+            # 步骤2: 调用 /goods/getinfo API
+            api_url = f"{self.BASE_URL}/goods/getinfo"
+            data = {
+                "shopId": shop_id,
+                "id": goods_id
+            }
+            
+            headers = {
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "X-CSRF-TOKEN": csrf_token,
+                "X-Requested-With": "XMLHttpRequest",
+                "Accept": "application/json, text/javascript, */*; q=0.01",
+                "Origin": self.BASE_URL,
+                "Referer": product_url,
+            }
+            
+            resp = self.session.post(api_url, data=data, headers=headers, timeout=15)
+            resp.raise_for_status()
+            
+            result = resp.json()
+            
+            if result.get("code") != 0:
+                raise Exception(f"获取商品信息失败: {result.get('msg', '未知错误')}")
+            
+            goods_data = result.get("data", {})
+            
+            # 提取商品信息
+            product_name = goods_data.get("name", "未知商品")
+            price = goods_data.get("price", "0.00")
+            stock = goods_data.get("stock", 0)
+            sms_price = goods_data.get("smsPrice", "0.00")
+            
+            self.log(f"获取商品信息成功: {product_name}, 价格: ¥{price}, 库存: {stock}")
+            
             return {
                 "success": True,
-                "product_id": goodid,
+                "product_id": goods_id,
                 "product_name": product_name,
-                "original_price": original_price,
+                "original_price": float(price),
                 "stock": stock,
+                "sms_price": float(sms_price),
             }
-
+            
         except Exception as e:
             self.log(f"获取商品价格失败: {str(e)}")
             return {"success": False, "message": str(e)}
 
     def modify_goods_price(self, goods_id: str, new_price: str) -> dict:
-        """修改商品价格"""
+        """修改商品价格（使用直接修改API）"""
         try:
-            # 步骤1: 获取商品编辑数据
-            self.log("正在获取商品信息...")
-            goods_data = self._get_goods_edit_data(goods_id)
+            self.log(f"正在修改商品 {goods_id} 价格为 ¥{new_price}...")
             
-            # 步骤2: 提交价格修改
-            self.log(f"正在修改价格为 ¥{new_price}...")
-            result = self._submit_goods_price_modify(goods_id, new_price, goods_data)
+            # 调用直接修改价格API
+            result = self._direct_modify_price(goods_id, new_price)
             
             self.log(f"成功: 价格已修改为 ¥{new_price}")
             return {
@@ -308,111 +376,38 @@ class XinfakaService(BaseService):
             self.log(f"修改价格失败: {str(e)}")
             return {"success": False, "message": str(e)}
 
-    def _get_goods_edit_data(self, goods_id: str) -> dict:
-        """获取商品编辑页面的表单数据"""
-        edit_url = f"{self.BASE_URL}/merchant/goods/edit.html"
+    def _direct_modify_price(self, goods_id: str, new_price: str) -> dict:
+        """直接修改商品价格（使用 /merchant/goods/modify API）"""
+        modify_url = f"{self.BASE_URL}/merchant/goods/modify"
         
-        headers = {
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "Upgrade-Insecure-Requests": "1",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-User": "?1",
-            "Sec-Fetch-Dest": "document",
-            "Referer": f"{self.BASE_URL}/merchant/goods/index.html",
-            "Accept-Encoding": "gzip, deflate, br, zstd",
-            "Accept-Language": "zh-CN,zh;q=0.9",
-            "Priority": "u=0, i",
-        }
+        # 获取 CSRF Token - 先访问商户首页确认登录状态
+        self.log("正在获取CSRF Token并检查登录状态...")
+        resp = self.session.get(f"{self.BASE_URL}/merchant", timeout=15)
         
-        resp = self.session.get(
-            edit_url,
-            params={"id": goods_id},
-            headers=headers,
-            timeout=15
-        )
+        if resp.status_code == 500:
+            raise Exception("服务器错误，可能未登录或session已过期")
+        
         resp.raise_for_status()
         
-        # 处理转义的HTML
-        import html as html_module
-        html_content = resp.text
-        html_content = html_module.unescape(html_content)
-        html_content = html_content.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
-        html_content = html_content.replace('&#x20;', ' ')
+        # 从页面中提取 CSRF Token
+        csrf_match = re.search(r'name="csrf-token"\s+content="([^"]+)"', resp.text)
+        if not csrf_match:
+            # 检查是否跳转到登录页
+            if 'login' in resp.url.lower() or '登录' in resp.text:
+                raise Exception("未登录或登录已过期，请重新登录")
+            raise Exception("无法获取CSRF Token")
         
-        soup = BeautifulSoup(html_content, "html.parser")
-        
-        # 查找表单
-        form = soup.find("form", {"id": "goods-form"})
-        if not form:
-            form = soup.find("form", {"id": "form1"})
-        if not form:
-            form = soup.find("form")
-        
-        if not form:
-            raise Exception("商品编辑页面中未找到表单")
-        
-        # 提取所有 input 字段
-        goods_data = {}
-        for inp in form.find_all("input"):
-            name = inp.get("name")
-            if not name:
-                continue
-            
-            input_type = inp.get("type", "text")
-            
-            if input_type in ("radio", "checkbox"):
-                if inp.get("checked"):
-                    goods_data[name] = inp.get("value", "1")
-            else:
-                value = inp.get("value")
-                if value is not None:
-                    goods_data[name] = value
-        
-        # 提取 textarea 字段
-        for textarea in form.find_all("textarea"):
-            name = textarea.get("name")
-            if not name:
-                continue
-            
-            if textarea.get("class") and "d-none" in textarea.get("class", []):
-                summernote_div = soup.find("div", {"id": f"summernote-{name}"})
-                if summernote_div:
-                    goods_data[name] = str(summernote_div.decode_contents())
-            else:
-                value = textarea.get_text()
-                if value is not None:
-                    goods_data[name] = value
-        
-        # 提取 select 字段
-        for select in form.find_all("select"):
-            name = select.get("name")
-            if not name:
-                continue
-            selected_option = select.find("option", selected=True)
-            if selected_option and selected_option.get("value"):
-                goods_data[name] = selected_option.get("value")
-            else:
-                first_option = select.find("option")
-                if first_option and first_option.get("value"):
-                    goods_data[name] = first_option.get("value")
-        
-        if not goods_data:
-            raise Exception("商品编辑页面表单数据为空")
-        
-        return goods_data
-
-    def _submit_goods_price_modify(self, goods_id: str, new_price: str, goods_data: dict) -> dict:
-        """提交商品价格修改"""
-        edit_url = f"{self.BASE_URL}/merchant/goods/edit.html"
+        csrf_token = csrf_match.group(1)
+        self.log(f"获取到CSRF Token: {csrf_token[:30]}...")
         
         headers = {
-            "Accept": "*/*",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             "X-Requested-With": "XMLHttpRequest",
+            "X-CSRF-TOKEN": csrf_token,
             "Origin": self.BASE_URL,
-            "Referer": f"{self.BASE_URL}/merchant/goods/edit.html?id={goods_id}",
-            "sec-ch-ua": '"Chromium";v="146", "Not-A.Brand";v="24", "Google Chrome";v="146"',
+            "Referer": f"{self.BASE_URL}/merchant/goods/list",
+            "sec-ch-ua": '"Google Chrome";v="147", "Not-A.Brand";v="8", "Chromium";v="147"',
             "sec-ch-ua-mobile": "?0",
             "sec-ch-ua-platform": '"Windows"',
             "Sec-Fetch-Site": "same-origin",
@@ -420,16 +415,19 @@ class XinfakaService(BaseService):
             "Sec-Fetch-Dest": "empty",
             "Accept-Encoding": "gzip, deflate, br, zstd",
             "Accept-Language": "zh-CN,zh;q=0.9",
-            "Priority": "u=1, i",
         }
         
-        # 使用前置数据，仅覆盖价格
-        form_data = goods_data.copy()
-        form_data["id"] = str(goods_id)
-        form_data["price"] = str(new_price)
+        # 只需传递三个参数：id, value, field
+        form_data = {
+            "id": str(goods_id),
+            "value": str(new_price),
+            "field": "price"
+        }
+        
+        self.log(f"提交价格修改: goods_id={goods_id}, new_price={new_price}")
         
         resp = self.session.post(
-            edit_url,
+            modify_url,
             data=form_data,
             headers=headers,
             timeout=15
@@ -438,56 +436,43 @@ class XinfakaService(BaseService):
         
         # 解析响应
         result = resp.json()
+        self.log(f"价格修改响应: {result}")
         
-        if result.get("code") != 1:
+        # 抓包返回 code=0 表示成功
+        if result.get("code") != 0:
             error_msg = result.get("msg", "修改商品价格失败，未知错误")
             raise Exception(f"修改商品价格失败: {error_msg}")
         
         return result
 
+
     def submit_order(self, product_url: str, new_price: float) -> dict:
-        """提交订单"""
+        """提交订单并获取支付二维码（基于移动端接口）"""
         self.logs = []
 
         try:
-            # 清除从数据库加载的Cookie
+            # 清除旧Cookie
             self.session.cookies.clear()
-            self.log("步骤1前: 已清除从数据库加载的旧Cookie")
+            self.log("步骤1前: 已清除旧Cookie")
 
-            # 步骤1: 获取Cookie及商品参数
-            cookie, params = self._step1_get_cookie_and_params(product_url)
+            # 步骤1: 获取商品页面和 CSRF Token
+            csrf_token, goods_info = self._mobile_step1_get_goods_page(product_url, new_price)
 
-            # 计算价格
-            paymoney = round(float(new_price) * 1 * (1 + 0.05), 2)
-            params["price"] = str(new_price)
-            params["paymoney"] = str(paymoney)
+            # 步骤2: 创建订单
+            order_no = self._mobile_step2_create_order(product_url, goods_info, csrf_token, new_price)
+            self.log(f"订单创建成功: {order_no}")
 
-            # 步骤2: 提交订单
-            trade_no = self._step2_submit_order(cookie, params, product_url)
+            # 步骤3: 访问支付页面 /payment/{订单号} 获取支付宝支付链接
+            payment_url = self._mobile_step3_get_payment_url(order_no, csrf_token)
 
-            # 步骤3: 获取支付表单
-            pay_params = self._step3_get_payment_form(cookie, trade_no)
-
-            # 步骤4: 提交到支付网关
-            pay_id = self._step4_submit_gateway(pay_params)
-
-            # 步骤5: 获取支付宝表单
-            alipay_params = self._step5_get_alipay_form(pay_id)
-
-            # 步骤6: 请求支付宝网关
-            location1, alipay_cookies = self._step6_request_alipay_gateway(alipay_params)
-
-            # 步骤7: 跟随重定向
-            final_url = self._step7_follow_redirect(location1, alipay_cookies)
-
-            # 步骤8: 生成二维码
-            qr_base64 = self._step8_generate_qrcode(final_url)
+            # 步骤4: 生成二维码
+            qr_base64 = self._generate_qrcode(payment_url)
 
             return {
                 "success": True,
-                "order_id": trade_no,
+                "order_id": order_no,
                 "qr_code_base64": qr_base64,
-                "payment_url": final_url,
+                "payment_url": payment_url,
                 "logs": self.logs,
             }
 
@@ -498,6 +483,282 @@ class XinfakaService(BaseService):
                 "error_message": str(e),
                 "logs": self.logs,
             }
+
+    def _mobile_step1_get_goods_page(self, url: str, new_price: float) -> Tuple[str, dict]:
+        """步骤1: 获取商品页面，提取 CSRF Token 和商品信息"""
+        resp = self.session.get(url, timeout=15)
+        resp.raise_for_status()
+
+        html = resp.text
+        
+        # 提取 CSRF Token
+        csrf_match = re.search(r'name="csrf-token"\s+content="([^"]+)"', html)
+        if not csrf_match:
+            raise Exception("未找到 CSRF Token")
+        csrf_token = csrf_match.group(1)
+        self.log(f"获取 CSRF Token: {csrf_token[:20]}...")
+
+        soup = BeautifulSoup(html, "html.parser")
+
+        # 提取商品ID (从隐藏input)
+        goods_id_input = soup.find("input", {"id": "GoodsId"})
+        if not goods_id_input:
+            raise Exception("未找到商品ID")
+        goods_id = goods_id_input.get("value")
+
+        # 提取 shopId
+        shop_id_input = soup.find("input", {"id": "shopId"})
+        if not shop_id_input:
+            raise Exception("未找到 shopId")
+        shop_id = shop_id_input.get("value")
+
+        # 提取商品价格
+        price_input = soup.find("input", {"id": "goodsPrice"})
+        original_price = price_input.get("value", "0") if price_input else "0"
+
+        self.log(f"商品信息: ID={goods_id}, 价格={original_price}, shopId={shop_id[:20]}...")
+
+        return csrf_token, {
+            "goods_id": goods_id,
+            "shop_id": shop_id,
+            "original_price": original_price,
+        }
+
+    def _mobile_step2_create_order(self, product_url: str, goods_info: dict, csrf_token: str, new_price: float) -> str:
+        """步骤2: 创建订单 POST /goods/createorder (移动端H5支付宝)"""
+        # 生成随机联系方式
+        contact = f"1{random.randint(3,9)}{''.join([str(random.randint(0,9)) for _ in range(9)])}"
+        
+        # 构建订单数据 - 使用 payId=18 (支付宝移动端H5支付)
+        order_data = {
+            "GoodsId": goods_info["goods_id"],
+            "quantity": "1",
+            "shopId": goods_info["shop_id"],
+            "is_sms": "0",
+            "sms_receive": "",
+            "take_card_password": "",
+            "payId": "18",  # 支付宝移动端H5支付
+            "payType": "1",  # 支付宝
+            "coupon": "",
+            "is_xh": "0",
+            "kami_id": "",
+            "is_dk": "0",
+            "visit_password": "",
+        }
+
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-CSRF-TOKEN": csrf_token,
+            "X-Requested-With": "XMLHttpRequest",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "Origin": self.BASE_URL,
+            "Referer": product_url,
+        }
+
+        resp = self.session.post(
+            f"{self.BASE_URL}/goods/createorder",
+            data=order_data,
+            headers=headers,
+            timeout=15
+        )
+        resp.raise_for_status()
+
+        # 解析响应
+        try:
+            result = resp.json()
+            if result.get("code") != 0:
+                error_msg = result.get("msg", "创建订单失败")
+                raise Exception(f"创建订单失败: {error_msg}")
+            
+            # 提取订单号 - 从 data.url 中
+            data = result.get("data", {})
+            
+            # data 可能是列表或字典
+            url = ""
+            if isinstance(data, list) and data:
+                url = data[0].get("url", "")
+            elif isinstance(data, dict):
+                url = data.get("url", "")
+            
+            if url:
+                # URL格式: https://www.xinfaka.com/paymentconfirm/XFK...
+                order_no = url.split("/")[-1]
+                return order_no
+            
+            # 备用方案: 直接从响应中提取
+            order_no = result.get("order_id") or result.get("trade_no")
+            if order_no:
+                return order_no
+            
+            raise Exception(f"响应中未找到订单号: {result}")
+        except Exception as e:
+            # 如果响应不是JSON，尝试从HTML中提取
+            if "trade_no" in resp.text:
+                match = re.search(r'name="trade_no"\s+value="([^"]+)"', resp.text)
+                if match:
+                    return match.group(1)
+            raise
+
+    def _mobile_step3_get_payment_url(self, order_no: str, csrf_token: str) -> str:
+        """步骤3: 访问支付页面,跟随重定向获取支付宝支付链接
+        
+        流程:
+        1. /payment/{订单号} -> 302
+        2. /disburse/{订单号} -> 302
+        3. www.yiyipay.com/payment/YY... -> 200 (包含支付宝表单)
+        4. 提取表单参数并提交到支付宝网关
+        5. 获取302重定向URL
+        6. 跟随重定向获取最终支付链接
+        
+        Returns:
+            str: 最终的支付宝支付URL
+        """
+        from collections import OrderedDict
+        
+        pay_url = f"{self.BASE_URL}/payment/{order_no}"
+        
+        headers = {
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "X-CSRF-TOKEN": csrf_token,
+            "Referer": f"{self.BASE_URL}/",
+        }
+
+        # 第1次: /payment/{订单号} -> 302
+        self.log(f"访问支付页: {pay_url}")
+        resp1 = self.session.get(pay_url, headers=headers, timeout=15, allow_redirects=False)
+        resp1.raise_for_status()
+        
+        if resp1.status_code not in [301, 302]:
+            raise Exception(f"支付页未重定向, 状态码: {resp1.status_code}")
+        
+        url2 = resp1.headers.get("Location")
+        if not url2:
+            raise Exception("未找到第一次重定向URL")
+        self.log(f"重定向1: {url2[:80]}...")
+        
+        # 第2次: /disburse/{订单号} -> 302
+        resp2 = self.session.get(url2, headers=headers, timeout=15, allow_redirects=False)
+        resp2.raise_for_status()
+        
+        if resp2.status_code not in [301, 302]:
+            raise Exception(f"/disburse 未重定向, 状态码: {resp2.status_code}")
+        
+        url3 = resp2.headers.get("Location")
+        if not url3:
+            raise Exception("未找到第二次重定向URL")
+        self.log(f"重定向2: {url3[:80]}...")
+        
+        # 第3次: www.yiyipay.com -> 200 (包含支付宝表单)
+        resp3 = self.session.get(url3, headers=headers, timeout=15)
+        resp3.raise_for_status()
+        
+        # 解析HTML,提取支付宝表单参数
+        soup = BeautifulSoup(resp3.text, "html.parser")
+        form = soup.find("form", {"id": "alipaysubmit"})
+        
+        if not form:
+            raise Exception("未找到支付宝表单")
+        
+        # 提取所有隐藏字段
+        alipay_params = {}
+        for inp in form.find_all("input", {"type": "hidden"}):
+            name = inp.get("name")
+            value = inp.get("value")
+            if name and value is not None:
+                alipay_params[name] = value
+        
+        if not alipay_params:
+            raise Exception("支付宝表单参数为空")
+        
+        self.log(f"提取到 {len(alipay_params)} 个支付宝表单参数")
+        
+        # 第4次: 提交到支付宝网关
+        # 根据抓包分析,charset=utf8(不加横杠)
+        gateway_url = "https://openapi.alipay.com/gateway.do?charset=utf8"
+        
+        # 直接提交原始表单参数
+        encoded_data = urlencode(alipay_params)
+        
+        self.log(f"请求数据长度: {len(encoded_data)}")
+        
+        # 提交到支付宝网关(使用抓包的请求头)
+        submit_headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Cache-Control": "max-age=0",
+            "sec-ch-ua": '"Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "Origin": "https://www.yiyipay.com",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Sec-Fetch-Site": "cross-site",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Dest": "document",
+            "Referer": "https://www.yiyipay.com/",
+            "Accept-Encoding": "gzip, deflate, br, zstd",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+            "Priority": "u=0, i",
+        }
+        
+        resp4 = self.session.post(
+            gateway_url,
+            data=encoded_data,
+            headers=submit_headers,
+            timeout=15,
+            allow_redirects=False
+        )
+        
+        self.log(f"支付宝网关响应: {resp4.status_code}")
+        
+        # 处理302重定向
+        if resp4.status_code in [301, 302]:
+            location = resp4.headers.get("Location")
+            if not location:
+                raise Exception("支付宝网关响应中无Location字段")
+            
+            self.log(f"支付宝网关重定向: {location[:100]}...")
+            
+            # 合并Cookie
+            alipay_cookies = dict(resp4.cookies)
+            all_cookies = {}
+            for k, v in self.session.cookies.items():
+                all_cookies[k] = v
+            for k, v in alipay_cookies.items():
+                all_cookies[k] = v
+            
+            # 第1次重定向: /cashier/mobilepay.htm
+            resp5 = self.session.get(
+                location,
+                cookies=all_cookies,
+                allow_redirects=False,
+                timeout=15
+            )
+            
+            self.log(f"第1次重定向响应: {resp5.status_code}")
+            
+            if resp5.status_code in [301, 302]:
+                # 第2次重定向: /h5pay/landing/index.html
+                final_url = resp5.headers.get("Location")
+                if final_url:
+                    self.log(f"第2次重定向: {final_url[:100]}...")
+                    return final_url
+                else:
+                    raise Exception("未找到第2次重定向URL")
+            else:
+                # 如果没有第2次重定向,使用第1次的URL
+                self.log(f"使用第1次重定向URL: {resp5.url[:100]}...")
+                return resp5.url
+            
+        else:
+            raise Exception(f"支付宝网关返回异常状态码: {resp4.status_code}, 响应: {resp4.text[:200]}")
+
+    def _generate_qrcode(self, url: str) -> str:
+        """生成二维码"""
+        from app.utils.qr_generator import generate_qr_base64
+        qr_base64 = generate_qr_base64(url)
+        self.log("生成二维码成功")
+        return qr_base64
 
     def _step1_get_cookie_and_params(self, url: str) -> Tuple[str, dict]:
         """步骤1: 获取Cookie及商品参数"""
@@ -978,7 +1239,7 @@ class XinfakaService(BaseService):
         pay_type: Optional[int] = None,
         order_type: Optional[int] = None
     ) -> dict:
-        """查询订单列表"""
+        """查询订单列表（使用JSON API）"""
         try:
             if not self.load_cookies():
                 return {
@@ -988,71 +1249,112 @@ class XinfakaService(BaseService):
                     "total": 0
                 }
 
-            merchant_cookie = self.session.cookies.get("merchant")
-            if not merchant_cookie:
-                return {
-                    "success": False,
-                    "message": "店铺登录已过期，请在平台管理中重新登录",
-                    "orders": [],
-                    "total": 0
-                }
-
-            base_url = f"{self.BASE_URL}/merchant/order/index.html"
-            params = {"status": status}
-
-            if start_date and end_date:
-                params["date_range"] = f"{start_date} - {end_date}"
-
+            # 使用JSON API接口
+            api_url = f"{self.BASE_URL}/merchant/order/list"
+            
+            # 构建查询参数（与抓包一致）
+            params = {
+                "page": 1,
+                "limit": 20,
+                "lay": "pay",
+                "goods_name": "",
+                "trade_no": "",
+                "channel_type": "",
+                "channel_id": "",
+                "status": status,
+                "contact": "",
+                "sms_receive": "",
+                "ip": "",
+                "created_at": "",
+                "success_at": ""
+            }
+            
+            # 暂不支持日期筛选（API日期格式未知）
+            # if start_date and end_date:
+            #     params["created_at"] = f"{start_date} - {end_date}"
+            
             if pay_type is not None:
-                params["paytype"] = pay_type
-
+                params["channel_type"] = str(pay_type)
+            
             if order_type is not None:
-                params["order_type"] = order_type
+                params["order_type"] = str(order_type)
+            
+            self.log("=" * 80)
+            self.log("【查询订单】请求详情:")
+            self.log(f"  URL: {api_url}")
+            self.log(f"  参数: {params}")
+            self.log(f"  Cookies: {dict(self.session.cookies)}")
+            self.log("=" * 80)
 
             headers = {
-                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-                "Upgrade-Insecure-Requests": "1",
+                "Accept": "application/json, text/javascript, */*; q=0.01",
+                "X-Requested-With": "XMLHttpRequest",
                 "Sec-Fetch-Site": "same-origin",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-User": "?1",
-                "Sec-Fetch-Dest": "document",
-                "Referer": f"{self.BASE_URL}/merchant/order/index.html?status={status}",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Dest": "empty",
+                "Referer": f"{self.BASE_URL}/merchant/order/list",
                 "Accept-Encoding": "gzip, deflate, br, zstd",
                 "Accept-Language": "zh-CN,zh;q=0.9",
-                "Priority": "u=0, i",
             }
 
             resp = self.session.get(
-                base_url,
+                api_url,
                 params=params,
                 headers=headers,
                 timeout=15
             )
             resp.raise_for_status()
+            
+            self.log("=" * 80)
+            self.log("【查询订单】响应详情:")
+            self.log(f"  状态码: {resp.status_code}")
+            self.log(f"  响应内容: {resp.text[:500]}")
+            self.log("=" * 80)
 
-            html = unescape_html(resp.text)
+            result = resp.json()
+            
+            if result.get("code") != 0:
+                error_msg = result.get("msg", "获取订单失败")
+                raise Exception(f"获取订单失败: {error_msg}")
 
-            has_order_table = '<table class="table mb-0">' in html or '订单列表' in html
-            has_login_form = 'action="/index/user/doLogin"' in html or 'login' in html.lower()
-
-            if not has_order_table and has_login_form:
-                return {
-                    "success": False,
-                    "message": "店铺登录已过期，请在平台管理中重新登录",
-                    "orders": [],
-                    "total": 0
-                }
-
-            from app.utils.html_parser import parse_order_table
-            orders = parse_order_table(html)
-
-            self.log(f"查询成功，共获取到 {len(orders)} 个订单")
+            # 解析订单数据
+            orders_data = result.get("data", [])
+            count_items = result.get("count_items", {})
+            
+            self.log(f"原始订单数据: {len(orders_data)} 条")
+            self.log(f"统计信息: {count_items}")
+            
+            # 转换订单格式，映射到OrderItem模型
+            orders = []
+            for order in orders_data:
+                # 状态映射
+                status_map = {0: "未支付", 1: "已支付", 2: "已取消", 3: "已退款"}
+                status_text = status_map.get(order.get("status", 0), "未知")
+                
+                orders.append({
+                    "order_no": order.get("trade_no", ""),
+                    "order_type": "普通订单",
+                    "product_name": order.get("goods_name", ""),
+                    "supplier": "",
+                    "payment_method": order.get("channel_text", ""),
+                    "total_price": str(order.get("total_price", "0.00")),
+                    "actual_price": str(order.get("total_price", "0.00")),
+                    "buyer_info": order.get("contact_info", "-"),
+                    "status": status_text,
+                    "card_status": "已取" if order.get("status") == 1 else "未取",
+                    "card_password": "",
+                    "trade_time": order.get("created_at", ""),
+                    "order_id": str(order.get("id", "")),
+                })
+            
+            self.log(f"查询成功，共获取到 {len(orders)} 个订单（总计: {count_items.get('all', 0)}）")
 
             return {
                 "success": True,
                 "message": "查询成功",
                 "orders": orders,
-                "total": len(orders)
+                "total": len(orders),
+                "count_items": count_items
             }
 
         except Exception as e:
@@ -1065,26 +1367,18 @@ class XinfakaService(BaseService):
             }
 
     def get_balance(self) -> dict:
-        """查询账户余额"""
+        """查询账户余额（从商户首页解析）"""
         try:
             if not self.load_cookies():
                 return {
                     "success": False,
                     "message": "店铺未登录，请在平台管理中重新登录",
-                    "withdrawable": "0.000",
-                    "non_withdrawable": "0.000"
+                    "withdrawable": "0.00",
+                    "non_withdrawable": "0.00"
                 }
 
-            merchant_cookie = self.session.cookies.get("merchant")
-            if not merchant_cookie:
-                return {
-                    "success": False,
-                    "message": "店铺登录已过期，请在平台管理中重新登录",
-                    "withdrawable": "0.000",
-                    "non_withdrawable": "0.000"
-                }
-
-            cash_url = f"{self.BASE_URL}/merchant/cash/apply.html"
+            # 访问商户首页获取余额信息
+            merchant_url = f"{self.BASE_URL}/merchant"
             headers = {
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                 "Upgrade-Insecure-Requests": "1",
@@ -1092,36 +1386,26 @@ class XinfakaService(BaseService):
                 "Sec-Fetch-Mode": "navigate",
                 "Sec-Fetch-User": "?1",
                 "Sec-Fetch-Dest": "document",
-                "Referer": f"{self.BASE_URL}/merchant/index/index.html",
+                "Referer": f"{self.BASE_URL}/index/login.html",
                 "Accept-Encoding": "gzip, deflate, br, zstd",
                 "Accept-Language": "zh-CN,zh;q=0.9",
-                "Priority": "u=0, i",
             }
 
-            resp = self.session.get(cash_url, headers=headers, timeout=15)
+            resp = self.session.get(merchant_url, headers=headers, timeout=15)
             resp.raise_for_status()
 
             html = unescape_html(resp.text)
-            soup = BeautifulSoup(html, "html.parser")
+            
+            # 使用正则表达式提取余额和冻结金额
+            # 余额：<span style="text-decoration: underline;">0.00</span>
+            balance_match = re.search(r'余额：[^<]*<span[^>]*>([^<]+)</span>', html)
+            # 冻结：<span style="text-decoration: underline;">0.00</span>
+            frozen_match = re.search(r'冻结：[^<]*<span[^>]*>([^<]+)</span>', html)
+            
+            withdrawable = balance_match.group(1).strip() if balance_match else "0.00"
+            non_withdrawable = frozen_match.group(1).strip() if frozen_match else "0.00"
 
-            withdrawable = "0.000"
-            non_withdrawable = "0.000"
-
-            labels = soup.find_all("label", class_="col-md-2 col-form-label")
-            for label in labels:
-                if "可提现金额" in label.get_text():
-                    form_group = label.find_parent("div", class_="form-group row")
-                    if form_group:
-                        input_elem = form_group.find("input", type="text")
-                        if input_elem and input_elem.get("value"):
-                            withdrawable = input_elem["value"].strip()
-                            break
-
-            danger_span = soup.find("span", class_="text-danger")
-            if danger_span:
-                non_withdrawable = danger_span.get_text().strip()
-
-            self.log(f"查询余额成功: 可提现={withdrawable}, 不可提现={non_withdrawable}")
+            self.log(f"查询余额成功: 余额={withdrawable}, 冻结={non_withdrawable}")
 
             return {
                 "success": True,
@@ -1135,6 +1419,6 @@ class XinfakaService(BaseService):
             return {
                 "success": False,
                 "message": f"查询失败: {str(e)}",
-                "withdrawable": "0.000",
-                "non_withdrawable": "0.000"
+                "withdrawable": "0.00",
+                "non_withdrawable": "0.00"
             }

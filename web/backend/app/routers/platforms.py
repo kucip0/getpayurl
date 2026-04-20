@@ -12,6 +12,8 @@ from app.schemas import (
 # 余额查询响应
 from typing import Optional
 from pydantic import BaseModel
+import time
+from typing import Dict
 
 class BalanceResponse(BaseModel):
     success: bool
@@ -24,6 +26,32 @@ from app.services.mengyan_service import MengyanService
 from app.services.xinfaka_service import XinfakaService
 
 router = APIRouter(prefix="/api/platforms", tags=["平台"])
+
+# 缓存service实例（用于保持session）
+_service_cache: Dict[str, dict] = {}
+CACHE_EXPIRE = 300  # 5分钟过期
+
+
+def get_cached_service(platform_code: str, user_id: int, db: Session) -> object:
+    """获取或创建缓存的service实例（仅用于新发卡登录流程）"""
+    cache_key = f"{user_id}_{platform_code}"
+    
+    # 检查缓存是否有效
+    if cache_key in _service_cache:
+        cache_data = _service_cache[cache_key]
+        if time.time() - cache_data['time'] < CACHE_EXPIRE:
+            return cache_data['service']
+        else:
+            # 过期，删除
+            del _service_cache[cache_key]
+    
+    # 创建新实例并缓存
+    service = get_service(platform_code, user_id, db)
+    _service_cache[cache_key] = {
+        'service': service,
+        'time': time.time()
+    }
+    return service
 
 PLATFORMS = [
     PlatformInfo(code="houfaka", name="猴发卡", host="https://www.houfaka.com"),
@@ -61,7 +89,8 @@ def shop_login(
     current_user: User = Depends(get_current_user)
 ):
     """店铺登录"""
-    service = get_service(platform_code, current_user.id, db)
+    # 使用缓存的service实例（保持session）
+    service = get_cached_service(platform_code, current_user.id, db)
 
     # 保存配置
     config = db.query(PlatformConfig).filter(
@@ -84,21 +113,12 @@ def shop_login(
     db.commit()
 
     try:
-        # 新发卡平台需要验证码，使用特殊流程
-        if platform_code == "xinfaka":
-            verify_code = getattr(login_data, 'verify_code', '')
-            if not verify_code:
-                return ShopLoginResponse(
-                    success=False,
-                    message="新发卡平台需要验证码，请先获取验证码"
-                )
-            
-            # 使用保持 session 的登录方法
-            result = service.login_with_captcha_session(login_data.username, login_data.password, verify_code)
-        else:
-            # 其他平台正常登录
-            result = service.login(login_data.username, login_data.password)
+        # 获取验证码参数和 CSRF Token
+        verify_code = getattr(login_data, 'verify_code', '')
+        csrf_token = getattr(login_data, 'csrf_token', '')
         
+        # 调用登录方法（使用缓存的session）
+        result = service.login(login_data.username, login_data.password, verify_code, csrf_token)
         service.save_cookies()
         return ShopLoginResponse(
             success=True,
@@ -139,7 +159,8 @@ def get_captcha(
     """获取验证码图片和CSRF Token（仅新发卡平台需要）"""
     from fastapi.responses import JSONResponse
     
-    service = get_service(platform_code, current_user.id, db)
+    # 使用缓存的service实例（保持session）
+    service = get_cached_service(platform_code, current_user.id, db)
     
     # 检查服务是否有获取验证码方法
     if not hasattr(service, 'get_captcha_image'):

@@ -1,0 +1,35 @@
+GET /merchant/order/list?page=1&limit=20&lay=pay&goods_name=&trade_no=&channel_type=&channel_id=&status=1&contact=&sms_receive=&ip=&created_at=&success_at= HTTP/1.1
+Host: www.xinfaka.com
+Connection: keep-alive
+sec-ch-ua-platform: "Windows"
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+Accept: application/json, text/javascript, */*; q=0.01
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?0
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://www.xinfaka.com/merchant/order/list
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: Hm_lvt_e61993ec7a83480d69419d1d50dd713a=1776648325; HMACCOUNT=63FBB5F2AEE89BC0; remember_merchant_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6Ik41aEl4Y3V6YlA1dmdLMVZGRVo0bnc9PSIsInZhbHVlIjoid0h5ZVZvd0ZRL1V4SjY0M09hQVFYU0ZkS1oyYVgvd3VnRWZQcVNyVlR3d1dYV2VqQzVhN1h6MFNDa0ZiVmtscVdtRkphWms3blRNSTM4dW9sT1NKL1h4ZHZYOFVZaGpwL0tTc29XZEt6SDIxTWFvanZpUnQxREtvYjcwVTltL2lzTW1pdjI3bkdIYXF3N1o4SHRtakZHekFMWi9sUU5vL1JZZ2ZxZ1N2VUhpSndUWHFUaTBkSzF3bHhIbWtxcXhZRjZDNyt6dnhpeUJzOUtQcnpGMFJrTng4NVlab0lXWjBreDZEN04yNzczZz0iLCJtYWMiOiI5OWJhYjIyODA2ZWJiMjM3Y2MzYTBmZGU3MDVjMDZmZTQ4MGNjNzVkNmMxMWNlOWI5ZDZiMWVhYmI1OWI1ZjhiIiwidGFnIjoiIn0%3D; Hm_lpvt_e61993ec7a83480d69419d1d50dd713a=1776675167; XSRF-TOKEN=eyJpdiI6IjJsY0t5b2NhLzNUVHFuMHJDbnFZRXc9PSIsInZhbHVlIjoiN3VkQ2VQYmxCVlRTMWVsaDlIbzVodlArNlFhaHVUL05QZUJYUEJOYU9XenZCV3AzREd4R29HYldlVWpsSW5jQUg4ZGNIOEVVSHQzMStQeS95SmRxeGZvUm5XK0MwKzJ6OERVNVd2WEJKNXYzZ2RTaVNBQk5EY3BmS3FndktuVkoiLCJtYWMiOiJmMTAwYjgxMjc1Y2RjZWVlZWE5ZjQ0OTdmYWU4YzBjZWZjZTQ5ODNhYzQ1NDkxNGY1ZTVlNTYxMzcwNmM1YjRmIiwidGFnIjoiIn0%3D; xsh_session=eyJpdiI6IkN1N2NhcnZseUJlcDFtWnpIQWRvMnc9PSIsInZhbHVlIjoiY0ZwN0NyMW5ZZWozcUh0YWQrWE1WK1pHZlFzTzVhRnRRTnhxNk5oRjFOZXNTbkx0SmNxZW9oT3B0dzR6K2pXNmtXU1VGSk1zUzZvWEoraytRYjJxZzFYT0JHbWd5YVlIcHF2UG1oRFdwWXkrRFd2VVFjbU1PeWlYaVN1R1hRa04iLCJtYWMiOiJmMTE0MGQ2MTE1ZTY3MTQ3NWM5ZDVjMjFlZjcwN2RjYWQwZTU0NzM3ODljNTM3N2U5MTRlYTUyZjk2ODU2OGVmIiwidGFnIjoiIn0%3D
+
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: application/json
+Vary: Accept-Encoding
+Date: Mon, 20 Apr 2026 08:53:10 GMT
+Set-Cookie: XSRF-TOKEN=eyJpdiI6Imx3OUtlcVY0SE53Q0xCZmpOdnZyWGc9PSIsInZhbHVlIjoiY0tpVCtHRWRRUnNvZkNvdEFkZDJ5VHNOVm1CSW9PeU5jSS9MMEoyR2YrYXNPcGtoWER0Z3F4UG5FdmFZeEhEaGlqNC9DZUZtN0VkSUhWS09vRkNhTHpYS3FLWjMrV2hkNUVhSW53cC9CdkRwR2F0TlpTM0d3b2xMOXRlN25HNy8iLCJtYWMiOiI4NDk2MDMwOWY4ZmY4ZWJlODUwZjAwY2EzM2ZjNDA2OTFiNmNlMjg3YjY5NDBjZGVhOTM1MjRlMTk0Y2FkMDRmIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 10:53:10 GMT; Max-Age=7200; path=/; samesite=lax
+Set-Cookie: xsh_session=eyJpdiI6Ik14aHo2Wkdqb2hFVzkzNFRWSFY4SVE9PSIsInZhbHVlIjoiWDRSZmFXMEk0NHB1SzRIVkJyZkFZcjhRWk5BM0FieFdsR0ZKWkFyQm5HWGFyVTRDb002WDkyT0NKalFqb2tTVzVscmlNUEg2ZTR2MmFQblI4Rll1em5iWWk4ZkNBSE5JaE9sOEpTTFUvVGdxby9nek00TnVmU0RJOGYzaW9zWUIiLCJtYWMiOiI3ZWJlZjQ1YzlhYWIyN2EyNTc2NjU1ZGFlOTkxYTI4NjNmODQ3NjY2OTdlMzhhMDdlZDMzODRkZDgyNWQ5MDNhIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 10:53:10 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
+X-Cache-Lookup: Cache Miss
+Cache-Control: private, no-cache
+Transfer-Encoding: chunked
+X-NWS-LOG-UUID: 1769301048915018697
+Connection: keep-alive
+X-Cache-Lookup: Cache Miss
+
+{"msg":"\u83b7\u53d6\u6210\u529f","code":0,"count":1,"data":[{"id":25463,"user_id":2408,"goods_id":1100,"trade_no":"XFK260420165105759291","paytype":4,"is_platform_black":0,"is_block":0,"channel_type":"1","channel_id":18,"channel_account_id":29,"goods_name":"\u9047\u4e50\u7f8e\u3001\u5fc3\u89c1\u3001\u661f\u9047\u3001\u848e\u5fc3-\u5361\u5bc6","goods_price":"0.10","quantity":1,"song_quantity":0,"total_price":"0.10","take_card_type":0,"take_card_password":"","contact":"","sms_receive":"","costfee":"0.0006","kami_id":"","status":1,"is_freeze":0,"created_at":"2026-04-20 16:51:05","create_ip":"27.151.236.16","success_at":"2026-04-20 16:51:20","stock_notify":0,"sendout":0,"finally_money":"0.00","rebate":"0.00","is_api":0,"orderno":"","param":null,"open_id":"","cards_count":0,"is_complaint":0,"can_refund":0,"deleted_at":null,"song_goods_id":0,"song_goods_quantity":0,"channel_text":"\u7cfb\u7edf\uff1a\u652f\u4ed8\u5b9dH5\u4e00\u610f","contact_info":"-","can_after":1}],"count_items":{"all":25,"all_class":"","pay":1,"pay_class":"layui-this","unpay":0,"unpay_class":"","cancellation":24,"cancellation_class":"","refund":0,"refund_class":""}}

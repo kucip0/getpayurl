@@ -4,11 +4,12 @@ export const getPlatforms = () => {
   return api.get('/platforms')
 }
 
-export const shopLogin = (platformCode, username, password, verifyCode = '') => {
+export const shopLogin = (platformCode, username, password, verifyCode = '', csrfToken = '') => {
   return api.post(`/platforms/${platformCode}/login`, {
     username,
     password,
     verify_code: verifyCode,
+    csrf_token: csrfToken,
   })
 }
 
