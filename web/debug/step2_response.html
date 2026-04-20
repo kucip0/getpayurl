@@ -78,7 +78,7 @@
 
     <body>
                 <form id="payForm" name="p"  action="/index/pay/payment" target="_blank"> 
-              <input type="hidden" name="trade_no" value="FK26042022201XLGH">
+              <input type="hidden" name="trade_no" value="FK26042022401VXP7">
             <div class="order_show">
 
 
@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <div class="order_info">
-                            订单编号： FK26042022201XLGH                            <br>
+                            订单编号： FK26042022401VXP7                            <br>
                             商品名称： 测试                            <br>
                             购买数量： 1                        </div>
                         <div class="ymm-prompt form-group">
@@ -115,7 +115,7 @@
                         </div>
                         <div class="paybtn" style="display:none;" id="d2">
                             <a onclick="back_url()" class="order_btn2">返回商品</a>
-                            <a href="/orderquery?orderid=FK26042022201XLGH" id="pay" target="_parent" class="order_btn1"> 等待付款中...</a>
+                            <a href="/orderquery?orderid=FK26042022401VXP7" id="pay" target="_parent" class="order_btn1"> 等待付款中...</a>
                         </div>
                         <div class="note">商品问题请先和商家交流，如果处理结果不满意，请于订单当日23点之前联系平台客服，超过时间认定订单没问题。</div>
 
@@ -177,10 +177,10 @@
 
 
             function oderquery(t) {
-                var orderid = 'FK26042022201XLGH';
+                var orderid = 'FK26042022401VXP7';
                 $.post('/pay/getOrderStatus', {
                     orderid: orderid,
-                    token: "fe52e9c9bc984f824390d34c9a9245881776694134"
+                    token: "975f8fe3f179de13c66f8882c856d5291776694279"
                 }, function (ret) {
                     if (ret == 1) {
                         $("#pay").html("付款成功，查看卡密");
@@ -198,7 +198,7 @@
                     dataType: 'json',
 //                    async: false,
                     data: {
-                        trade_no: 'FK26042022201XLGH',
+                        trade_no: 'FK26042022401VXP7',
                         fingerprint: _fingerprint,
                     },
                     success: function (res) {
@@ -242,7 +242,7 @@
                     dataType: 'json',
                     async:false,
                     data: {
-                        trade_no: 'FK26042022201XLGH',
+                        trade_no: 'FK26042022401VXP7',
                         fingerprint: _fingerprint,
                         wxauth: _wxauth
                     },
@@ -285,9 +285,9 @@
 
             function query_url() {
                 try {
-                    parent.location.href = '/orderquery?orderid=FK26042022201XLGH';
+                    parent.location.href = '/orderquery?orderid=FK26042022401VXP7';
                 } catch (err) {
-                    window.location.href = '/orderquery?orderid=FK26042022201XLGH';
+                    window.location.href = '/orderquery?orderid=FK26042022401VXP7';
                 }
                 return false;
             }

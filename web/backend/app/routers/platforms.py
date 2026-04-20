@@ -22,7 +22,7 @@ class BalanceResponse(BaseModel):
     non_withdrawable: str = "0.000"
 from app.services.houfaka_service import HoufakaService
 from app.services.siyun_service import SiyunService
-from app.services.mengyan_service import MengyanService
+# from app.services.mengyan_service import MengyanService  # 梦言发卡已废弃
 from app.services.xinfaka_service import XinfakaService
 from app.services.qukapu_service import QukapuService
 from app.services.kukuwu_service import KukuwuService
@@ -58,7 +58,7 @@ def get_cached_service(platform_code: str, user_id: int, db: Session) -> object:
 PLATFORMS = [
     PlatformInfo(code="houfaka", name="猴发卡", host="https://www.houfaka.com"),
     PlatformInfo(code="siyun", name="四云发卡", host="https://shop.4yuns.com"),
-    PlatformInfo(code="mengyan", name="梦言云卡", host="https://www.np4.cn"),
+    # PlatformInfo(code="mengyan", name="梦言云卡", host="https://www.np4.cn"),  # 梦言发卡已废弃
     PlatformInfo(code="xinfaka", name="新发卡", host="https://www.xinfaka.com"),
     PlatformInfo(code="qukapu", name="趣卡铺", host="https://www.qukapu.com"),
     PlatformInfo(code="kukuwu", name="酷卡屋", host="https://kkw.yiyipay.com"),
@@ -71,8 +71,8 @@ def get_service(platform_code: str, user_id: int, db: Session):
         return HoufakaService(user_id, db)
     elif platform_code == "siyun":
         return SiyunService(user_id, db)
-    elif platform_code == "mengyan":
-        return MengyanService(user_id, db)
+    # elif platform_code == "mengyan":  # 梦言发卡已废弃
+    #     return MengyanService(user_id, db)
     elif platform_code == "xinfaka":
         return XinfakaService(user_id, db)
     elif platform_code == "qukapu":
