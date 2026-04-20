@@ -17,16 +17,21 @@ from app.utils.html_parser import unescape_html
 
 
 class MengyanSSLAdapter(HTTPAdapter):
-    """自定义HTTP适配器，为梦言云卡配置兼容的SSL"""
+    """自定义HTTP适配器，为梦言云卡配置兼容的SSL（强制TLS 1.0）"""
     def init_poolmanager(self, connections, *args, **kwargs):
-        # 创建自定义SSL上下文
-        context = create_urllib3_context()
+        # 创建自定义SSL上下文，强制使用TLS 1.0
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        # 设置最低TLS版本为TLS 1.0
+        context.minimum_version = ssl.TLSVersion.TLSv1
+        context.maximum_version = ssl.TLSVersion.TLSv1_2
         # 使用更宽松的加密套件列表
         context.set_ciphers('ALL:@SECLEVEL=0')
         # 禁用主机名验证
         context.check_hostname = False
         # 禁用证书验证
         context.verify_mode = ssl.CERT_NONE
+        # 加载默认证书（可选）
+        context.load_default_certs()
         
         kwargs['ssl_context'] = context
         super().init_poolmanager(connections, *args, **kwargs)
