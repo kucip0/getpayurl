@@ -458,8 +458,12 @@ class XinfakaService(BaseService):
             # 步骤1: 获取商品页面和 CSRF Token
             csrf_token, goods_info = self._mobile_step1_get_goods_page(product_url, new_price)
 
+            # 步骤1.5: 动态获取支付渠道ID（支付宝 channel_type=2）
+            pay_id = self._get_pay_channel_id(goods_info, csrf_token)
+            self.log(f"获取到支付渠道ID: {pay_id}")
+
             # 步骤2: 创建订单
-            order_no = self._mobile_step2_create_order(product_url, goods_info, csrf_token, new_price)
+            order_no = self._mobile_step2_create_order(product_url, goods_info, csrf_token, new_price, pay_id)
             self.log(f"订单创建成功: {order_no}")
 
             # 步骤3: 访问支付页面 /payment/{订单号} 获取支付宝支付链接
@@ -524,12 +528,61 @@ class XinfakaService(BaseService):
             "original_price": original_price,
         }
 
-    def _mobile_step2_create_order(self, product_url: str, goods_info: dict, csrf_token: str, new_price: float) -> str:
-        """步骤2: 创建订单 POST /goods/createorder (移动端H5支付宝)"""
-        # 生成随机联系方式
-        contact = f"1{random.randint(3,9)}{''.join([str(random.randint(0,9)) for _ in range(9)])}"
+    def _get_pay_channel_id(self, goods_info: dict, csrf_token: str) -> str:
+        """动态获取支付渠道ID（支付宝 channel_type=2）
         
-        # 构建订单数据 - 使用 payId=13 (支付宝PC端扫码支付，与真实请求一致)
+        请求 POST /goods/getrate 获取支付渠道列表，提取 channel_type=2 的渠道ID
+        """
+        url = f"{self.BASE_URL}/goods/getrate"
+        
+        data = {
+            "userid": goods_info["shop_id"],
+            "goods_id": goods_info["goods_id"],
+            "isMobile": "1"
+        }
+        
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-CSRF-TOKEN": csrf_token,
+            "X-Requested-With": "XMLHttpRequest",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "Origin": self.BASE_URL,
+            "Referer": f"{self.BASE_URL}/",
+        }
+        
+        resp = self.session.post(url, data=data, headers=headers, timeout=15)
+        resp.raise_for_status()
+        
+        # 解析响应HTML，提取支付渠道
+        html = resp.text
+        
+        # 使用正则表达式提取 data-id 和 data-type
+        # 格式: <li data-id="983" data-type="2" ...
+        pattern = r'data-id="(\d+)"\s+data-type="(\d+)"'
+        matches = re.findall(pattern, html)
+        
+        if not matches:
+            self.log(f"警告: 未找到支付渠道，使用默认payId=13")
+            return "13"  # fallback 到默认值
+        
+        # 查找 channel_type=2 (支付宝) 的渠道
+        alipay_channel_id = None
+        for channel_id, channel_type in matches:
+            if channel_type == "2":  # channel_type=2 代表支付宝
+                alipay_channel_id = channel_id
+                break
+        
+        if alipay_channel_id:
+            self.log(f"找到支付宝支付渠道ID: {alipay_channel_id}")
+            return alipay_channel_id
+        else:
+            self.log(f"警告: 未找到支付宝渠道(channel_type=2)，使用第一个渠道")
+            return matches[0][0]  # 使用第一个渠道
+
+    def _mobile_step2_create_order(self, product_url: str, goods_info: dict, csrf_token: str, new_price: float, pay_id: str) -> str:
+        """步骤2: 创建订单 POST /goods/createorder (使用动态获取的payId)"""
+        
+        # 构建订单数据 - 使用动态获取的payId
         order_data = {
             "GoodsId": goods_info["goods_id"],
             "quantity": "1",
@@ -537,7 +590,7 @@ class XinfakaService(BaseService):
             "is_sms": "0",
             "sms_receive": "",
             "take_card_password": "",
-            "payId": "13",  # 支付宝PC端扫码支付（与真实请求一致）
+            "payId": pay_id,  # 动态获取的支付渠道ID
             "payType": "1",  # 支付宝
             "coupon": "",
             "is_xh": "0",

@@ -8,8 +8,6 @@ class KukuwuService(XinfakaService):
     BASE_URL = "https://kkw.yiyipay.com"
     TRACKING_COOKIE = "XSRF-TOKEN"
     FINGERPRINT_ENABLED = False
-    # 酷卡屋支付ID（与趣卡铺/新发卡不同）
-    PAY_ID = "31"
 
     def __init__(self, user_id: int, db):
         super().__init__(user_id, db)
@@ -24,11 +22,10 @@ class KukuwuService(XinfakaService):
         BaseService.log(self, message)
         print(f"\033[36m[Kukuwu调试]\033[0m {message}", flush=True)
     
-    def _mobile_step2_create_order(self, product_url: str, goods_info: dict, csrf_token: str, new_price: float) -> str:
-        """步骤2: 创建订单 POST /goods/createorder（酷卡屋使用payId=31）"""
-        import random
+    def _mobile_step2_create_order(self, product_url: str, goods_info: dict, csrf_token: str, new_price: float, pay_id: str) -> str:
+        """步骤2: 创建订单 POST /goods/createorder（使用动态获取的payId）"""
         
-        # 构建订单数据 - 使用酷卡屋特有的payId=31
+        # 构建订单数据 - 使用动态获取的payId
         order_data = {
             "GoodsId": goods_info["goods_id"],
             "quantity": "1",
@@ -36,7 +33,7 @@ class KukuwuService(XinfakaService):
             "is_sms": "0",
             "sms_receive": "",
             "take_card_password": "",
-            "payId": self.PAY_ID,  # 酷卡屋支付宝PC端扫码支付
+            "payId": pay_id,  # 动态获取的支付渠道ID
             "payType": "1",
             "coupon": "",
             "is_xh": "0",
