@@ -49,6 +49,8 @@ class MengyanService(BaseService):
         super().__init__(user_id, db)
         # 梦言云卡需要特殊的SSL配置（第三方网关www.xkku.cn需要宽松SSL）
         self.session.mount('https://', MengyanSSLAdapter())
+        # 禁用代理，避免系统代理干扰（198.18.x.x 假IP问题）
+        self.session.trust_env = False
 
     def login(self, username: str, password: str) -> dict:
         """登录梦言云卡店铺"""
