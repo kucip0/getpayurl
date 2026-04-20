@@ -37,6 +37,13 @@ const routes = [
     name: 'OrderQuery',
     component: () => import('../views/OrderQuery.vue'),
     meta: { requiresAuth: true }
+  },
+  // 管理员专用路由（不在导航中显示，仅admin用户可访问）
+  {
+    path: '/sys-mgmt-console',
+    name: 'UserManagement',
+    component: () => import('../views/UserManagement.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]
 
@@ -50,6 +57,9 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth && !authStore.token) {
     next('/login')
+  } else if (to.meta.requiresAdmin && authStore.username !== 'admin') {
+    // 非admin用户访问管理员页面，重定向到首页
+    next('/')
   } else {
     next()
   }

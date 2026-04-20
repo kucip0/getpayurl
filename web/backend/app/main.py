@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import create_tables
-from app.routers import auth, platforms, orders, config
+from app.routers import auth, platforms, orders, config, admin
 
 app = FastAPI(title=settings.APP_NAME, debug=settings.DEBUG)
 
@@ -21,6 +21,7 @@ app.include_router(auth.router)
 app.include_router(platforms.router)
 app.include_router(orders.router)
 app.include_router(config.router)
+app.include_router(admin.router)  # 管理员专用路由（不公开）
 
 
 @app.on_event("startup")
