@@ -65,8 +65,8 @@
               />
             </el-form-item>
 
-            <!-- 验证码（新发卡和趣卡铺平台需要） -->
-            <el-form-item v-if="currentPlatform === 'xinfaka' || currentPlatform === 'qukapu'" label="验证码">
+            <!-- 验证码（新发卡、趣卡铺和酷卡屋平台需要） -->
+            <el-form-item v-if="currentPlatform === 'xinfaka' || currentPlatform === 'qukapu' || currentPlatform === 'kukuwu'" label="验证码">
               <div style="display: flex; gap: 10px; align-items: center">
                 <el-input 
                   v-model="form.verify_code" 
@@ -234,8 +234,8 @@ const handleShopLogin = async () => {
     return
   }
 
-  // 新发卡和趣卡铺平台需要验证码
-  if ((currentPlatform.value === 'xinfaka' || currentPlatform.value === 'qukapu') && !form.value.verify_code) {
+  // 新发卡、趣卡铺和酷卡屋平台需要验证码
+  if ((currentPlatform.value === 'xinfaka' || currentPlatform.value === 'qukapu' || currentPlatform.value === 'kukuwu') && !form.value.verify_code) {
     ElMessage.warning('请输入验证码')
     return
   }
@@ -271,8 +271,8 @@ const handleGetCaptcha = async () => {
     return
   }
 
-  if (currentPlatform.value !== 'xinfaka' && currentPlatform.value !== 'qukapu') {
-    ElMessage.warning('仅新发卡和趣卡铺平台需要验证码')
+  if (currentPlatform.value !== 'xinfaka' && currentPlatform.value !== 'qukapu' && currentPlatform.value !== 'kukuwu') {
+    ElMessage.warning('仅新发卡、趣卡铺和酷卡屋平台需要验证码')
     return
   }
 

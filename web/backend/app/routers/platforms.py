@@ -25,6 +25,7 @@ from app.services.siyun_service import SiyunService
 from app.services.mengyan_service import MengyanService
 from app.services.xinfaka_service import XinfakaService
 from app.services.qukapu_service import QukapuService
+from app.services.kukuwu_service import KukuwuService
 
 router = APIRouter(prefix="/api/platforms", tags=["平台"])
 
@@ -60,6 +61,7 @@ PLATFORMS = [
     PlatformInfo(code="mengyan", name="梦言云卡", host="https://www.np4.cn"),
     PlatformInfo(code="xinfaka", name="新发卡", host="https://www.xinfaka.com"),
     PlatformInfo(code="qukapu", name="趣卡铺", host="https://www.qukapu.com"),
+    PlatformInfo(code="kukuwu", name="酷卡屋", host="https://kkw.yiyipay.com"),
 ]
 
 
@@ -75,6 +77,8 @@ def get_service(platform_code: str, user_id: int, db: Session):
         return XinfakaService(user_id, db)
     elif platform_code == "qukapu":
         return QukapuService(user_id, db)
+    elif platform_code == "kukuwu":
+        return KukuwuService(user_id, db)
     else:
         raise HTTPException(status_code=404, detail="平台不存在")
 
