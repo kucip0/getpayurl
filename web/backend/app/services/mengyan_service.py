@@ -832,7 +832,19 @@ class MengyanService(BaseService):
             "Priority": "u=0, i",
         }
         
-        self.log(f"步骤4请求体: money={pay_params.get('money', '')}, out_trade_no={pay_params.get('out_trade_no', '')}")
+        # 打印详细调试日志 - 请求信息
+        from urllib.parse import urlencode
+        self.log("=" * 80)
+        self.log("【梦言云卡-步骤4】提交网关 - 请求信息")
+        self.log(f"请求URL: {gateway_url}")
+        self.log(f"请求方法: POST")
+        self.log(f"请求头:")
+        for k, v in headers.items():
+            self.log(f"  {k}: {v}")
+        self.log(f"请求体 (urlencode后):")
+        encoded_data = urlencode(pay_params)
+        self.log(f"  {encoded_data}")
+        self.log("=" * 80)
         
         resp = self.session.post(
             gateway_url,
@@ -840,6 +852,20 @@ class MengyanService(BaseService):
             headers=headers,
             timeout=15
         )
+        
+        # 打印详细调试日志 - 响应信息
+        self.log("=" * 80)
+        self.log("【梦言云卡-步骤4】提交网关 - 响应信息")
+        self.log(f"响应状态码: {resp.status_code}")
+        self.log(f"响应头:")
+        for k, v in resp.headers.items():
+            v_display = v[:100] + "..." if len(v) > 100 else v
+            self.log(f"  {k}: {v_display}")
+        self.log(f"响应体长度: {len(resp.text)} 字符")
+        self.log(f"响应体内容 (前3000字符):")
+        self.log(resp.text[:3000])
+        self.log("=" * 80)
+        
         resp.raise_for_status()
         
         # 处理HTML转义
@@ -884,11 +910,35 @@ class MengyanService(BaseService):
             "Priority": "u=0, i",
         }
         
+        # 打印详细调试日志 - 请求信息
+        self.log("=" * 80)
+        self.log("【梦言云卡-步骤5】获取支付宝表单 - 请求信息")
+        self.log(f"请求URL: {full_url}")
+        self.log(f"请求方法: GET")
+        self.log(f"请求头:")
+        for k, v in headers.items():
+            self.log(f"  {k}: {v}")
+        self.log("=" * 80)
+        
         resp = self.session.get(
             full_url,
             headers=headers,
             timeout=15
         )
+        
+        # 打印详细调试日志 - 响应信息
+        self.log("=" * 80)
+        self.log("【梦言云卡-步骤5】获取支付宝表单 - 响应信息")
+        self.log(f"响应状态码: {resp.status_code}")
+        self.log(f"响应头:")
+        for k, v in resp.headers.items():
+            v_display = v[:100] + "..." if len(v) > 100 else v
+            self.log(f"  {k}: {v_display}")
+        self.log(f"响应体长度: {len(resp.text)} 字符")
+        self.log(f"响应体内容 (前3000字符):")
+        self.log(resp.text[:3000])
+        self.log("=" * 80)
+        
         resp.raise_for_status()
         
         # 处理HTML转义

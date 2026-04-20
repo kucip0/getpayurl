@@ -78,7 +78,7 @@
 
     <body>
                 <form id="payForm" name="p"  action="/index/pay/payment" target="_blank"> 
-              <input type="hidden" name="trade_no" value="FK26042021108B1DQ">
+              <input type="hidden" name="trade_no" value="FK2604202150EFQJO">
             <div class="order_show">
 
 
@@ -89,7 +89,7 @@
                             <img src="/static/app/images/order_pay.png" alt="">
                             <p>
                                 支付金额：
-                                <span>1.33元 </span><br>
+                                <span>2.5元 </span><br>
                                 支付方式：
                                 <span>易支付支付宝</span>
                             </p>
@@ -97,8 +97,8 @@
                             </div>
                         </div>
                         <div class="order_info">
-                            订单编号： FK26042021108B1DQ                            <br>
-                            商品名称： 测试                            <br>
+                            订单编号： FK2604202150EFQJO                            <br>
+                            商品名称： 测试66666666                            <br>
                             购买数量： 1                        </div>
                         <div class="ymm-prompt form-group">
                             <p style="padding-left: 16px;">
@@ -115,7 +115,7 @@
                         </div>
                         <div class="paybtn" style="display:none;" id="d2">
                             <a onclick="back_url()" class="order_btn2">返回商品</a>
-                            <a href="/orderquery?orderid=FK26042021108B1DQ" id="pay" target="_parent" class="order_btn1"> 等待付款中...</a>
+                            <a href="/orderquery?orderid=FK2604202150EFQJO" id="pay" target="_parent" class="order_btn1"> 等待付款中...</a>
                         </div>
                         <div class="note">商品问题请先和商家交流，如果处理结果不满意，请于订单当日23点之前联系平台客服，超过时间认定订单没问题。</div>
 
@@ -177,10 +177,10 @@
 
 
             function oderquery(t) {
-                var orderid = 'FK26042021108B1DQ';
+                var orderid = 'FK2604202150EFQJO';
                 $.post('/pay/getOrderStatus', {
                     orderid: orderid,
-                    token: "c7183f6a2e1c20d1216da3687ac1fd671776692103"
+                    token: "94f45e37cf7efdd2734e1dd84d731ca21776693088"
                 }, function (ret) {
                     if (ret == 1) {
                         $("#pay").html("付款成功，查看卡密");
@@ -198,7 +198,7 @@
                     dataType: 'json',
 //                    async: false,
                     data: {
-                        trade_no: 'FK26042021108B1DQ',
+                        trade_no: 'FK2604202150EFQJO',
                         fingerprint: _fingerprint,
                     },
                     success: function (res) {
@@ -242,7 +242,7 @@
                     dataType: 'json',
                     async:false,
                     data: {
-                        trade_no: 'FK26042021108B1DQ',
+                        trade_no: 'FK2604202150EFQJO',
                         fingerprint: _fingerprint,
                         wxauth: _wxauth
                     },
@@ -285,9 +285,9 @@
 
             function query_url() {
                 try {
-                    parent.location.href = '/orderquery?orderid=FK26042021108B1DQ';
+                    parent.location.href = '/orderquery?orderid=FK2604202150EFQJO';
                 } catch (err) {
-                    window.location.href = '/orderquery?orderid=FK26042021108B1DQ';
+                    window.location.href = '/orderquery?orderid=FK2604202150EFQJO';
                 }
                 return false;
             }
