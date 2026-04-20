@@ -4,8 +4,33 @@
 
 - 首次部署
 - 更新代码（从GitHub拉取最新代码）
+- 新增平台支持（趣卡铺、酷卡屋）
 - 修复bcrypt兼容性问题
-- 移除登录页注册入口
+
+---
+
+## ⚠️ 重要提示：保护生产环境数据
+
+**在执行任何更新操作前，必须先备份以下数据：**
+
+```bash
+# 1. 备份数据库（必须）
+cp /opt/getpayurl/web/backend/getpayurl.db /opt/getpayurl/web/backend/getpayurl.db.backup.$(date +%Y%m%d_%H%M%S)
+
+# 2. 备份环境变量（必须）
+cp /opt/getpayurl/.env /opt/getpayurl/.env.backup.$(date +%Y%m%d_%H%M%S)
+
+# 3. 备份Cookie数据（如存在）
+cp -r /opt/getpayurl/web/backend/cookies/ /opt/getpayurl/web/backend/cookies.backup.$(date +%Y%m%d_%H%M%S) 2>/dev/null || true
+```
+
+**更新原则：**
+- ✅ 只更新代码文件，不修改数据库
+- ✅ 只更新前端静态资源，不影响用户配置
+- ✅ 保留所有已登录平台的Cookie/Session
+- ❌ 不要删除或覆盖 `getpayurl.db`
+- ❌ 不要删除或覆盖 `.env` 配置文件
+- ❌ 不要删除或覆盖 `cookies/` 目录
 
 ---
 
@@ -50,7 +75,7 @@ sudo bash install.sh
 
 ---
 
-## 方法二：更新现有部署
+## 方法二：更新现有部署（推荐 - 保护生产数据）
 
 ### 1. 连接服务器
 
@@ -58,10 +83,19 @@ sudo bash install.sh
 ssh root@你的服务器IP
 ```
 
-### 2. 备份数据库
+### 2. 备份生产数据（必须执行）
 
 ```bash
-cp /opt/getpayurl/web/backend/getpayurl.db /opt/getpayurl/web/backend/getpayurl.db.backup.$(date +%Y%m%d_%H%M%S)
+cd /opt/getpayurl
+
+# 备份数据库
+cp web/backend/getpayurl.db web/backend/getpayurl.db.backup.$(date +%Y%m%d_%H%M%S)
+
+# 备份环境变量
+cp .env .env.backup.$(date +%Y%m%d_%H%M%S)
+
+# 备份Cookie目录（如果存在）
+cp -r web/backend/cookies/ web/backend/cookies.backup.$(date +%Y%m%d_%H%M%S) 2>/dev/null || echo "无cookies目录，跳过"
 ```
 
 ### 3. 拉取最新代码
@@ -71,7 +105,7 @@ cd /opt/getpayurl
 git pull origin main
 ```
 
-### 4. 修复bcrypt版本（必须）
+### 4. 安装后端依赖
 
 ```bash
 cd /opt/getpayurl/web/backend
@@ -103,9 +137,17 @@ sudo systemctl status getpayurl-backend
 sudo journalctl -u getpayurl-backend -f --no-pager | tail -50
 ```
 
+### 8. 验证新增平台
+
+登录系统后，在平台管理页面应该能看到：
+- ✅ 趣卡铺（qukapu）
+- ✅ 酷卡屋（kukuwu）
+
 ---
 
-## 方法三：完全重新部署（最彻底）
+## 方法三：完全重新部署（最彻底 - 谨慎使用）
+
+**警告：此方法会删除旧项目文件，必须确保已完整备份！**
 
 ### 1. 停止现有服务
 
@@ -114,10 +156,20 @@ sudo systemctl stop getpayurl-backend
 sudo systemctl disable getpayurl-backend
 ```
 
-### 2. 备份数据库
+### 2. 完整备份（必须）
 
 ```bash
+# 备份数据库
 cp /opt/getpayurl/web/backend/getpayurl.db /root/getpayurl_backup_$(date +%Y%m%d).db
+
+# 备份环境变量
+cp /opt/getpayurl/.env /root/getpayurl_env_backup_$(date +%Y%m%d)
+
+# 备份Cookie目录（如果存在）
+cp -r /opt/getpayurl/web/backend/cookies/ /root/getpayurl_cookies_backup_$(date +%Y%m%d) 2>/dev/null || true
+
+# 下载备份文件到本地（推荐）
+scp root@你的服务器IP:/root/getpayurl_backup_*.db ./
 ```
 
 ### 3. 删除旧项目
@@ -140,11 +192,21 @@ cd getpayurl
 sudo bash install.sh
 ```
 
-### 6. 恢复数据库（如果需要）
+### 6. 恢复数据（如果需要）
 
 ```bash
+# 恢复数据库
 cp /root/getpayurl_backup_YYYYMMDD.db /opt/getpayurl/web/backend/getpayurl.db
 sudo chown www-data:www-data /opt/getpayurl/web/backend/getpayurl.db
+
+# 恢复环境变量（可选）
+cp /root/getpayurl_env_backup_YYYYMMDD /opt/getpayurl/.env
+
+# 恢复Cookie（可选）
+cp -r /root/getpayurl_cookies_backup_YYYYMMDD/ /opt/getpayurl/web/backend/cookies/
+sudo chown -R www-data:www-data /opt/getpayurl/web/backend/cookies/
+
+# 重启服务
 sudo systemctl restart getpayurl-backend
 ```
 
@@ -164,14 +226,23 @@ curl http://127.0.0.1:8000
 
 浏览器访问：`http://你的服务器IP`
 
-### 3. 测试注册功能
+### 3. 验证平台列表
 
-访问：`http://你的服务器IP/register`
+登录系统后，进入"平台管理"页面，应该能看到以下平台：
+- ✅ 猴发卡（houfaka）
+- ✅ 四云发卡（siyun）
+- ✅ 梦言云卡（mengyan）
+- ✅ 新发卡（xinfaka）
+- ✅ 趣卡铺（qukapu）- **新增**
+- ✅ 酷卡屋（kukuwu）- **新增**
 
-### 4. 检查登录页面
+### 4. 测试新增平台
 
-访问：`http://你的服务器IP/login`
-- 应该看不到"立即注册"链接
+1. 选择"趣卡铺"或"酷卡屋"平台
+2. 输入店铺账号密码
+3. 获取并输入验证码（如果需要）
+4. 点击"登录店铺"
+5. 登录成功后，尝试生成支付二维码
 
 ---
 
@@ -333,6 +404,13 @@ sudo systemctl status nginx
 ---
 
 ## 更新日志
+
+### 2026-04-20
+- ✅ 新增趣卡铺平台（qukapu），host: www.qukapu.com
+- ✅ 新增酷卡屋平台（kukuwu），host: kkw.yiyipay.com
+- ✅ 修复支付二维码获取功能（payId参数修正）
+- ✅ 前端添加新平台验证码支持
+- ✅ 更新部署文档，增加数据保护说明
 
 ### 2026-04-14
 - ✅ 修复bcrypt兼容性问题（锁定版本为3.2.2）
