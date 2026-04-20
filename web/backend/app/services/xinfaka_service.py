@@ -550,7 +550,36 @@ class XinfakaService(BaseService):
             "Referer": f"{self.BASE_URL}/",
         }
         
+        # 打印详细调试日志
+        self.log("=" * 80)
+        self.log("【调试】获取支付渠道 - 请求信息")
+        self.log(f"请求URL: {url}")
+        self.log(f"请求方法: POST")
+        self.log(f"请求头:")
+        for k, v in headers.items():
+            self.log(f"  {k}: {v}")
+        self.log(f"请求体 (urlencode后):")
+        from urllib.parse import urlencode
+        encoded_data = urlencode(data)
+        self.log(f"  {encoded_data}")
+        self.log("=" * 80)
+        
         resp = self.session.post(url, data=data, headers=headers, timeout=15)
+        
+        # 打印响应信息
+        self.log("=" * 80)
+        self.log("【调试】获取支付渠道 - 响应信息")
+        self.log(f"响应状态码: {resp.status_code}")
+        self.log(f"响应头:")
+        for k, v in resp.headers.items():
+            # 只打印前100个字符，避免Cookie太长
+            v_display = v[:100] + "..." if len(v) > 100 else v
+            self.log(f"  {k}: {v_display}")
+        self.log(f"响应体长度: {len(resp.text)} 字符")
+        self.log(f"响应体内容 (前2000字符):")
+        self.log(resp.text[:2000])
+        self.log("=" * 80)
+        
         resp.raise_for_status()
         
         # 解析响应HTML，提取支付渠道
@@ -560,6 +589,8 @@ class XinfakaService(BaseService):
         # 格式: <li data-id="983" data-type="2" ...
         pattern = r'data-id="(\d+)"\s+data-type="(\d+)"'
         matches = re.findall(pattern, html)
+        
+        self.log(f"【调试】正则匹配结果: {matches}")
         
         if not matches:
             self.log(f"警告: 未找到支付渠道，使用默认payId=13")
@@ -607,13 +638,37 @@ class XinfakaService(BaseService):
             "Origin": self.BASE_URL,
             "Referer": product_url,
         }
+        
+        # 打印详细调试日志
+        url = f"{self.BASE_URL}/goods/createorder"
+        self.log("=" * 80)
+        self.log("【调试】创建订单 - 请求信息")
+        self.log(f"请求URL: {url}")
+        self.log(f"请求方法: POST")
+        self.log(f"请求头:")
+        for k, v in headers.items():
+            self.log(f"  {k}: {v}")
+        self.log(f"请求体 (urlencode后):")
+        from urllib.parse import urlencode
+        encoded_data = urlencode(order_data)
+        self.log(f"  {encoded_data}")
+        self.log("=" * 80)
 
-        resp = self.session.post(
-            f"{self.BASE_URL}/goods/createorder",
-            data=order_data,
-            headers=headers,
-            timeout=15
-        )
+        resp = self.session.post(url, data=order_data, headers=headers, timeout=15)
+        
+        # 打印响应信息
+        self.log("=" * 80)
+        self.log("【调试】创建订单 - 响应信息")
+        self.log(f"响应状态码: {resp.status_code}")
+        self.log(f"响应头:")
+        for k, v in resp.headers.items():
+            v_display = v[:100] + "..." if len(v) > 100 else v
+            self.log(f"  {k}: {v_display}")
+        self.log(f"响应体长度: {len(resp.text)} 字符")
+        self.log(f"响应体内容:")
+        self.log(resp.text[:2000])
+        self.log("=" * 80)
+        
         resp.raise_for_status()
 
         # 解析响应
