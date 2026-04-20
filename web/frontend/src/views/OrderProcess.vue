@@ -148,6 +148,8 @@ onMounted(async () => {
 const handlePlatformChange = async (platformCode) => {
   currentPlatform.value = platformCode
   await platformStore.loadConfig(platformCode)
+  // 切换平台时清空商品链接
+  form.value.product_url = ''
 }
 
 const handleGetPrice = async () => {
