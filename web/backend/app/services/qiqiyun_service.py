@@ -609,6 +609,13 @@ class QiqiyunService(BaseService):
     def get_balance(self) -> dict:
         """查询账户余额"""
         try:
+            # 加载Cookies（包含merchant_token）
+            self.load_cookies()
+            
+            # 从cookies中提取merchant_token
+            if not self.merchant_token:
+                self.merchant_token = self.session.cookies.get("merchant-token")
+            
             if not self.merchant_token:
                 return {
                     "success": False,
@@ -676,6 +683,13 @@ class QiqiyunService(BaseService):
     def modify_goods_price(self, goods_id: str, new_price: str) -> dict:
         """修改商品价格"""
         try:
+            # 加载Cookies（包含merchant_token）
+            self.load_cookies()
+            
+            # 从cookies中提取merchant_token
+            if not self.merchant_token:
+                self.merchant_token = self.session.cookies.get("merchant-token")
+            
             if not self.merchant_token:
                 return {
                     "success": False,
@@ -764,6 +778,13 @@ class QiqiyunService(BaseService):
     ) -> dict:
         """查询订单列表"""
         try:
+            # 加载Cookies（包含merchant_token）
+            self.load_cookies()
+            
+            # 从cookies中提取merchant_token
+            if not self.merchant_token:
+                self.merchant_token = self.session.cookies.get("merchant-token")
+            
             if not self.merchant_token:
                 return {
                     "success": False,
