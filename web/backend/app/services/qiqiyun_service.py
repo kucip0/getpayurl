@@ -165,8 +165,8 @@ class QiqiyunService(BaseService):
 
             self.log(f"步骤2: 获取商品信息成功, token={self._token}, price={self._price}")
 
-            # 价格已经是元，不需要转换
-            price_yuan = self._price / 100 if self._price > 100 else self._price  # 兼容分和元两种情况
+            # 价格单位是元，直接使用
+            price_yuan = self._price
 
             return {
                 "success": True,
@@ -774,11 +774,11 @@ class QiqiyunService(BaseService):
             
             orders_url = f"{self.BASE_URL}/merchantApi/order/list"
             
-            # 构建查询参数（status固定为1，只查询已完成订单）
+            # 构建查询参数（status=1查询已完成订单）
             query_data = {
                 "current": 1,
                 "pageSize": 20,
-                "status": 1,  # 固定查询已完成订单
+                "status": 1,  # 查询已完成订单
                 "trade_no": "",
                 "contact": "",
                 "card_no": "",
