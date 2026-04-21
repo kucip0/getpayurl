@@ -1,768 +1,194 @@
 "<!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
+
     <head>
-        <meta charset="utf-8">
-        <title>商户面板 - 四云发卡网</title>
+        <meta charset="utf-8" />
+        <title>用户登录四云</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="keywords" content="发卡网,四云寄售,云发卡网,云发卡,四发卡,自助发卡网,自助发卡,自助发卡平台,卡密寄售,自动发卡平台,发卡平台,自动发卡,自动发卡网,发卡,卡密自动交易,卡密自动发货,虚拟商品自动发货,卡密寄售,自动售卡,卡密自动售卖" />
         <meta name="description" content="四云发卡网是国内优秀自动发卡平台，提供专业虚拟软件卡密等自动交易服务，正规企业运营平台、系统稳定、技术强硬、客服专业、体验佳、费率低，全年无休7×24小时不间断提供自动发卡服务" />
         <link rel="shortcut icon" href="https://qiniu.4ox.cn/aa45bc65186216b8/c065e77baad9706f.png" />
-        <!-- App favicon -->
-        
+        <!-- Bootstrap -->
+        <link href="/static/theme/landrick/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Icons -->
+        <link href="/static/theme/landrick/css/materialdesignicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Main Css -->
+        <link href="/static/theme/landrick/css/land1.css" rel="stylesheet" type="text/css" id="theme-opt" />
+        <link href="/static/theme/landrick/css/colors/default.css" rel="stylesheet" id="color-opt">
 
-
-        <!-- Bootstrap Css -->
-        <link href="/static/merchant/default/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css">
-        <link href="/static/merchant/default/libs/jquery-confirm/css/jquery-confirm.css" rel="stylesheet" type="text/css">
-        <link href="/static/merchant/default/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css">
-        <link href="/static/merchant/default/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
-        <link href="/static/merchant/default/libs/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/static/merchant/default/libs/toastr/build/toastr.min.css">
-        <!-- Icons Css -->
-        <link href="/static/merchant/default/css/icons.min.css" rel="stylesheet" type="text/css">
-        <!-- App Css-->
-        <link href="/static/merchant/default/css/app.min.css?v=221025" id="app-style" rel="stylesheet" type="text/css">
-        <link href="/static/merchant/default/css/custom.css?v=221025" id="app-style" rel="stylesheet" type="text/css">
-        <script>
-            document.onkeydown = function () {
-                if (window.event && window.event.keyCode == 123) {
-                    event.keyCode = 0;
-                    event.returnValue = false;
-                }
-            }
-        </script>
     </head>
 
+    <body>
+        <!-- Loader -->
+        <div id="preloader">
+            <div id="status">
+                <div class="spinner">
+                    <div class="double-bounce1"></div>
+                    <div class="double-bounce2"></div>
+                </div>
+            </div>
+        </div> 
+        <!-- Loader -->
 
-    <body data-sidebar="dark">
+        <div class="back-to-home rounded d-none d-sm-block">
+            
+            <!--  主页按钮-->
+            <!--<a href="index.html" class="btn btn-icon btn-soft-primary"><i data-feather="home" class="icons"></i></a> -->
+            
+            
+             <!--Loader 此为修改开始-->
+            
+            <div class="buy-button ">
+                    <a href="/orderquery">
+                    <div class="btn btn-light login-btn-light"  style="background-color: #2f55d4 !important;font-size: 26px;padding: 12px 40px;border:none !important;color:#fff !important;">
+                    订单查询</div>
+                    </a>
+                    <a href="/complaintquery">
+                    <div class="btn btn-light login-btn-light"  style="background-color: #2f55d4 !important;font-size: 26px;padding: 12px 40px;border:none !important;color:#fff !important;">
+                    投诉进度</div>
+                    <a style="font-size: 26px;"  href="/company/contact" >联系我们 违规举报</a>
+                    </a>
+                    
+            </div>
+            <!-- Loader 此为修改结束-->
+            
+            
+            
+        </div>
+        
+        
 
-        <!-- <body data-layout="horizontal" data-topbar="dark"> -->
-
-        <!-- Begin page -->
-        <div id="layout-wrapper">
-
-            <header id="page-topbar">
-                <div class="navbar-header">
-                    <div class="d-flex">
-                        <!-- LOGO -->
-                        <div class="navbar-brand-box">
-                            <a href="" class="logo logo-dark">
-                                <span class="logo-sm">
-                                    <img src="https://qiniu.4ox.cn/627586904bf39650/7b3e4e59e138295e.png" alt="" height="22">
-                                </span>
-                                <span class="logo-lg">
-                                    <img src="https://qiniu.4ox.cn/f6e761b331643a50/f900419e8c615954.png" alt="" height="28">
-                                </span>
-                            </a>
-
-                            <a href="" class="logo logo-light">
-                                <span class="logo-sm">
-                                    <img src="https://qiniu.4ox.cn/627586904bf39650/7b3e4e59e138295e.png" alt="" height="22">
-                                </span>
-                                <span class="logo-lg">
-                                    <img src="https://qiniu.4ox.cn/f6e761b331643a50/f900419e8c615954.png" alt="" height="28">
-                                </span>
-                            </a>
+        <!-- Hero Start -->
+        <section class="bg-home d-flex align-items-center">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-7 col-md-6">
+                        <div class="mr-lg-5">   
+                            <img src="/static/theme/landrick/images/user/login.svg" class="img-fluid d-block mx-auto" alt="">
                         </div>
-
-                        <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect" id="vertical-menu-btn">
-                            <i class="fa fa-fw fa-bars"></i>
-                        </button>
-
-
                     </div>
+                    <div class="col-lg-5 col-md-6">
+                        <div class="card login-page bg-white shadow rounded border-0">
+                            <div class="card-body">
+                                <h4 class="card-title text-center">商户登录</h4>  
+                                <form class="login-form mt-4" role="form" method="post" action="/login/userlogin">
+                                    <input type="hidden" name="__token__" value="e0029af9f8ad7bbfd40de5164664e7ce" />
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group position-relative">
+                                                <label>用户名</label>
+                                                <i data-feather="user" class="fea icon-sm icons"></i>
+                                                <input class="form-control pl-5" placeholder="请输入用户名" type="text" name="username" id="username" value="" required="">
+                                            </div>
+                                        </div>
 
-                    <div class="d-flex">
+                                        <div class="col-lg-12">
+                                            <div class="form-group position-relative">
+                                                <label>密码</label>
+                                                <i data-feather="key" class="fea icon-sm icons"></i>
+                                                <input type="password" name="password" id="password" class="form-control pl-5" value="" placeholder="请输入密码" required="">
+                                            </div>
+                                        </div>
 
-                        <div class="dropdown d-inline-block d-lg-none ml-2">
-                            <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-search-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="mdi mdi-magnify"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0" aria-labelledby="page-header-search-dropdown">
+                                        <div class="col-lg-12">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="form-group">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" name="rememberme" value="1" class="custom-control-input" id="customCheck1">
+                                                        <label class="custom-control-label" for="customCheck1">记住密码</label>
+                                                    </div>
+                                                </div>
+                                                <p class="forgot-pass mb-0"><a href="/login/retpwd" class="text-dark font-weight-bold">忘记密码 ?</a></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-0">
+                                            <button  type="button" id="login_btn" class="btn btn-light mt-2 mr-2 w-100" >登 录</button>
+                                        </div>
 
-                                <form class="p-3" action="https://shop.4yuns.com/merchant/order/index.html">
-                                    <div class="form-group m-0">
-                                        <div class="input-group">
-                                            <input type="hidden" name='type' value='0'>
-                                            <input type="text" class="form-control" placeholder="输入订单编号 ..." aria-label="Recipient's username">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-primary" type="submit"><i class="mdi mdi-magnify"></i></button>
+                                        <div class="col-12 text-center">
+                                            <div class="d-flex justify-content-between  mt-3 align-items-center">
+                                                <div>
+                                                                                                        <a href="https://shop.4yuns.com/index/user/qqlogin.html" class="mr-2">
+                                                        <img src="/static/theme/landrick/images/qq.svg" width="30" height="30">
+                                                    </a>
+                                                                                                    </div>
+                                                <p class="mb-0"><small class="text-dark mr-2">没有账号 ?</small> <a href="/index/index/content.html?id=374" class="text-dark font-weight-bold">立即注册</a></p>
                                             </div>
                                         </div>
                                     </div>
                                 </form>
                             </div>
-                        </div>
+                        </div><!---->
+                    </div> <!--end col-->
+                </div><!--end row-->
+            </div> <!--end container-->
+        </section><!--end section-->
+        <!-- Hero End -->
+<!--<p><a href="https://beian.miit.gov.cn/" target="_blank">津ICP备2022003034号-3</a> <a href="/company/contact" >联系我们 违规举报</a></p>-->
 
-                        <div class="dropdown d-none d-lg-inline-block ml-1">
-                            <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bx bx-customize"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                                <div class="px-lg-2">
-                                    <div class="row no-gutters">
-                                        <div class="col">
-                                            <a class="dropdown-icon-item" href="https://shop.4yuns.com/merchant/goods_card/add.html">
-                                                <img src="/static/merchant/default/images/brands/add_card.png" alt="添加卡密">
-                                                <span>添加卡密</span>
-                                            </a>
-                                        </div>
-                                        <div class="col">
-                                            <a class="dropdown-icon-item" href="https://shop.4yuns.com/merchant/goods_category/index.html">
-                                                <img src="/static/merchant/default/images/brands/category.png" alt="添加分类">
-                                                <span>添加分类</span>
-                                            </a>
-                                        </div>
-                                        <div class="col">
-                                            <a class="dropdown-icon-item" href="https://shop.4yuns.com/merchant/goods/add.html">
-                                                <img src="/static/merchant/default/images/brands/goods.png" alt="添加商品">
-                                                <span>添加商品</span>
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <div class="row no-gutters">
-                                        <div class="col">
-                                            <a class="dropdown-icon-item" href="https://shop.4yuns.com/merchant/user/settings.html">
-                                                <img src="/static/merchant/default/images/brands/shop.png" alt="店铺设置">
-                                                <span>店铺设置</span>
-                                            </a>
-                                        </div>
-                                        <div class="col">
-                                            <a class="dropdown-icon-item" href="https://shop.4yuns.com/merchant/user/link.html">
-                                                <img src="/static/merchant/default/images/brands/link.png" alt="店铺链接">
-                                                <span>店铺链接</span>
-                                            </a>
-                                        </div>
-                                        <div class="col">
-                                            <a class="dropdown-icon-item" href="https://shop.4yuns.com/merchant/cash/index.html">
-                                                <img src="/static/merchant/default/images/brands/cash.png" alt="结算记录">
-                                                <span>结算记录</span>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="dropdown d-none d-lg-inline-block ml-1">
-                            <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
-                                <i class="bx bx-fullscreen"></i>
-                            </button>
-                        </div>
-
-                        <div class="dropdown d-inline-block">
-                            <button type="button" class="btn header-item noti-icon waves-effect" id="page-header-notifications-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="bx bx-bell"></i>
-                                                            </button>
-                            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right p-0" aria-labelledby="page-header-notifications-dropdown">
-                                <div class="p-3">
-                                    <div class="row align-items-center">
-                                        <div class="col">
-                                            <h6 class="m-0" key="t-notifications"> 站内消息 </h6>
-                                        </div>
-                                        <div class="col-auto">
-                                            <a href="#!" id="readAllMessage" class="small" key="t-view-all"> 全部已读</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div data-simplebar="" style="max-height: 230px;">
+<p><a href="https://beian.miit.gov.cn/" target="_blank">冀ICP备2022020371号</a><a href="/company/contact" > 联系我们 违规举报</a></p>
 
 
-                                    
-                                </div>
-                                <div class="p-2 border-top">
-                                    <a class="btn btn-sm btn-link font-size-14 btn-block text-center" href="https://shop.4yuns.com/merchant/message/index.html">
-                                        <i class="mdi mdi-arrow-right-circle mr-1"></i> <span key="t-view-more">查看全部..</span> 
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+        <!-- javascript -->
+        <script src="/static/theme/landrick/js/jquery-3.5.1.min.js"></script>
+        <script src="/static/theme/landrick/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/theme/landrick/js/jquery.easing.min.js"></script>
+        <script src="/static/theme/landrick/js/scrollspy.min.js"></script>
+        <!-- Icons -->
+        <script src="/static/theme/landrick/js/feather.min.js"></script>
+        <script src="/static/theme/landrick/js/bundle.js"></script>
+        <!-- Main Js -->
+        <script src="/static/theme/landrick/js/app.js"></script>
 
-                        <div class="dropdown d-inline-block">
-                            <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="rounded-circle header-profile-user" src="//q1.qlogo.cn/g?b=qq&nk=155967849&s=100&t=" alt="cx9503209">
-                                <span class="d-none d-xl-inline-block ml-1" key="t-cx9503209">cx9503209</span>
-                                <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <!-- item-->
-                                <a class="dropdown-item" href="https://shop.4yuns.com/merchant/user/settings.html"><i class="bx bx-user font-size-16 align-middle mr-1"></i> <span key="t-商户设置">商户设置</span></a>
-                                <a class="dropdown-item d-block" href="https://shop.4yuns.com/merchant/user/password.html"><i class="bx bx-wrench font-size-16 align-middle mr-1"></i> <span key="t-修改密码">修改密码</span></a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" href="/logout"><i class="bx bx-power-off font-size-16 align-middle mr-1 text-danger"></i> <span key="t-退出登录">退出登录</span></a>
-                            </div>
-                        </div>
-
-                        <div class="dropdown d-inline-block">
-                            <button type="button" class="btn header-item noti-icon right-bar-toggle waves-effect">
-                                <i class="bx bx-cog bx-spin pt-1"></i>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-            </header>
-
-            <!-- ========== Left Sidebar Start ========== -->
-            <div class="vertical-menu">
-
-                <div data-simplebar="" class="h-100">
-
-                    <!--- Sidemenu -->
-                    <div id="sidebar-menu">
-                        <!-- Left Menu Start -->
-                        <ul class="metismenu list-unstyled" id="side-menu">
-
-
-                                                        <li class="menu-title" key="t-菜单">菜单</li>
-                                                        <li>
-                                <a href="https://shop.4yuns.com/merchant/index/index.html" class="waves-effect">
-                                    <i class="bx bx-home-alt"></i>
-                                    <span key="t-后台主页">后台主页</span>
-                                </a>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-box "></i>
-                                    <span key="t-店铺管理">店铺管理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/user/link.html" key="t-店铺链接">店铺链接</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/user/settings.html" key="t-店铺设置">店铺设置</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/user/collect.html" key="t-结算设置">结算设置</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/user/wechat.html" key="t-微信通知">微信通知</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="https://shop.4yuns.com/merchant/index/notice.html?article_id=253.html" class="waves-effect">
-                                    <i class="bx bx-home-alt"></i>
-                                    <span key="t-平台商户须知">平台商户须知</span>
-                                </a>
-                            </li>
-                                                        <li>
-                                <a href="https://shop.4yuns.com/merchant/index/notice.html?article_id=364.html" class="waves-effect">
-                                    <i class="bx bx-home-alt"></i>
-                                    <span key="t-超低费率通道">超低费率通道</span>
-                                </a>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-share-alt"></i>
-                                    <span key="t-推广返利">推广返利</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/spread/index.html" key="t-推广列表">推广列表</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/spread/rebate.html" key="t-返利列表">返利列表</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li class="menu-title" key="t-运营">运营</li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-archive "></i>
-                                    <span key="t-商品管理">商品管理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_category/index.html" key="t-商品分类">商品分类</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods/add.html" key="t-添加商品">添加商品</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods/index.html" key="t-商品列表">商品列表</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods/trash.html" key="t-回收站">回收站</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-receipt"></i>
-                                    <span key="t-订单管理">订单管理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/order/index.html" key="t-订单列表">订单列表</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/order/index.html?status=1" key="t-已付款">已付款</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/order/index.html?status=0" key="t-未付款">未付款</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-customize "></i>
-                                    <span key="t-库存管理">库存管理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_card/add.html" key="t-添加库存">添加库存</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_card/index.html" key="t-库存列表">库存列表</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_card/index.html?status=2" key="t-已售出">已售出</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_card/index.html?status=1" key="t-未售出">未售出</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_card/trash.html" key="t-回收站">回收站</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-group "></i>
-                                    <span key="t-供货和代理">供货和代理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/agent/setting.html" key="t-店铺代理设置">店铺代理设置</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/agent/mypool.html" key="t-商品池管理">商品池管理</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/agent/pool.html" key="t-商品对接">商品对接</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/agent/supplygoods.html" key="t-对接的商品">对接的商品</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/agent/proxylist.html" key="t-下级代理列表">下级代理列表</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/agent/proxyorder.html" key="t-下级代理订单">下级代理订单</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-globe"></i>
-                                    <span key="t-跨平台对接">跨平台对接</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/cross/index.html" key="t-跨平台对接">跨平台对接</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/cross/supplygoods.html" key="t-对接的商品">对接的商品</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-conversation "></i>
-                                    <span key="t-投诉管理">投诉管理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/complaint/index.html?from=1" key="t-自营商品投诉">自营商品投诉</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/complaint/index.html?from=2" key="t-下级代理投诉">下级代理投诉</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-credit-card "></i>
-                                    <span key="t-结算管理">结算管理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/cash/apply.html" key="t-申请提现">申请提现</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/cash/index.html" key="t-提现列表">提现列表</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li class="menu-title" key="t-应用">应用</li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-customize"></i>
-                                    <span key="t-扩展应用">扩展应用</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/plugin/bgdata.html" key="t-实时数据可视化">实时数据可视化</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/plugin/tradetask.html" key="t-流水挑战">流水挑战</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/plugin/guide.html" key="t-店铺引导页">店铺引导页</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/plugin/oauth2.html" key="t-第三方登录">第三方登录</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/plugin/merchantauth.html" key="t-商户认证">商户认证</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/plugin/shopdiy.html" key="t-购卡页DIY">购卡页DIY</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/plugin/custompay.html" key="t-自定义支付渠道">自定义支付渠道</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bxs-bar-chart-alt-2"></i>
-                                    <span key="t-生意罗盘">生意罗盘</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/charts/money.html" key="t-收益分析">收益分析</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/charts/ranklist.html" key="t-消费排行">消费排行</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/charts/iplist.html" key="t-店铺访问记录">店铺访问记录</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/charts/channel.html" key="t-渠道分析">渠道分析</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-cog"></i>
-                                    <span key="t-系统管理">系统管理</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/message/index.html" key="t-站内消息">站内消息</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/user/moneylog.html" key="t-流水日志">流水日志</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/user/loginlog.html" key="t-登录日志">登录日志</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/user/password.html" key="t-修改密码">修改密码</a></li>
-                                                                    </ul>
-                            </li>
-                                                        <li class="menu-title" key="t-营销">营销</li>
-                                                        <li>
-                                <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                    <i class="bx bx-purchase-tag-alt "></i>
-                                    <span key="t-优惠券">优惠券</span>
-                                </a>
-                                <ul class="sub-menu" aria-expanded="false">
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_coupon/add.html" key="t-添加优惠券">添加优惠券</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_coupon/index.html" key="t-优惠券列表">优惠券列表</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_coupon/index.html?status=2" key="t-已使用">已使用</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_coupon/index.html?status=1" key="t-未使用">未使用</a></li>
-                                                                        <li><a href="https://shop.4yuns.com/merchant/goods_coupon/trash.html" key="t-回收站">回收站</a></li>
-                                                                    </ul>
-                            </li>
-                            
-                        </ul>
-                    </div>
-                    <!-- Sidebar -->
-                </div>
-            </div>
-            <!-- Left Sidebar End -->
-
-
-
-            <!-- ============================================================== -->
-            <!-- Start right Content here -->
-            <!-- ============================================================== -->
-            <div class="main-content">
-
-                
-<div class="page-content">
-    <div class="container-fluid">
-
-        <!-- start page title -->
-        <div class="row">
-            <div class="col-12">
-                <div class="page-title-box d-flex align-items-center justify-content-between">
-                    <h4 class="mb-0 font-size-18">订单列表</h4>
-
-                    <div class="page-title-right">
-                        <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">后台管理</a></li>
-                            <li class="breadcrumb-item active">订单列表</li>
-                        </ol>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row mb-2">
-                            <div class="col-sm-auto">
-
-                                <form class="form-inline" role="form" action="" method="get">
-                                    <div class="form-group">
-                                        <select name="paytype" class="form-control select2">
-                                            <option value="" selected>全部方式</option>
-                                                                                        <option value="1" >支付宝扫码</option>
-                                                                                        <option value="2" >支付宝H5</option>
-                                                                                        <option value="3" >微信扫码</option>
-                                                                                        <option value="4" >微信H5</option>
-                                                                                        <option value="5" >QQ钱包扫码</option>
-                                                                                        <option value="6" >QQ钱包H5</option>
-                                                                                        <option value="7" >网银支付</option>
-                                                                                        <option value="9" >京东钱包</option>
-                                                                                        <option value="10" >度小满支付</option>
-                                                                                        <option value="11" >云闪付</option>
-                                                                                    </select>
-                                    </div>
-                                    <div class="form-group ml-1">
-                                        <select name="status" class="form-control select2">
-                                            <option value="" >全部状态</option>
-                                            <option value="1" selected>已付款</option>
-                                            <option value="0" >未付款</option>
-                                            <option value="2" >已关闭</option>
-                                            <option value="3" >已退款</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group ml-1">
-                                        <select name="cid" class="form-control select2">
-                                            <option value="0" >商品类别</option>
-                                                                                        <option value="19455"  >语聊优惠卡密</option>
-                                                                                    </select>
-                                    </div>
-
-                                    <div class="form-group ml-1">
-                                        <select name="order_type" class="form-control select2">
-                                            <option value="" selected>全部类型 </option>
-                                            <option value="0" >普通订单</option>
-                                            <option value="1" >对接订单 </option>
-                                            <option value="2" >跨平台订单 </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group ml-1">
-                                        <select name="type" class="form-control select2">
-                                            <option value="0" >订单编号搜索</option>
-                                            <option value="1" >商品名称搜索</option>
-                                            <option value="2" >联系方式搜索</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group ml-1">
-                                        <input class="form-control" type="text" name="keywords" value="" placeholder="请输入关键字">
-                                    </div>
-
-                                    <div class="form-group ml-1">
-                                        <select name="has_send" class="form-control select2">
-                                            <option value="" selected>取卡状态(全部) </option>
-                                            <option value="0" >未取卡</option>
-                                            <option value="1" >已取卡 </option>
-                                            <option value="2" >已取部分 </option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group ml-1">
-                                        <input class="form-control input-daterange-datepicker"  type="text" name="date_range" value="04/15/2026 - 04/15/2026" placeholder="点击选择查询日期">
-                                    </div>
-
-                                    <button type="submit" class="btn btn-light waves-effect waves-light ml-1"><i class="bx bx-search mr-1"></i>搜索</button>
-                                </form>
-                            </div>
-                        </div>
-
-
-                        <div class="table-responsive">
-                            <table class="table mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>订单号</th>
-                                        <th>订单类型</th>
-                                        <th>商品名称</th>
-                                        <th>供货商</th>
-                                        <th>支付方式</th>
-                                        <th>总价</th>
-                                        <th>实付款</th>
-                                        <th>购买者信息</th>
-                                        <th>状态</th>
-                                        <th>取卡状态</th>
-                                        <th>取卡密码</th>
-                                        <th>交易时间</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                                                        <tr>
-                                        <th><a href="https://shop.4yuns.com/merchant/order/signquery.html?id=2462158" target="_blank">4Y2604151670OUTL3</a></th>
-                                        <td>
-                                                                                        <span class="badge badge-pill badge-primary">普通订单</span>
-                                                                                    </td>
-                                        <td>
-                                            陌念、芯芯、巧逢、之遇-卡密                                            <a class="fetch" href="https://shop.4yuns.com/merchant/order/fetchcard.html?id=2462158">（1张）</a>
-                                                                                    </td>
-                                        <td></td>
-                                        <td>支付宝扫码</td>
-                                        <td>1.00</td>
-                                        <td>1.00</td>
-                                        <td>15533339999  <a href="javascript:void(0);" onclick="$.x_show('买家指纹', 'https://shop.4yuns.com/merchant/order/buyerinfo.html?id=2462158', 450)">指纹</a></td>
-                                        <td>
-                                                                                        <span class="badge badge-pill badge-success">已支付</span>
-                                                                                    </td>
-                                        <td>
-                                                                                        未取
-                                                                                    </td>
-                                        <td></td>
-                                        <td>2026-04-15 16:52:51</td>
-                                        <td>
-                                                                                        <a class="fetch" href="https://shop.4yuns.com/merchant/order/fetchcard.html?id=2462158">提卡</a>
-                                            <a href="https://shop.4yuns.com/merchant/order/dumpcards.html?trade_no=4Y2604151670OUTL3" target="_blank">导出</a>
-                                                                                    </td>
-                                    </tr>
-                                    
-                                </tbody>
-                            </table>
-                        </div>
-                        <nav aria-label="...">
-                                                    </nav>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <!-- container-fluid -->
-</div>
-
-
-
-
-
-                <footer class="footer">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <script>document.write(new Date().getFullYear())</script> © 当前网站使用【云寄售】强力驱动。
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="text-sm-right d-none d-sm-block">
-                                    Design & Develop by 4yuns
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
-            </div>
-            <!-- end main content-->
-
-        </div>
-        <!-- END layout-wrapper -->
-
-        <!-- Right Sidebar -->
-        <div class="right-bar">
-            <div data-simplebar="" class="h-100">
-                <div class="rightbar-title px-3 py-4">
-                    <a href="javascript:void(0);" class="right-bar-toggle float-right">
-                        <i class="mdi mdi-close noti-icon"></i>
-                    </a>
-                    <h6 class="m-0 font-weight-bold">主题设置</h6>
-                </div>
-
-                <!-- Settings -->
-                <hr class="mt-0">
-                <h6 class="text-center mb-0">选择主题</h6>
-
-                <div class="p-4">
-                    <div class="mb-2">
-                        <img src="/static/merchant/default/images/layouts/layout-1.jpg" class="img-fluid img-thumbnail" alt="">
-                    </div>
-                    <div class="custom-control custom-switch mb-3">
-                        <input type="checkbox" name="template-switch" value="default" class="custom-control-input theme-choice" id="light-mode-switch" checked="">
-                               <label class="custom-control-label" for="light-mode-switch">垂直布局</label>
-                    </div>
-
-                    <div class="mb-2">
-                        <img src="/static/merchant/default/images/layouts/layout-2.jpg" class="img-fluid img-thumbnail" alt="">
-                    </div>
-                    <div class="custom-control custom-switch mb-3">
-                        <input type="checkbox" name="template-switch" value="horizontal" class="custom-control-input theme-choice" id="dark-mode-switch" >
-                               <label class="custom-control-label" for="dark-mode-switch">水平布局</label>
-                    </div>
-                </div>
-            </div> <!-- end slimscroll-menu-->
-        </div>
-        <!-- /Right-bar -->
-
-        <!-- Right bar overlay-->
-        <div class="rightbar-overlay"></div>
-
-        <!-- JAVASCRIPT -->
-        <script src="/static/merchant/default/libs/jquery/jquery.min.js"></script>
-        <script src="/static/merchant/default/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="/static/merchant/default/libs/metismenu/metisMenu.min.js"></script>
-        <script src="/static/merchant/default/libs/simplebar/simplebar.min.js"></script>
-        <script src="/static/merchant/default/libs/node-waves/waves.min.js"></script>
-        <script src="/static/merchant/default/libs/jquery-confirm/js/jquery-confirm.js"></script>
-        <script src="/static/merchant/default/libs/layer/layer.js"></script>
-        <script src="/static/merchant/default/libs/select2/js/select2.min.js"></script>
-        <script src="/static/merchant/default/libs/moment/moment.js"></script>
-        <script src="/static/merchant/default/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-        <script src="/static/merchant/default/libs/bootstrap-daterangepicker/daterangepicker.js"></script>
-        <script src="/static/merchant/default/libs/toastr/build/toastr.min.js"></script>
+        <script src="/static/app/js/layer.js"></script>
         <script>
-                                    $(".select2").select2();
-                                    $(document).ready(function () {
-
-                                        $('#readAllMessage').on('click', function () {
-
-                                            $.confirm({
-                                                title: '温馨提示',
-                                                content: '确定要全部已读？',
-                                                type: 'red',
-                                                typeAnimated: true,
-                                                buttons: {
-                                                    tryAgain: {
-                                                        text: '确定',
-                                                        btnClass: 'btn-red',
-                                                        action: function () {
-                                                            var loading = layer.load(1, {shade: [0.1, '#fff']});
-                                                            $.ajax({
-                                                                type: 'post',
-                                                                url: "https://shop.4yuns.com/merchant/message/allread.html",
-                                                                dataType: 'json',
-                                                                success: function (info) {
-                                                                    layer.close(loading);
-                                                                    if (info.code == 1) {
-                                                                        location.reload();
-                                                                    } else {
-                                                                        $.alert({
-                                                                            title: '温馨提示!',
-                                                                            content: info.msg
-                                                                        });
-                                                                    }
-                                                                }
-                                                            });
-                                                        }
-                                                    },
-                                                    cancel: {
-                                                        text: '取消',
-                                                    }
-                                                }
-                                            });
-                                        });
-                                    });
-                                    $("input[name='template-switch']").on("change", function (e) {
-                                        $("input[name='template-switch']").prop("checked", false);
-                                        $(this).prop("checked", true);
-
-                                        var template = $(this).val();
-                                        var loading = layer.load(1, {shade: [0.1, '#fff']});
-                                        $.ajax({
-                                            type: 'post',
-                                            url: "https://shop.4yuns.com/merchant/user/set_template.html",
-                                            data: {template: template, platform: 'pc'},
-                                            dataType: 'json',
-                                            success: function (info) {
-                                                layer.close(loading);
-                                                if (info.code != 1) {
-                                                    $.alert({
-                                                        title: '温馨提示!',
-                                                        content: info.msg
-                                                    });
-                                                } else {
-                                                    location.reload();
-                                                }
-                                            }
-                                        });
-                                    });
-        </script>
-        <script>
-            $('.input-daterange-datepicker').daterangepicker({
-                buttonClasses: ['btn', 'btn-sm'],
-                applyClass: 'btn-success',
-                cancelClass: 'btn-light',
-                locale: {
-                    applyLabel: '应用',
-                    cancelLabel: '取消',
-                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
-                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十月', '十二月'],
-                    firstDay: 1
+            $('#login_btn').click(function () {
+                if ($('#username').val() == '') {
+                    layer.msg('请输入用户名');
+                    return false;
                 }
-
-            });
-        </script>
-        
-<script>
-    function notify(e, id)
-    {
-        layer.confirm('确认要设置这个订单已支付吗？该操作不可恢复', function (index) {
-            var loading = layer.load(1, {shade: [0.1, '#fff']});
-            $.ajax({
-                url: "https://shop.4yuns.com/merchant/order/notify.html",
-                type: 'post',
-                data: {id: id},
-                success: function (res) {
-                    layer.close(loading);
-                    if (res.code == 1) {
-                        layer.msg(res.msg, {icon: 1, time: 3000});
-                        setTimeout(function () {
-                            location.reload();
-                        }, 3000);
-                    } else {
-                        layer.msg(res.msg, {icon: 2, time: 3000});
+                if ($('#password').val() == '') {
+                    layer.msg('请输入密码');
+                    return false;
+                }
+                var loading = '';
+                $.ajax({
+                    type: 'post',
+                    url: '/index/user/doLogin',
+                    dataType: "json",
+                    data: $("form").serialize(),
+                    beforeSend: function (xhr) {
+                        loading = layer.load()
+                    },
+                    success: function (res) {
+                        layer.close(loading);
+                        if (res.code == 1) {
+                            layer.msg('恭喜您，登录成功！', {icon: 6, time: 1000});
+                            window.location.href = '/merchant';
+                        } else {
+                            layer.msg(res.msg, {icon: 6, time: 1000});
+                        }
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        layer.close(loading);
+                        layer.msg('请刷新页面重试');
                     }
+                });
+            })
+            $(document).keyup(function (event) {
+                if (event.keyCode == 13) {
+                    $("#login_btn").trigger("click");
                 }
-            });
-        });
-    }
-</script>
+            })
+        </script>
 
-
-        <!-- App js -->
-        <script src="/static/merchant/default/js/app.js"></script>
-
-            
+    
 <!-- 百度统计 开始 -->\r
 <script>\r
     var _hmt = _hmt || [];\r
     (function() {\r
         var hm = document.createElement("script");\r
-        hm.src = "https://hm.baidu.com/hm.js?e52c00dfe173682d88617b0375521ef5";\r
+        hm.src = "https://hm.baidu.com/hm.js?805647644b845987890074c1ecdc0f4a";\r
         var s = document.getElementsByTagName("script")[0]; \r
         s.parentNode.insertBefore(hm, s);\r
     })();\r
@@ -770,5 +196,4 @@
 <!-- 百度统计 结束 -->
 
 </body>
-
 </html>"

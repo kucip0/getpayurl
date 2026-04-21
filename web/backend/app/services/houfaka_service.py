@@ -710,7 +710,10 @@ class HoufakaService(BaseService):
             
             # 调试：保存HTML用于检查
             if len(orders) == 0:
-                debug_file = f"debug_orders_{status}_{start_date}_{end_date}.html"
+                # 替换日期中的/为-，避免路径错误
+                safe_start = start_date.replace('/', '-') if start_date else 'none'
+                safe_end = end_date.replace('/', '-') if end_date else 'none'
+                debug_file = f"debug_orders_{status}_{safe_start}_{safe_end}.html"
                 with open(debug_file, 'w', encoding='utf-8') as f:
                     f.write(html_content)
                 self.log(f"DEBUG: 已保存HTML到 {debug_file}")
