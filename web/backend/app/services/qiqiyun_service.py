@@ -696,9 +696,46 @@ class QiqiyunService(BaseService):
                     "message": "商户未登录，请先在平台管理中登录"
                 }
             
+            # 如果传入的是goods_key（字符串如9q72u4），需要先查询获取数字ID
+            numeric_id = None
+            if not str(goods_id).isdigit():
+                # 这是goods_key，需要查询获取数字ID
+                self.log(f"传入的是goods_key({goods_id})，正在查询数字ID...")
+                
+                # 调用商户商品列表API查找
+                list_url = f"{self.BASE_URL}/merchantApi/Goods/list"
+                list_data = {
+                    "current": 1,
+                    "pageSize": 100,
+                    "goods_type": "card",
+                    "name": "",
+                    "status": -1  # 所有状态
+                }
+                
+                headers = self._get_merchant_headers()
+                resp = self.session.post(list_url, json=list_data, headers=headers, timeout=15)
+                resp.raise_for_status()
+                result = resp.json()
+                
+                if result.get("code") != 1:
+                    raise Exception(f"查询商品列表失败: {result.get('msg', '未知错误')}")
+                
+                # 查找匹配的goods_key
+                goods_list = result.get("data", {}).get("list", [])
+                for item in goods_list:
+                    if item.get("goods_key") == goods_id:
+                        numeric_id = item.get("id")
+                        self.log(f"找到商品 {goods_id} 对应的数字ID: {numeric_id}")
+                        break
+                
+                if not numeric_id:
+                    raise Exception(f"未找到goods_key={goods_id}对应的数字ID")
+            else:
+                numeric_id = int(goods_id)
+            
             # 步骤1: 获取商品完整信息
             info_url = f"{self.BASE_URL}/merchantApi/Goods/info"
-            info_data = {"id": str(goods_id)}
+            info_data = {"id": str(numeric_id)}
             
             self.log("=" * 80)
             self.log("【七七云-修改价格】步骤1：获取商品信息")
