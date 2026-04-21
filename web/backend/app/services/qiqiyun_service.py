@@ -132,7 +132,7 @@ class QiqiyunService(BaseService):
                 "product_id": goods_key,
                 "product_name": self._name,
                 "original_price": f"{price_yuan:.2f}",
-                "stock": "充足",
+                "stock": 999,  # 七七云不返回库存，设为充足
             }
 
         except Exception as e:
