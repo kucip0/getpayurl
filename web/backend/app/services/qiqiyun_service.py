@@ -24,6 +24,29 @@ class QiqiyunService(BaseService):
         super().__init__(user_id, db)
         self.visitor_id = self._generate_visitor_id()
         self.juuid = self._generate_juuid()
+        self.merchant_token = None  # 商户登录token
+
+    def _get_merchant_headers(self) -> dict:
+        """获取商户API请求头（包含Merchant-Token）"""
+        headers = {
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*",
+            "sec-ch-ua": '"Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "Origin": self.BASE_URL,
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Dest": "empty",
+            "Referer": f"{self.BASE_URL}/merchant/",
+            "Accept-Encoding": "gzip, deflate, br, zstd",
+            "Accept-Language": "zh-CN,zh;q=0.9",
+        }
+        # 如果有merchant_token，添加到请求头
+        if self.merchant_token:
+            headers["Merchant-Token"] = self.merchant_token
+        return headers
 
     def _generate_visitor_id(self) -> str:
         """生成Visitorid"""
@@ -32,6 +55,24 @@ class QiqiyunService(BaseService):
     def _generate_juuid(self) -> str:
         """生成juuid"""
         return ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
+
+    def _generate_phone(self) -> str:
+        """生成随机中国手机号"""
+        # 中国手机号前缀：13x, 15x, 18x, 19x
+        prefixes = ['130', '131', '132', '133', '134', '135', '136', '137', '138', '139',
+                    '150', '151', '152', '153', '155', '156', '157', '158', '159',
+                    '180', '181', '182', '183', '184', '185', '186', '187', '188', '189',
+                    '190', '191', '193', '195', '196', '197', '198', '199']
+        prefix = random.choice(prefixes)
+        suffix = ''.join(random.choices(string.digits, k=8))
+        return prefix + suffix
+
+    def _generate_qrcode(self, url: str) -> str:
+        """生成二维码"""
+        from app.utils.qr_generator import generate_qr_base64
+        qr_base64 = generate_qr_base64(url)
+        self.log("生成二维码成功")
+        return qr_base64
 
     def _get_api_headers(self, content_type: str = "application/json") -> dict:
         """获取API请求头"""
@@ -114,7 +155,7 @@ class QiqiyunService(BaseService):
             
             self._goods_key = goods_key
             self._token = user_info.get("token")
-            self._price = data.get("price", 0)  # 单位：分
+            self._price = data.get("price", 0)  # 单位：元（可以是小数）
             self._name = data.get("name", "")
             self._contact_format = data.get("contact_format", "")
             self._query_password_status = data.get("extend", {}).get("query_password_status", 0)
@@ -124,8 +165,8 @@ class QiqiyunService(BaseService):
 
             self.log(f"步骤2: 获取商品信息成功, token={self._token}, price={self._price}")
 
-            # 转换价格为元
-            price_yuan = self._price / 100
+            # 价格已经是元，不需要转换
+            price_yuan = self._price / 100 if self._price > 100 else self._price  # 兼容分和元两种情况
 
             return {
                 "success": True,
@@ -143,15 +184,39 @@ class QiqiyunService(BaseService):
         """提交订单并获取支付二维码"""
         self.logs = []
         try:
+            # 清除旧Cookie
+            self.session.cookies.clear()
+            self.log("步骤1前: 已清除从数据库加载的旧Cookie")
+
             # 从URL中提取goods_key
             parts = product_url.rstrip('/').split('/')
             goods_key = parts[-1]
 
+            self.log(f"商品链接: {product_url}")
+            self.log(f"提取的goods_key: {goods_key}")
+
             # 步骤1: 访问商品页面
+            self.log("=" * 80)
+            self.log("【七七云-步骤1】访问商品页面 - 请求信息")
+            self.log(f"请求URL: {product_url}")
+            self.log(f"请求方法: GET")
+            self.log("=" * 80)
+            
             resp = self.session.get(product_url, headers={
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
             }, timeout=15)
             resp.raise_for_status()
+            
+            self.log("=" * 80)
+            self.log("【七七云-步骤1】访问商品页面 - 响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应头:")
+            for k, v in resp.headers.items():
+                v_display = v[:100] + "..." if len(v) > 100 else v
+                self.log(f"  {k}: {v_display}")
+            self.log(f"Cookie: {dict(self.session.cookies)}")
+            self.log("=" * 80)
+            
             self.log(f"步骤1: 访问商品页面成功")
 
             # 步骤2: 获取商品信息（包含token）
@@ -164,7 +229,29 @@ class QiqiyunService(BaseService):
             headers = self._get_api_headers()
             headers["Referer"] = product_url
             
+            self.log("=" * 80)
+            self.log("【七七云-步骤2】获取商品信息 - 请求信息")
+            self.log(f"请求URL: {goods_info_url}")
+            self.log(f"请求方法: POST")
+            self.log(f"请求头:")
+            for k, v in headers.items():
+                self.log(f"  {k}: {v}")
+            self.log(f"请求体: {json.dumps(goods_info_data)}")
+            self.log("=" * 80)
+            
             resp = self.session.post(goods_info_url, json=goods_info_data, headers=headers, timeout=15)
+            
+            self.log("=" * 80)
+            self.log("【七七云-步骤2】获取商品信息 - 响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应头:")
+            for k, v in resp.headers.items():
+                v_display = v[:100] + "..." if len(v) > 100 else v
+                self.log(f"  {k}: {v_display}")
+            self.log(f"响应体:")
+            self.log(resp.text[:2000])
+            self.log("=" * 80)
+            
             resp.raise_for_status()
             result = resp.json()
 
@@ -182,7 +269,7 @@ class QiqiyunService(BaseService):
             if not token:
                 raise Exception("未获取到token")
 
-            self.log(f"步骤2: 获取商品信息成功, token={token}")
+            self.log(f"步骤2: 获取商品信息成功, token={token}, price={price}")
 
             # 步骤3: 获取支付渠道
             channel_url = f"{self.BASE_URL}/shopApi/Shop/getUserChannel"
@@ -227,13 +314,14 @@ class QiqiyunService(BaseService):
             # 步骤4: 创建订单
             # 价格转换为分（new_price是元）
             price_in_cents = int(new_price * 100)
+            contact_phone = self._generate_phone()
             
             order_data = {
                 "goods_key": goods_key,
                 "quantity": 1,
                 "coupon_code": "",
                 "channel_id": alipay_channel_id,
-                "contact": "",  # 联系方式，根据contact_format可能需要
+                "contact": contact_phone,  # 随机生成手机号
                 "query_password": "",
                 "select_cards_ids": [],
                 "extend": {"juuid": self.juuid}
@@ -275,23 +363,29 @@ class QiqiyunService(BaseService):
             if not trade_no or not payurl:
                 raise Exception(f"创建订单成功但未返回trade_no或payurl: {result}")
 
-            self.log(f"步骤4: 创建订单成功, trade_no={trade_no}")
+            self.log(f"步骤4: 创建订单成功, trade_no={trade_no}, payurl={payurl}")
 
             # 步骤5: 跟随重定向获取支付宝网关
-            self.log(f"步骤5: 请求payurl: {payurl}")
+            self.log("=" * 80)
+            self.log("【七七云-步骤5】请求payurl获取重定向 - 请求信息")
+            self.log(f"请求URL: {payurl}")
+            self.log(f"请求方法: GET")
+            self.log("=" * 80)
             
-            # 关闭自动重定向，手动处理
             resp = self.session.get(payurl, headers={
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                 "Referer": product_url,
             }, timeout=15, allow_redirects=False)
-
-            self.log(f"步骤5响应状态码: {resp.status_code}")
+            
+            self.log("=" * 80)
+            self.log("【七七云-步骤5】请求payurl获取重定向 - 响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应头Location: {resp.headers.get('Location', '')}")
+            self.log("=" * 80)
             
             # 获取Location
             location = resp.headers.get("Location", "")
-            self.log(f"步骤5重定向地址: {location}")
 
             if not location:
                 raise Exception("未获取到重定向地址")
@@ -305,66 +399,472 @@ class QiqiyunService(BaseService):
             self.log(f"步骤5: 完整支付URL: {payment_url}")
 
             # 步骤6: 请求支付页面，获取支付宝表单
+            self.log("=" * 80)
+            self.log("【七七云-步骤6】请求支付页面获取支付宝表单 - 请求信息")
+            self.log(f"请求URL: {payment_url}")
+            self.log(f"请求方法: GET")
+            self.log("=" * 80)
+            
             resp = self.session.get(payment_url, headers={
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                 "Referer": product_url,
             }, timeout=15, allow_redirects=False)
-
-            self.log(f"步骤6响应状态码: {resp.status_code}")
-            self.log(f"步骤6响应头Location: {resp.headers.get('Location', '')}")
-
-            # 获取支付宝重定向地址
+            
+            self.log("=" * 80)
+            self.log("【七七云-步骤6】请求支付页面获取支付宝表单 - 响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应体(前500字符):")
+            self.log(resp.text[:500])
+            self.log("=" * 80)
+            
+            # 从HTML中提取表单action和所有hidden input参数
+            soup = BeautifulSoup(resp.text, "html.parser")
+            form = soup.find("form")
+            if not form:
+                raise Exception("未找到支付宝支付表单")
+            
+            action = form.get("action", "")
+            self.log(f"步骤6: 支付宝表单action: {action}")
+            
+            # 提取所有hidden input字段
+            form_data = {}
+            for input_tag in form.find_all("input", type="hidden"):
+                name = input_tag.get("name")
+                value = input_tag.get("value", "")
+                if name:
+                    form_data[name] = value
+                    self.log(f"  表单字段 {name}={value[:80]}...")
+            
+            if not action:
+                raise Exception("支付宝表单action为空")
+            
+            # 构建完整的支付宝网关URL
+            if action.startswith("http"):
+                alipay_gateway = action
+            elif action.startswith("//"):
+                alipay_gateway = f"https:{action}"
+            else:
+                alipay_gateway = f"https://openapi.alipay.com{action}"
+            
+            self.log(f"步骤6: 支付宝网关URL: {alipay_gateway}")
+            
+            # 步骤7: POST到支付宝网关
+            self.log("=" * 80)
+            self.log("【七七云-步骤7】POST到支付宝网关 - 请求信息")
+            self.log(f"请求URL: {alipay_gateway}")
+            self.log(f"请求方法: POST")
+            self.log(f"请求体(前500字符):")
+            # 只打印部分表单数据，避免过长
+            form_data_preview = {k: (v[:100] + "..." if len(v) > 100 else v) for k, v in form_data.items()}
+            self.log(f"{json.dumps(form_data_preview, ensure_ascii=False)}")
+            self.log("=" * 80)
+            
+            resp = self.session.post(alipay_gateway, data=form_data, headers={
+                "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "Referer": f"{self.BASE_URL}/",
+                "Content-Type": "application/x-www-form-urlencoded",
+            }, timeout=15, allow_redirects=False)
+            
+            self.log("=" * 80)
+            self.log("【七七云-步骤7】POST到支付宝网关 - 响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应头Location: {resp.headers.get('Location', '')}")
+            self.log("=" * 80)
+            
             alipay_location = resp.headers.get("Location", "")
             
             if not alipay_location:
-                # 如果没有重定向，尝试从HTML中提取表单
-                soup = BeautifulSoup(resp.text, "html.parser")
-                form = soup.find("form")
-                if form:
-                    action = form.get("action", "")
-                    self.log(f"从HTML中提取到支付宝表单action: {action}")
-                    # 直接返回这个URL作为二维码
-                    return {
-                        "success": True,
-                        "qr_code_url": action if action.startswith("http") else f"https:{action}",
-                        "payment_url": action if action.startswith("http") else f"https:{action}",
-                        "order_no": trade_no,
-                    }
-                raise Exception("未获取到支付宝重定向地址")
-
-            self.log(f"步骤6: 支付宝重定向地址: {alipay_location}")
-
-            # 步骤7: 跟随支付宝重定向
-            if alipay_location.startswith("/"):
-                alipay_url = f"https://mclient.alipay.com{alipay_location}"
-            elif alipay_location.startswith("http"):
-                alipay_url = alipay_location
-            else:
-                alipay_url = f"https://{alipay_location}"
-
-            resp = self.session.get(alipay_url, headers={
+                raise Exception("支付宝网关未返回重定向")
+            
+            # 步骤8: 跟随支付宝重定向获取最终二维码地址
+            self.log("=" * 80)
+            self.log("【七七云-步骤8】请求支付宝客户端获取最终二维码 - 请求信息")
+            self.log(f"请求URL: {alipay_location}")
+            self.log(f"请求方法: GET")
+            self.log("=" * 80)
+            
+            resp = self.session.get(alipay_location, headers={
                 "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
                 "Referer": f"{self.BASE_URL}/",
             }, timeout=15, allow_redirects=False)
-
+            
+            self.log("=" * 80)
+            self.log("【七七云-步骤8】请求支付宝客户端获取最终二维码 - 响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应头Location: {resp.headers.get('Location', '')}")
+            self.log("=" * 80)
+            
             final_location = resp.headers.get("Location", "")
-            self.log(f"步骤7: 最终二维码地址: {final_location}")
-
+            
             if not final_location:
-                # 如果还是没有，使用上一步的URL
-                final_location = alipay_url
+                # 如果还是没有location，使用alipay_location
+                final_location = alipay_location
+                self.log(f"警告: 未获取到最终location，使用步骤7的location")
 
+            self.log(f"步骤8: 最终二维码地址: {final_location}")
+
+            # 步骤9: 生成二维码
+            qr_base64 = self._generate_qrcode(final_location)
             self.log(f"二维码生成成功, order_no={trade_no}")
 
             return {
                 "success": True,
-                "qr_code_url": final_location,
+                "order_id": trade_no,
+                "qr_code_base64": qr_base64,
                 "payment_url": final_location,
-                "order_no": trade_no,
+                "logs": self.logs,
             }
 
         except Exception as e:
             self.log(f"订单处理失败: {str(e)}")
+            return {
+                "success": False,
+                "error_message": str(e),
+                "logs": self.logs,
+            }
+
+    def login(self, username: str, password: str) -> dict:
+        """登录七七云平台"""
+        try:
+            login_url = f"{self.BASE_URL}/merchantApi/user/login"
+            login_data = {
+                "username": username,
+                "password": password
+            }
+            
+            self.log("=" * 80)
+            self.log("【七七云-登录】请求信息")
+            self.log(f"请求URL: {login_url}")
+            self.log(f"请求方法: POST")
+            self.log(f"请求体: {json.dumps(login_data)}")
+            self.log("=" * 80)
+            
+            headers = {
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "sec-ch-ua": '"Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"Windows"',
+                "Origin": self.BASE_URL,
+                "Sec-Fetch-Site": "same-origin",
+                "Sec-Fetch-Mode": "cors",
+                "Sec-Fetch-Dest": "empty",
+                "Referer": f"{self.BASE_URL}/merchant/login/",
+            }
+            
+            resp = self.session.post(login_url, json=login_data, headers=headers, timeout=15)
+            
+            self.log("=" * 80)
+            self.log("【七七云-登录】响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应头Set-Cookie: {resp.headers.get('Set-Cookie', '')}")
+            self.log(f"响应体: {resp.text[:500]}")
+            self.log("=" * 80)
+            
+            resp.raise_for_status()
+            result = resp.json()
+            
+            if result.get("code") != 1:
+                raise Exception(f"登录失败: {result.get('msg', '未知错误')}")
+            
+            # 从响应头Set-Cookie中提取merchant-token
+            set_cookie = resp.headers.get("Set-Cookie", "")
+            token = None
+            for cookie_part in set_cookie.split(","):
+                if "merchant-token=" in cookie_part:
+                    # 提取token值
+                    for part in cookie_part.split(";"):
+                        part = part.strip()
+                        if part.startswith("merchant-token="):
+                            token = part.replace("merchant-token=", "")
+                            break
+            
+            # 如果从Set-Cookie没找到，尝试从响应data中获取
+            if not token:
+                token = result.get("data", {}).get("merchant_token")
+            
+            if not token:
+                raise Exception("登录成功但未获取到merchant-token")
+            
+            self.merchant_token = token
+            self.log(f"登录成功, merchant_token={token}")
+            
+            # 保存token到cookies（以便load_cookies/save_cookies机制可以管理）
+            self.session.cookies.set("merchant-token", token, domain="my.77yfk.com")
+            
+            return {
+                "success": True,
+                "message": "登录成功",
+                "shop_name": username,
+            }
+            
+        except Exception as e:
+            self.log(f"登录失败: {str(e)}")
             raise
+
+    def get_balance(self) -> dict:
+        """查询账户余额"""
+        try:
+            if not self.merchant_token:
+                return {
+                    "success": False,
+                    "message": "商户未登录，请先在平台管理中登录",
+                    "withdrawable": "0.00",
+                    "non_withdrawable": "0.00"
+                }
+            
+            balance_url = f"{self.BASE_URL}/merchantApi/wallet/info"
+            
+            self.log("=" * 80)
+            self.log("【七七云-查询余额】请求信息")
+            self.log(f"请求URL: {balance_url}")
+            self.log(f"请求方法: POST")
+            self.log(f"Merchant-Token: {self.merchant_token}")
+            self.log("=" * 80)
+            
+            headers = self._get_merchant_headers()
+            
+            resp = self.session.post(balance_url, headers=headers, timeout=15)
+            
+            self.log("=" * 80)
+            self.log("【七七云-查询余额】响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应体: {resp.text[:500]}")
+            self.log("=" * 80)
+            
+            resp.raise_for_status()
+            result = resp.json()
+            
+            if result.get("code") != 1:
+                raise Exception(f"查询余额失败: {result.get('msg', '未知错误')}")
+            
+            # 解析余额信息
+            data = result.get("data", {})
+            platform_data = data.get("platform", {})
+            
+            available_money = platform_data.get("available_money", 0)
+            freeze_money = platform_data.get("freeze_money", 0)
+            
+            # 转换为元（API返回的可能是分）
+            if isinstance(available_money, (int, float)):
+                available_money = available_money / 100
+            if isinstance(freeze_money, (int, float)):
+                freeze_money = freeze_money / 100
+            
+            self.log(f"查询余额成功: 可用余额={available_money}, 冻结金额={freeze_money}")
+            
+            return {
+                "success": True,
+                "message": "查询成功",
+                "withdrawable": f"{available_money:.2f}",
+                "non_withdrawable": f"{freeze_money:.2f}"
+            }
+            
+        except Exception as e:
+            self.log(f"查询余额失败: {str(e)}")
+            return {
+                "success": False,
+                "message": f"查询失败: {str(e)}",
+                "withdrawable": "0.00",
+                "non_withdrawable": "0.00"
+            }
+
+    def modify_goods_price(self, goods_id: str, new_price: str) -> dict:
+        """修改商品价格"""
+        try:
+            if not self.merchant_token:
+                return {
+                    "success": False,
+                    "message": "商户未登录，请先在平台管理中登录"
+                }
+            
+            # 步骤1: 获取商品完整信息
+            info_url = f"{self.BASE_URL}/merchantApi/Goods/info"
+            info_data = {"id": str(goods_id)}
+            
+            self.log("=" * 80)
+            self.log("【七七云-修改价格】步骤1：获取商品信息")
+            self.log(f"请求URL: {info_url}")
+            self.log(f"请求体: {json.dumps(info_data)}")
+            self.log("=" * 80)
+            
+            headers = self._get_merchant_headers()
+            
+            resp = self.session.post(info_url, json=info_data, headers=headers, timeout=15)
+            
+            self.log("=" * 80)
+            self.log("【七七云-修改价格】步骤1：商品信息响应")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应体: {resp.text[:500]}")
+            self.log("=" * 80)
+            
+            resp.raise_for_status()
+            result = resp.json()
+            
+            if result.get("code") != 1:
+                raise Exception(f"获取商品信息失败: {result.get('msg', '未知错误')}")
+            
+            goods_info = result.get("data", {})
+            
+            # 步骤2: 修改价格
+            update_url = f"{self.BASE_URL}/merchantApi/Goods/update"
+            
+            # 构建完整的更新数据（保留所有原始字段，只修改price）
+            update_data = dict(goods_info)
+            # price单位转换为元（如果原始是分）
+            update_data["price"] = float(new_price)
+            
+            self.log("=" * 80)
+            self.log("【七七云-修改价格】步骤2：提交价格修改")
+            self.log(f"请求URL: {update_url}")
+            self.log(f"请求体(price={new_price}): {json.dumps({k: v for k, v in update_data.items() if k == 'price'}, ensure_ascii=False)}")
+            self.log("=" * 80)
+            
+            resp = self.session.post(update_url, json=update_data, headers=headers, timeout=15)
+            
+            self.log("=" * 80)
+            self.log("【七七云-修改价格】步骤2：价格修改响应")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应体: {resp.text[:500]}")
+            self.log("=" * 80)
+            
+            resp.raise_for_status()
+            result = resp.json()
+            
+            if result.get("code") != 1:
+                raise Exception(f"修改价格失败: {result.get('msg', '未知错误')}")
+            
+            self.log(f"修改价格成功: goods_id={goods_id}, new_price={new_price}")
+            
+            return {
+                "success": True,
+                "message": f"价格已修改为 ¥{new_price}",
+                "goods_id": goods_id,
+                "new_price": new_price,
+            }
+            
+        except Exception as e:
+            self.log(f"修改价格失败: {str(e)}")
+            return {
+                "success": False,
+                "message": str(e)
+            }
+
+    def query_orders(
+        self,
+        status: int = 1,
+        start_date: str = "",
+        end_date: str = "",
+        pay_type: Optional[int] = None,
+        order_type: Optional[int] = None
+    ) -> dict:
+        """查询订单列表"""
+        try:
+            if not self.merchant_token:
+                return {
+                    "success": False,
+                    "message": "商户未登录，请先在平台管理中登录",
+                    "orders": [],
+                    "total": 0
+                }
+            
+            orders_url = f"{self.BASE_URL}/merchantApi/order/list"
+            
+            # 构建查询参数（status固定为1，只查询已完成订单）
+            query_data = {
+                "current": 1,
+                "pageSize": 20,
+                "status": 1,  # 固定查询已完成订单
+                "trade_no": "",
+                "contact": "",
+                "card_no": "",
+                "start_time": 0,
+                "end_time": 0,
+                "agent_id": None,
+                "parent_id": None
+            }
+            
+            self.log("=" * 80)
+            self.log("【七七云-查询订单】请求信息")
+            self.log(f"请求URL: {orders_url}")
+            self.log(f"请求体: {json.dumps(query_data, ensure_ascii=False)}")
+            self.log("=" * 80)
+            
+            headers = self._get_merchant_headers()
+            
+            resp = self.session.post(orders_url, json=query_data, headers=headers, timeout=15)
+            
+            self.log("=" * 80)
+            self.log("【七七云-查询订单】响应信息")
+            self.log(f"响应状态码: {resp.status_code}")
+            self.log(f"响应体(前1000字符): {resp.text[:1000]}")
+            self.log("=" * 80)
+            
+            resp.raise_for_status()
+            result = resp.json()
+            
+            if result.get("code") != 1:
+                raise Exception(f"查询订单失败: {result.get('msg', '未知错误')}")
+            
+            # 解析订单数据
+            data = result.get("data", {})
+            total = data.get("total", 0)
+            orders_list = data.get("list", [])
+            
+            self.log(f"查询成功，共获取到 {len(orders_list)} 个订单（总计: {total}）")
+            
+            # 转换订单格式
+            orders = []
+            for order in orders_list:
+                # 状态映射
+                status_map = {1: "待付款", 2: "已完成", 3: "已取消", 4: "已退款"}
+                status_text = status_map.get(order.get("status", 0), "未知")
+                
+                # 计算订单金额（分转元）
+                total_amount = order.get("total_amount", 0)
+                if isinstance(total_amount, (int, float)):
+                    total_amount = total_amount / 100
+                
+                # 时间戳转换
+                create_time = order.get("create_time", "")
+                if isinstance(create_time, (int, float)) and create_time > 0:
+                    from datetime import datetime
+                    create_time = datetime.fromtimestamp(create_time).strftime("%Y-%m-%d %H:%M:%S")
+                
+                orders.append({
+                    "order_no": order.get("trade_no", ""),
+                    "order_type": "普通订单",
+                    "product_name": order.get("goods_name", ""),
+                    "supplier": "",
+                    "payment_method": "支付宝",  # 七七云默认支付宝
+                    "total_price": f"{total_amount:.2f}",
+                    "actual_price": f"{total_amount:.2f}",
+                    "buyer_info": "-",
+                    "status": status_text,
+                    "card_status": "已取" if order.get("status") == 2 else "未取",
+                    "card_password": "",
+                    "trade_time": create_time,
+                    "order_id": order.get("trade_no", ""),
+                })
+            
+            self.log(f"订单转换完成，共 {len(orders)} 条")
+            
+            return {
+                "success": True,
+                "message": "查询成功",
+                "orders": orders,
+                "total": len(orders),
+            }
+            
+        except Exception as e:
+            self.log(f"查询订单失败: {str(e)}")
+            return {
+                "success": False,
+                "message": f"查询失败: {str(e)}",
+                "orders": [],
+                "total": 0
+            }

@@ -1,137 +1,25 @@
-## 要求
- - 同域Cookie需要自动管理传递到下一个请求。
- - 必须使用移动端User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
- - 所有步骤需要提交的参数均从前面的请求中获取，如果有获取不到的告诉我，我去抓包分析是否漏了关键请求，禁止你自己循环Debug。
- 
- 
+## 登录请求
 
-1.步骤1请求。
-GET /item/9q72u4 HTTP/1.1
+POST /merchantApi/user/login HTTP/1.1
 Host: my.77yfk.com
 Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-sec-ch-ua-mobile: ?1
-sec-ch-ua-platform: "iOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-Sec-Fetch-Site: none
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: zh-CN,zh;q=0.9
-
-HTTP/1.1 200 OK
-Server: nginx
-Content-Type: text/html; charset=utf-8
-Vary: Accept-Encoding
-Set-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; expires=Tue, 21-Apr-2026 13:54:11 GMT; Max-Age=1440; path=/
-Strict-Transport-Security: max-age=31536000
-Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
-Content-Encoding: gzip
-Age: 0
-Transfer-Encoding: chunked
-Connection: keep-alive
-Date: Tue, 21 Apr 2026 13:30:11 GMT
-EO-LOG-UUID: 16705143979477206526
-EO-Cache-Status: MISS
-Cache-Control: max-age=0
-NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
-Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
-
-<!DOCTYPE html>
-<html lang="zh">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-store, no-cache, must-revalidate, max-age=0"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
-    <title></title>
-
-    <style>
-      .page-loading {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        top: 0;
-        display: flex;
-        width: 100%;
-        height: 100%;
-        justify-content: center;
-        align-items: center;
-        z-index: 0;
-      }
-      .circular {
-        display: inline-block;
-        width: 30px;
-        height: 30px;
-        border: 2px solid rgba(0, 0, 0, 0.2);
-        border-radius: 50%;
-        border-top-color: rgba(0, 0, 0, 0.4);
-        animation: spin 1s ease-in-out infinite;
-        -webkit-animation: spin 1s ease-in-out infinite;
-      }
-
-      @keyframes spin {
-        to {
-          -webkit-transform: rotate(360deg);
-        }
-      }
-      @-webkit-keyframes spin {
-        to {
-          -webkit-transform: rotate(360deg);
-        }
-      }
-    </style>
-    <script type="module" crossorigin src="/package/shop-h5/assets/index.d8dcbb48.js"></script>
-    <link rel="modulepreload" href="/package/shop-h5/assets/vue.93efa797.js">
-    <link rel="stylesheet" href="/package/shop-h5/assets/index.9aa1633a.css">
-  </head>
-
-  <body>
-    <div id="app">
-      <div class="page-loading">
-        <div class="circular"></div>
-      </div>
-    </div>
-
-    
-  </body>
-</html>
-
-
-2.步骤2获取支付渠道 取code参数为AlipayH5的支付渠道
-POST /shopApi/Shop/getUserChannel HTTP/1.1
-Host: my.77yfk.com
-Connection: keep-alive
-Content-Length: 20
-sec-ch-ua-platform: "iOS"
-User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Content-Length: 47
+sec-ch-ua-platform: "Windows"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
 Accept: application/json, text/plain, */*
 sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
 Content-Type: application/json
-Visitorid: w9brbv4yj
-sec-ch-ua-mobile: ?1
+sec-ch-ua-mobile: ?0
 Origin: https://my.77yfk.com
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: cors
 Sec-Fetch-Dest: empty
-Referer: https://my.77yfk.com/item/9q72u4
+Referer: https://my.77yfk.com/merchant/login/
 Accept-Encoding: gzip, deflate, br, zstd
 Accept-Language: zh-CN,zh;q=0.9
-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B
+Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776782777; HMACCOUNT=18984C622A6DC2FF; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776782786
 
-{"token":"87ZFD0BZ"}
+{"username":"h9503209","password":"Suorona258"}
 
 HTTP/1.1 200 OK
 Server: nginx
@@ -142,227 +30,210 @@ Access-Control-Allow-Credentials: true
 Access-Control-Allow-Methods: 
 Access-Control-Allow-Headers: 
 Access-Control-Max-Age: 0
-Set-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; expires=Tue, 21-Apr-2026 13:54:12 GMT; Max-Age=1440; path=/
+Set-Cookie: merchant-token=e8cfdc23-e949-47b8-894d-58d2c9d4ee80; expires=Fri, 24-Apr-2026 14:47:46 GMT; Max-Age=259200; path=/
+Set-Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; expires=Tue, 21-Apr-2026 15:11:46 GMT; Max-Age=1440; path=/
 Strict-Transport-Security: max-age=31536000
 Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
 Content-Encoding: gzip
 Age: 0
 Transfer-Encoding: chunked
 Connection: keep-alive
-Date: Tue, 21 Apr 2026 13:30:11 GMT
-EO-LOG-UUID: 4704601475612891267
+Date: Tue, 21 Apr 2026 14:47:45 GMT
+EO-LOG-UUID: 18108199479554584658
 EO-Cache-Status: MISS
 Cache-Control: max-age=0
 NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
 Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
 
-{"code":1,"msg":"success","time":1776778212,"data":[{"id":3,"name":"支付宝当面付","types":0,"code":"AlipayQrcode","show_name":"支付宝","status":1,"custom_status":1,"rate":5,"paytype":{"name":"支付宝扫码","icon":"https:\/\/my.77yfk.com\/static\/images\/payment\/zfb.png"}},{"id":2,"name":"支付宝手机收款","types":0,"code":"AlipayH5","show_name":"支付宝","status":1,"custom_status":1,"rate":5,"paytype":{"name":"支付宝H5","icon":"https:\/\/my.77yfk.com\/static\/images\/payment\/zfb.png"}},{"id":5,"name":"微信扫码","types":0,"code":"WeixinJspay","show_name":"微信","status":1,"custom_status":1,"rate":5,"paytype":{"name":"微信JSPAY","icon":"https:\/\/my.77yfk.com\/static\/images\/payment\/wx.png"}}]}
+{"code":1,"msg":"登录成功","time":1776782866,"data":{"merchant_token":"e8cfdc23-e949-47b8-894d-58d2c9d4ee80"}}
 
-3.步骤3创建订单
-POST /shopApi/Pay/order HTTP/1.1
+## 查询余额
+POST /merchantApi/wallet/info HTTP/1.1
 Host: my.77yfk.com
 Connection: keep-alive
-Content-Length: 171
-sec-ch-ua-platform: "iOS"
-User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Content-Length: 0
+sec-ch-ua-platform: "Windows"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
 Accept: application/json, text/plain, */*
 sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-Content-Type: application/json
-Visitorid: w9brbv4yj
-sec-ch-ua-mobile: ?1
+sec-ch-ua-mobile: ?0
+Merchant-Token: e8cfdc23-e949-47b8-894d-58d2c9d4ee80
 Origin: https://my.77yfk.com
 Sec-Fetch-Site: same-origin
 Sec-Fetch-Mode: cors
 Sec-Fetch-Dest: empty
-Referer: https://my.77yfk.com/item/9q72u4
+Referer: https://my.77yfk.com/merchant/user/wallet
 Accept-Encoding: gzip, deflate, br, zstd
 Accept-Language: zh-CN,zh;q=0.9
-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
+Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776782777; HMACCOUNT=18984C622A6DC2FF; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776782786; merchant-token=e8cfdc23-e949-47b8-894d-58d2c9d4ee80
 
-{"goods_key":"9q72u4","quantity":1,"coupon_code":"","channel_id":2,"contact":"13355559999","query_password":"","select_cards_ids":[],"extend":{"juuid":"SimHvBKsG6hcugRt"}}
-
-{
-  "code": 1,
-  "msg": "success",
-  "time": 1776778456,
-  "data": {
-    "trade_no": "77y2604217PCC3K",
-    "total_amount": 1000,
-    "payurl": "https://my.77yfk.com/shopApi/Pay/payment?trade_no=77y2604217PCC3K"
-  }
-}
-
-4.步骤4跟随重定向
-GET /shopApi/Pay/payment?trade_no=77y2604217PCC3K HTTP/1.1
-Host: my.77yfk.com
-Connection: keep-alive
-sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-sec-ch-ua-mobile: ?1
-sec-ch-ua-platform: "iOS"
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-Referer: https://my.77yfk.com/item/9q72u4
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: zh-CN,zh;q=0.9
-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
-
-HTTP/1.1 302 Found
+HTTP/1.1 200 OK
 Server: nginx
-Content-Type: text/html; charset=utf-8
+Content-Type: application/json; charset=utf-8
+Vary: Accept-Encoding
+Access-Control-Allow-Origin: https://my.77yfk.com
 Access-Control-Allow-Credentials: true
-Access-Control-Max-Age: 1800
-Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS
-Access-Control-Allow-Headers: Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With
-Access-Control-Allow-Origin: *
-Location: /payApi/AlipayH5/pay.html?trade_no=77y2604217PCC3K
-Set-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; expires=Tue, 21-Apr-2026 13:58:17 GMT; Max-Age=1440; path=/
+Access-Control-Allow-Methods: 
+Access-Control-Allow-Headers: 
+Access-Control-Max-Age: 0
+Set-Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; expires=Tue, 21-Apr-2026 15:13:47 GMT; Max-Age=1440; path=/
 Strict-Transport-Security: max-age=31536000
 Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
 Age: 0
 Transfer-Encoding: chunked
 Connection: keep-alive
-Date: Tue, 21 Apr 2026 13:34:16 GMT
-EO-LOG-UUID: 10621019229901758316
+Date: Tue, 21 Apr 2026 14:49:47 GMT
+EO-LOG-UUID: 13512858665657502472
 EO-Cache-Status: MISS
+Cache-Control: max-age=0
 NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
 Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
 
-5.步骤5 获取支付宝网关参数
-GET /payApi/AlipayH5/pay.html?trade_no=77y2604217PCC3K HTTP/1.1
+{"code":1,"msg":"success","time":1776782987,"data":{"collect":{"config":{"status":1,"collect_type":[1],"platform_fee_type":1,"platform_fee":0,"platform_rate":0,"platform_fee_manual":0,"platform_rate_manual":0,"platform_min_money_auto":10,"platform_min_money_manual":10,"charge_mobile_email_auth":1,"day_cash_count":1,"close_manual":0,"limit_integer":1,"channel_fees":{"alipay":{"rate":0,"rate_manual":0,"fee":0,"fee_manual":0},"weixin":{"rate":0,"rate_manual":0,"fee":0,"fee_manual":0},"bank":{"rate":0,"rate_manual":0,"fee":0,"fee_manual":0},"usdt":{"rate":0,"rate_manual":0,"fee":0,"fee_manual":0}}},"collect_type":0,"collect_info":{}},"platform":{"available_money":0,"freeze_money":0},"operate":{"available_money":0},"deposit":{"available_money":0,"deposit_limit":0},"zhifutong":{"sign_status":0,"freeze_money":0,"available_money":0},"shoufutong":{"sign_status":0,"freeze_money":0,"available_money":false}}}
+
+## 修改价格
+
+1.先获取商品信息
+POST /merchantApi/Goods/info HTTP/1.1
 Host: my.77yfk.com
 Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Content-Length: 13
+sec-ch-ua-platform: "Windows"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+Accept: application/json, text/plain, */*
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+Content-Type: application/json
+sec-ch-ua-mobile: ?0
+Merchant-Token: e8cfdc23-e949-47b8-894d-58d2c9d4ee80
+Origin: https://my.77yfk.com
 Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-sec-ch-ua-mobile: ?1
-sec-ch-ua-platform: "iOS"
-Referer: https://my.77yfk.com/item/9q72u4
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://my.77yfk.com/merchant/goods/create?goods_type=card&id=1498
 Accept-Encoding: gzip, deflate, br, zstd
 Accept-Language: zh-CN,zh;q=0.9
-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
+Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776782777; HMACCOUNT=18984C622A6DC2FF; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776782786; merchant-token=e8cfdc23-e949-47b8-894d-58d2c9d4ee80
 
-GET /payApi/AlipayH5/pay.html?trade_no=77y2604217PCC3K HTTP/1.1
-Host: my.77yfk.com
-Connection: keep-alive
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: navigate
-Sec-Fetch-User: ?1
-Sec-Fetch-Dest: document
-sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-sec-ch-ua-mobile: ?1
-sec-ch-ua-platform: "iOS"
-Referer: https://my.77yfk.com/item/9q72u4
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: zh-CN,zh;q=0.9
-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
+{"id":"1498"}
 
-6.步骤6，支付宝网关
-POST /gateway.do?charset=UTF-8 HTTP/2
-host: openapi.alipay.com
-content-length: 1191
-cache-control: max-age=0
-sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-sec-ch-ua-mobile: ?1
-sec-ch-ua-platform: "iOS"
-origin: https://my.77yfk.com
-content-type: application/x-www-form-urlencoded
-upgrade-insecure-requests: 1
-user-agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
-accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-sec-fetch-site: cross-site
-sec-fetch-mode: navigate
-sec-fetch-dest: document
-referer: https://my.77yfk.com/
-accept-encoding: gzip, deflate, br, zstd
-accept-language: zh-CN,zh;q=0.9
-cookie: JSESSIONID=31133BECB8F637AA2F0019E4DB2922E3
-cookie: ALIPAYJSESSIONID=GZ00bv9h5w8OvwoUZktvDXwzWda5VrsuperapiGZ00
-cookie: spanner=JDkAlzIwgDDxtFPfnL+ltdqy8YPFX+rz4EJoL7C0n0A=
-cookie: awid=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42
-cookie: ctoken=zfmKh0ymP5ob6xq5
-cookie: zone=RZ42A
-cookie: cookieToken=503c0134d07747c49e52ea880bf4579a
-cookie: 752459860=D7Jrf7oU6xmn6HLohxeWQPJJ776C77vnw%2BnlhNExDmhd
-cookie: jsh_t_c_e=jsh_t_0.9260863296437075
-cookie: 466217328=VzJO6sJzoWKcL%2BZEoGR9r7D2eOD2fCQnf7rPeGnNjWL1DP4AoGR9RZeLQce4xSrNB0J16WeOose1ROycDALZB0JcjPEZjNR9RO6UVWbkQxbNrx4cvZ4fjcDn6mhgxAe%3DwOtxezYgvmDgL0MT7HySrOeBemvLf%3DaP6PKvvx4UQ7cbRNnNw%2Bb160R9RXtc6%3DU1fNMl6%3DeOoWKcosRkhWgyD%2B4KBXeljGJb
-priority: u=0, i
-
-method=alipay.trade.wap.pay&app_id=2021006117650344&timestamp=2026-04-21+21%3A34%3A17&format=json&version=1.0&alipay_sdk=alipay-easysdk-php-2.2.3&charset=UTF-8&sign_type=RSA2&app_cert_sn=85b856c6c78697c1f03e36f1f5d417ad&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22subject%22%3A%22%E8%AE%A2%E5%8D%95%E5%8F%B7%3A77y2604217PCC3K+%E5%AE%A2%E6%9C%8DQ3220532956%E7%94%B5%E8%AF%9D400-1035247%22%2C%22out_trade_no%22%3A%2277y2604217PCC3K%22%2C%22total_amount%22%3A%221000.00%22%2C%22quit_url%22%3A%22https%3A%5C%2F%5C%2Fmy.77yfk.com%5C%2FpayApi%5C%2FAlipayH5%5C%2Fcallback%22%2C%22product_code%22%3A%22QUICK_WAP_WAY%22%7D&return_url=https%3A%2F%2Fmy.77yfk.com%2FpayApi%2FAlipayH5%2Fcallback&notify_url=https%3A%2F%2Fmy.77yfk.com%2FpayApi%2FAlipayH5%2Fnotify&sign=IBct0ldW%2Fdl5cRWCt2vzt1WPja7aGnmxx2mn75X1V708CkltiIpH3jA%2F9MsY7jikOik1E4ewA7WiWpgHM0Ela3vN3T9N7FC%2F39D%2BHdXRIUWcWLQjt9Oln4TJq42cP8xY8okmKRdx8dC5Ec8%2FBaCWq5xf1E3%2BIqF%2BTRftxPK91DvCA2X3toxn6f2bGLyuYVgR8QsXKx5cZl1%2Fqjl2FCq19QTzAaiAvV%2Fgi3s2ptOAjfacwRaqOMubuz34ZTKfyFyXrPRkyCOKky7XSYL7XO3OlNx%2Bu%2Fwwu8HpYY5g8l%2BOk9oK%2BeZUuDxX6t4Vo03HBN3M2xNf%2Ffaj5RmqR0CVExeYFQ%3D%3D
-
-HTTP/2 302
-server: Spanner
-date: Tue, 21 Apr 2026 13:34:17 GMT
-content-length: 0
-location: https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_41695958b3201bcf6ead11705db2a6f0&alipay_exterface_invoke_assign_sign=j6uiq_m_u9_ef%2Fp_zz_s_fey_bfkm_llrx6_t_mo_l37o_l_m_sgsj98o_z635e3_k_t_cb_q%3D%3D
-set-cookie: JSESSIONID=DF5B7FDE2CB6EFC4F9EE75AE26C54A86; Path=/; HttpOnly
-set-cookie: zone=GZ00G; Domain=.alipay.com; Path=/
-set-cookie: ALIPAYJSESSIONID=GZ00bv9h5w8OvwoUZktvDXwzWda5VrsuperapiGZ00; Domain=.alipay.com; Path=/
-access-control-allow-origin: https://my.77yfk.com
-vary: Origin
-access-control-allow-credentials: true
-trace_id: 0b2658e617767784572866164e174d
-invoke_id: 41695958b3201bcf6ead11705db2a6f0
-set-cookie: zone=GZ00G; Domain=.alipay.com; Path=/
-set-cookie: spanner=/jjhGDQYhGnpupcYfmQ2VIF5i0FtqYGhXt2T4qEYgj0=;path=/;secure;
-via: spanner-internet-cz20m-35185.ea179[302]
-origin-agent-cluster: ?0
-
-7.步骤7跟随重定向，获取重定向地址，这个步骤获取的地址location就是最终生成的二维码地址
-GET /cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_41695958b3201bcf6ead11705db2a6f0&alipay_exterface_invoke_assign_sign=j6uiq_m_u9_ef%2Fp_zz_s_fey_bfkm_llrx6_t_mo_l37o_l_m_sgsj98o_z635e3_k_t_cb_q%3D%3D HTTP/1.1
-Host: mclient.alipay.com
-Connection: keep-alive
-Cache-Control: max-age=0
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
-Sec-Fetch-Site: cross-site
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Dest: document
-sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
-sec-ch-ua-mobile: ?1
-sec-ch-ua-platform: "iOS"
-Referer: https://my.77yfk.com/
-Accept-Encoding: gzip, deflate, br, zstd
-Accept-Language: zh-CN,zh;q=0.9
-Cookie: JSESSIONID=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42; ALIPAYJSESSIONID=GZ00bv9h5w8OvwoUZktvDXwzWda5VrsuperapiGZ00; JSESSIONID=B2392B20E5DB05E8B1D2FB405443C4C3; awid=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42; ctoken=zfmKh0ymP5ob6xq5; cookieToken=503c0134d07747c49e52ea880bf4579a; spanner=TaTL/eivHcDt7VKeZJwZ2gN0PGqK/7T4Xt2T4qEYgj0=; 752459860=D7Jrf7oU6xmn6HLohxeWQPJJ776C77vnw%2BnlhNExDmhd; jsh_t_c_e=jsh_t_0.9260863296437075; 466217328=VzJO6sJzoWKcL%2BZEoGR9r7D2eOD2fCQnf7rPeGnNjWL1DP4AoGR9RZeLQce4xSrNB0J16WeOose1ROycDALZB0JcjPEZjNR9RO6UVWbkQxbNrx4cvZ4fjcDn6mhgxAe%3DwOtxezYgvmDgL0MT7HySrOeBemvLf%3DaP6PKvvx4UQ7cbRNnNw%2Bb160R9RXtc6%3DU1fNMl6%3DeOoWKcosRkhWgyD%2B4KBXeljGJb; zone=GZ00G
-
-HTTP/1.1 302 Found
-Server: Tengine
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: application/json; charset=utf-8
+Vary: Accept-Encoding
+Access-Control-Allow-Origin: https://my.77yfk.com
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: 
+Access-Control-Allow-Headers: 
+Access-Control-Max-Age: 0
+Set-Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; expires=Tue, 21-Apr-2026 15:14:54 GMT; Max-Age=1440; path=/
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
+Age: 0
 Transfer-Encoding: chunked
 Connection: keep-alive
-date: Tue, 21 Apr 2026 13:34:17 GMT
-set-cookie: JSESSIONID=4D60CDD9CCA0E028F490834A47057F65; Path=/; HttpOnly
-set-cookie: zone=RZ42B; Domain=.alipay.com; Path=/
-strict-transport-security: max-age=31536000
-set-cookie: JSESSIONID=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42; Path=; Secure; HttpOnly
-set-cookie: cookieToken=cfae03163f4c438a8bbd03b338c051a3; Domain=.alipay.com; Expires=Mon, 20-Jul-2026 21:34:17 GMT; Path=/; HttpOnly
-location: https://mclient.alipay.com/h5pay/landing/index.html?h5_request_token=RZ42fJ3q9yo2gnI2ZZ16a9fF9JqypAmobilecashierRZ42&query_params=alipay_exterface_invoke_assign_sign%3Dj6uiq_m_u9_ef%252Fp_zz_s_fey_bfkm_llrx6_t_mo_l37o_l_m_sgsj98o_z635e3_k_t_cb_q%253D%253D%26awid%3DRZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42%26alipay_exterface_invoke_assign_target%3Dinvoke_41695958b3201bcf6ead11705db2a6f0&referer=https%3A%2F%2Fmy.77yfk.com%2F&app_name=mc&targetDispatchSystem=unitradeprod&serverParams=emlkPTk5O25kcHQ9YjEwZDtjYz15&cookieToken=cfae03163f4c438a8bbd03b338c051a3
-content-language: zh-CN
-set-cookie: spanner=EuOvFISnnb+mOBRN1xjtecu4Ny7tKIvOXt2T4qEYgj0=;path=/;secure;
-via: spanner-internet-cz20k-972.et2[302], ens-cache1.l2eo166-17[72,0], cache13.cn8714[114,0], cache7.cn8714[119,0]
-origin-agent-cluster: ?0
-x-alicdn-da-ups-status: endOs,0,302
-ali-cdn-origin-error-code: endOs,302,0
-timing-allow-origin: *, *
-eagleid: 7518a91b17767784573536203e, 7518a91b17767784573536203e
-x-er-version: S090011524858
-x-ldcid-level: -
-x-user-group: -
-x-unio-error: 2001
-server-timing: e1;dur=116
+Date: Tue, 21 Apr 2026 14:50:54 GMT
+EO-LOG-UUID: 12627669671420369595
+EO-Cache-Status: MISS
+Cache-Control: max-age=0
+NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
 
+{"code":1,"msg":"success","time":1776783054,"data":{"cost_price":0,"extend":{"stock_count":4,"id":977,"goods_id":1498,"instructions":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>","stock_notice":0,"lock_card":0,"show_stock_type":0,"send_order":0,"limit_count":1,"limit_count_max":0,"query_password_status":0},"id":1498,"user_id":873,"goods_type":"card","goods_key":"9q72u4","category_id":647,"name":"蒎心亲密值","price":1000,"market_price":0,"description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>","status":1,"verify":1,"verify_msg":"","sort":0,"create_time":1776735630,"update_time":1776735630,"delete_time":null,"show":1,"sell_count":0,"image":"","short_link":"","agent_status":0,"agent_price1":0,"agent_price2":0,"agent_price3":0,"agent_price_limit":0,"parent_id":0,"add_rate":0,"fee_payer":-1,"coupon_status":1,"add_type":1,"add_price":0,"description_sync":0,"contact_format":"any","name_sync":0}}
 
+2.修改价格，请求体中的price参数
+POST /merchantApi/Goods/update HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+Content-Length: 945
+sec-ch-ua-platform: "Windows"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+Accept: application/json, text/plain, */*
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+Content-Type: application/json
+sec-ch-ua-mobile: ?0
+Merchant-Token: e8cfdc23-e949-47b8-894d-58d2c9d4ee80
+Origin: https://my.77yfk.com
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://my.77yfk.com/merchant/goods/create?goods_type=card&id=1498
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776782777; HMACCOUNT=18984C622A6DC2FF; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776782786; merchant-token=e8cfdc23-e949-47b8-894d-58d2c9d4ee80
 
+{"goods_type":"card","id":1498,"name":"蒎心亲密值","image":"","category_id":647,"price":1001,"market_price":0,"description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉</p>","sort":0,"coupon_status":1,"status":1,"fee_payer":-1,"show":1,"contact_format":"any","agent_status":0,"agent_price1":0,"agent_price2":0,"agent_price3":0,"agent_price_limit":0,"description_sync":0,"name_sync":0,"parent_id":0,"cost_price":0,"add_type":1,"add_rate":0,"add_price":0,"extend":{"stock_count":4,"id":977,"goods_id":1498,"instructions":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉</p>","stock_notice":0,"lock_card":0,"show_stock_type":0,"send_order":0,"limit_count":1,"limit_count_max":0,"query_password_status":0},"user_id":873,"goods_key":"9q72u4","verify":1,"verify_msg":"","create_time":1776735630,"update_time":1776735630,"delete_time":null,"sell_count":0,"short_link":""}
+
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: application/json; charset=utf-8
+Vary: Accept-Encoding
+Access-Control-Allow-Origin: https://my.77yfk.com
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: 
+Access-Control-Allow-Headers: 
+Access-Control-Max-Age: 0
+Set-Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; expires=Tue, 21-Apr-2026 15:15:06 GMT; Max-Age=1440; path=/
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+Date: Tue, 21 Apr 2026 14:51:05 GMT
+EO-LOG-UUID: 2484234885681176093
+EO-Cache-Status: MISS
+Cache-Control: max-age=0
+NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
+
+{"code":1,"msg":"success","time":1776783065,"data":{"name":"蒎心亲密值","id":1498,"goods_key":"9q72u4"}}
+
+## 查询订单
+POST /merchantApi/order/list HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+Content-Length: 139
+sec-ch-ua-platform: "Windows"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36
+Accept: application/json, text/plain, */*
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+Content-Type: application/json
+sec-ch-ua-mobile: ?0
+Merchant-Token: e8cfdc23-e949-47b8-894d-58d2c9d4ee80
+Origin: https://my.77yfk.com
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://my.77yfk.com/merchant/order/list
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776782777; HMACCOUNT=18984C622A6DC2FF; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776782786; merchant-token=e8cfdc23-e949-47b8-894d-58d2c9d4ee80
+
+{"current":1,"pageSize":20,"status":1,"trade_no":"","contact":"","card_no":"","start_time":0,"end_time":0,"agent_id":null,"parent_id":null}
+
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: application/json; charset=utf-8
+Vary: Accept-Encoding
+Access-Control-Allow-Origin: https://my.77yfk.com
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: 
+Access-Control-Allow-Headers: 
+Access-Control-Max-Age: 0
+Set-Cookie: PHPSESSID=38040ea303652513d593de2380d9773e; expires=Tue, 21-Apr-2026 15:17:43 GMT; Max-Age=1440; path=/
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+Date: Tue, 21 Apr 2026 14:53:43 GMT
+EO-LOG-UUID: 1974050044323744285
+EO-Cache-Status: MISS
+Cache-Control: max-age=0
+NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
+
+{"code":1,"msg":"success","time":1776783223,"data":{"total":10,"list":[{"trade_no":"77y260421FX90FF","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776782555,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y2604217V4UPN","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776781409,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y260421HX866H","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776780931,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y2604217PCC3K","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776778456,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y260421M2XTCK","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776778402,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y2604219P54AD","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776735952,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y260421PNEV0T","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776735931,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y26042164J2UE","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776735897,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y260421TKXMW9","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776735886,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"},{"trade_no":"77y260421SQG4DF","goods_name":"蒎心亲密值","quantity":1,"total_amount":1000,"status":2,"create_time":1776735836,"user_id":873,"success_time":null,"sendout":0,"parent_id":0,"parent_amount":0,"goods":{"link":"https:\/\/my.77yfk.com\/item\/9q72u4","id":1498,"goods_type":"card","goods_key":"9q72u4","name":"蒎心亲密值","description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>"},"identity":"user"}]}}
