@@ -1,377 +1,368 @@
-POST /goods/getrate HTTP/1.1
-Host: www.xinfaka.com
+## 要求
+ - 同域Cookie需要自动管理传递到下一个请求。
+ - 必须使用移动端User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+ - 所有步骤需要提交的参数均从前面的请求中获取，如果有获取不到的告诉我，我去抓包分析是否漏了关键请求，禁止你自己循环Debug。
+ 
+ 
+
+1.步骤1请求。
+GET /item/9q72u4 HTTP/1.1
+Host: my.77yfk.com
 Connection: keep-alive
-Content-Length: 62
-sec-ch-ua-platform: "iOS"
-X-CSRF-TOKEN: lzQMD23aDhxsXjZb86jhcTUSQsyej38eClhsNf3v
 sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
 sec-ch-ua-mobile: ?1
-X-Requested-With: XMLHttpRequest
+sec-ch-ua-platform: "iOS"
+Upgrade-Insecure-Requests: 1
 User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
-Accept: application/json, text/javascript, */*; q=0.01
-Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-Origin: https://www.xinfaka.com
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://www.xinfaka.com/single/8BF70AA3E39D
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: none
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
 Accept-Encoding: gzip, deflate, br, zstd
 Accept-Language: zh-CN,zh;q=0.9
-Cookie: Hm_lvt_e61993ec7a83480d69419d1d50dd713a=1776648325; HMACCOUNT=63FBB5F2AEE89BC0; remember_merchant_59ba36addc2b2f9401580f014c7f58ea4e30989d=eyJpdiI6Ik41aEl4Y3V6YlA1dmdLMVZGRVo0bnc9PSIsInZhbHVlIjoid0h5ZVZvd0ZRL1V4SjY0M09hQVFYU0ZkS1oyYVgvd3VnRWZQcVNyVlR3d1dYV2VqQzVhN1h6MFNDa0ZiVmtscVdtRkphWms3blRNSTM4dW9sT1NKL1h4ZHZYOFVZaGpwL0tTc29XZEt6SDIxTWFvanZpUnQxREtvYjcwVTltL2lzTW1pdjI3bkdIYXF3N1o4SHRtakZHekFMWi9sUU5vL1JZZ2ZxZ1N2VUhpSndUWHFUaTBkSzF3bHhIbWtxcXhZRjZDNyt6dnhpeUJzOUtQcnpGMFJrTng4NVlab0lXWjBreDZEN04yNzczZz0iLCJtYWMiOiI5OWJhYjIyODA2ZWJiMjM3Y2MzYTBmZGU3MDVjMDZmZTQ4MGNjNzVkNmMxMWNlOWI5ZDZiMWVhYmI1OWI1ZjhiIiwidGFnIjoiIn0%3D; Hm_lpvt_e61993ec7a83480d69419d1d50dd713a=1776688063; XSRF-TOKEN=eyJpdiI6Imo0MXJJY2VaL0EvcmdCYytISGk4L1E9PSIsInZhbHVlIjoiZnVOeWN0VkE3YUZ1ZW5VRzVkUlVpZU5wYzJWSUlUd3RKSzhtVzZZb1I5RGhIR2pDVHNUV285Ynp0T1cySlFkUHdyOXJpZ0JpbHdZd2xtWVB1NGNPWWFxMVYxVVh6R1hLN3JUaEs4UHMvaHF2ZXdzQXQ2UU5MSGd2SFlqTDUrd1AiLCJtYWMiOiIxMjRjZTcxZjkyNmE5MjdhNDhmYzY3ZTFjNmE2NmVjMmRhZjIyYmI2YmRkNjZhYmMyZmUxNzhhZTdmZWViYzk4IiwidGFnIjoiIn0%3D; xsh_session=eyJpdiI6IjhZOUowUUZrVUdDYkFLMm96a2kxeXc9PSIsInZhbHVlIjoiemNWUlo3MnVLcUYwbVVkSmZtcDlFUmtRMHU5d0cvZnloM1BxbTUwM3JTZWVIUHZCaXQwR1FXeDhXNW5LMFBFWmdhcHlpZVE5QzJSekxudExyK1AvU3lhSm5IRmJ0MGtWVlZ0ZzV3OGxWOFlsZjV5SnB0ZExPWXJEZXgxN1lDMGsiLCJtYWMiOiJkMTMzNmQ5OGZjYTA0Yjg4NWFjMjYwN2RmNDAwYjM4YzhhZjJjMTJhNDI2MjQ0ZDY0OGFjNjIyMDc4MjI2YzFiIiwidGFnIjoiIn0%3D
-
-userid=MdXlhKEtaiJLGsPxDr%2F8mw%3D%3D&goods_id=1100&isMobile=1
-
 
 HTTP/1.1 200 OK
 Server: nginx
-Content-Type: text/html; charset=UTF-8
+Content-Type: text/html; charset=utf-8
 Vary: Accept-Encoding
-Date: Mon, 20 Apr 2026 12:27:42 GMT
-Set-Cookie: XSRF-TOKEN=eyJpdiI6ImJlVm0zaUFRZFYxS0JQTkRBNVI1elE9PSIsInZhbHVlIjoiT0I1d2VRZy9rUnBmNEJ4MnZCZ0pSUGE4dm1wTHZoYXpvWlBvdE4rUW5Bc3pHTlFDSHVWd1d1dFV3OXB2RE05bFBUOHNkWkNSRW1Za1JxbnowMUpLbDBnK0JLZm5uR1BITFlybU1BTGhEeURneVdBUnZoajNHUUJSa0IydnJ6aEkiLCJtYWMiOiI0MGY3NDA0ZDZjNTdhMjYyZGZlNmZmMDIxYWM3Yjc0ZjNiMzRlMzFlNzVhMTM5MTllNDBkZDFlMTgyOTU3YjBiIiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 14:27:42 GMT; Max-Age=7200; path=/; samesite=lax
-Set-Cookie: xsh_session=eyJpdiI6IkJSVk5Xb1NZdjBMcG1ENENjLzdDM3c9PSIsInZhbHVlIjoiODVyM3h2MUhjcmFLQmZZNWpsdmNFQkdwSmR0bDZadU5zS2NHV0NiV01DNW55UUFhZUFPM21sTms1OXQ1RTZYZ1B6Vm0vZitUNVNra0FpaC90Rm41dDNpakVod0xSa3M4SitoYS9FQlB0cFU3MTluY2hvcGpBQm4ydDJWK1lpZWgiLCJtYWMiOiI5MjBhMzkyYmE1NmRmOGYwOGE2YTkzODRmNDM0NjljMzc2N2FlM2NiYjQ0YTk1ZDAyNDcxY2QxMzY4Y2Y3NmY5IiwidGFnIjoiIn0%3D; expires=Mon, 20-Apr-2026 14:27:42 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+Set-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; expires=Tue, 21-Apr-2026 13:54:11 GMT; Max-Age=1440; path=/
 Strict-Transport-Security: max-age=31536000
 Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
 Content-Encoding: gzip
-X-Cache-Lookup: Cache Miss
-Cache-Control: private, no-cache
+Age: 0
 Transfer-Encoding: chunked
-X-NWS-LOG-UUID: 13369101880999876111
 Connection: keep-alive
-X-Cache-Lookup: Cache Miss
+Date: Tue, 21 Apr 2026 13:30:11 GMT
+EO-LOG-UUID: 16705143979477206526
+EO-Cache-Status: MISS
+Cache-Control: max-age=0
+NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
 
-<!doctype html>
-<html lang="zh-cn" style="height: 100%;">
-<head>
-    <meta charset="utf-8" />
-    <title>小妮子的店 - 寄售平台</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no">
-    <meta content="发卡网、发卡网官网、自动发卡网、发卡网平台、自动发卡网平台、在线发卡网、自助发卡网、自动发卡平台、虚拟发卡平台" name="description"  />
-    <meta name="keywords" content="新发卡,发卡网,自动发卡网,发卡网平台,自动发卡,自动发卡平台,正规自动发卡平台" />
-    <meta name="csrf-token" content="lzQMD23aDhxsXjZb86jhcTUSQsyej38eClhsNf3v">
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="https://qiniu.liyan666.com/e85b80041bed739c6e60441ba3c67db0.png">
-    <link href="/static/plugins/layui/css/layui.css?v=1.2.5"  rel="stylesheet" type="text/css" />
-    <link type="text/css" href="/addons/default_payment_template/css/shop_mobile.css?v=1.2.5" rel="stylesheet">
-    <script src="/static/common/js/jquery.js"></script>
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Cache-Control"
+      content="no-store, no-cache, must-revalidate, max-age=0"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title></title>
+
     <style>
+      .page-loading {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        display: flex;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        z-index: 0;
+      }
+      .circular {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        border-radius: 50%;
+        border-top-color: rgba(0, 0, 0, 0.4);
+        animation: spin 1s ease-in-out infinite;
+        -webkit-animation: spin 1s ease-in-out infinite;
+      }
 
+      @keyframes spin {
+        to {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes spin {
+        to {
+          -webkit-transform: rotate(360deg);
+        }
+      }
     </style>
-</head>
+    <script type="module" crossorigin src="/package/shop-h5/assets/index.d8dcbb48.js"></script>
+    <link rel="modulepreload" href="/package/shop-h5/assets/vue.93efa797.js">
+    <link rel="stylesheet" href="/package/shop-h5/assets/index.9aa1633a.css">
+  </head>
 
-<body class="xsh-body" id="LAY_home" style="   background-color: #f5f5f5;height: 100%;">
-
-<div class="top" style="">
-
-            <div class="right toLogin" ><span style="color: rgb(255, 84, 51);"> 登录/注册</span>, 查看购买订单</div>
-    </div>
-<div class="sinfo" style=" top: 18%;position: fixed;right:0; z-index: 999;">
-    <ul class="link" style="font-size: 12px;">
-        <li style="background-color: #1e9fff">
-            <a href="/orderquery" target="_blank" style="color: #ffffff">查询订单</a>
-        </li>
-        <li style="background-color: #f16145;">
-            <a href="/complaint" target="_blank" style="color: #ffffff">订单投诉</a>
-        </li>
-        <li style="background-color: #a233c6;">
-            <a href="javascript:void (0);" style="color: #ffffff"  id="protocol" lay-on="test-count-down">购买协议</a>
-        </li>
-        <li style="background-color: #2f363c;">
-            <a href="javascript:void (0);" style="color: #ffffff"  id="notice">商家公告</a>
-        </li>
-
-
-                    <li style="background-color: #009688;">
-                <a style="color:#fff;cursor:pointer;" onclick="(q='33156982',i=document.createElement('textarea'),i.value=q,i.style.cssText='opacity:0;position:fixed;',document.body.append(i),i.select(),document.execCommand('copy'),i.remove(),t=document.createElement('div'),t.innerHTML='QQ '+q+' 已复制',t.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:16px 32px;background:#00e676;color:white;border-radius:8px;font-size:20px;box-shadow:0 4px 20px rgba(0,230,118,0.3);z-index:9999;',document.body.append(t),setTimeout(()=>t.remove(),5e3))">客服QQ</a>
-            </li>
-
-                    </ul>
-</div>
-<!---->
-
-<div class="banner xsh-width" style=" height:60px;">
-    <img src="/addons/default_payment_template/images/logo.png" class="xsh-logo" style="height: 75px;margin-top: -21px;float: left;">
-    <div class="seller_content" >
-        <p class="layui-badge  layui-bg-black seller_name" style="">
-            小妮子的店
-        </p>
-        <div class="clear"></div>
-            </div>
-
-    <div class="clear"></div>
-</div>
-
-<input type="hidden" id="shopId" value="MdXlhKEtaiJLGsPxDr/8mw==">
-<input type="hidden" id="member_id" value="0">
-<input type="hidden" id="umoney" value="0">
-<input type="hidden" id="vip_discount" value="">
-<input type="hidden" id="combination_pay_time" value="5">
-<input type="hidden" id="dmoney" value="0">
-<input type="hidden" id="is_login" value="0">
-<input type="hidden" id="cateId" value="0">
-<input type="hidden" id="agentId" value="0">
-<input type="hidden" id="GoodsId" value="1100">
-<input type="hidden" id="isDan" value="1">
-<input type="hidden" id="smsPrice" value="0.50">
-<input type="hidden" id="take_card_type" value="0">
-<input type="hidden" name="is_xh" id="is_xh"  value="0">
-<input type="hidden" name="start_nums" id="start_nums" value="">
-<input type="hidden" name="kami_id" id="kami_id" value="">
-<input type="hidden" name="goodsPrice" id="goodsPrice" value="0">
-<input type="hidden" name="totalPrice" id="totalPrice" value="0">
-<input type="hidden" name="dkPrice" id="dkPrice" value="0">
-<input type="number" hidden='hidden' name="sms_price" id="sms_price" value="0.50">
-<input type="hidden" name="sms_payer" id="sms_payer" value="1">
-<input type="hidden" name="xhPrice" id="xhPrice" value="0">
-<input type="hidden" name="is_yh" id="is_yh" value="0">
-<input type="hidden" name="yh_price" id="yh_price" value="0">
-<input type="hidden" name="coupon_type" id="coupon_type" value="1">
-<input type="hidden" name="coupon_denomination" id="coupon_denomination" value="0">
-
-<input type="hidden" name="limits_min" id="limits_min" value="1">
-<input type="hidden" name="limits_max" id="limits_max" value="999">
-<input type="hidden" name="cards_stock_count" id="cards_stock_count" value="0">
-<input type="hidden" name="wholesale_discount" id="wholesale_discount" value="0">
-<input type="hidden" name="reach" id="reach" value="0">
-<input type="hidden" name="songNum" id="songNum" value="0">
-<input type="hidden" name="is_sms" id="is_sms" value="0">
-<input type="hidden" name="balance_deduction" id="balance_deduction" value="0">
-<input type="hidden" name="is_dk" id="is_dk" value="0">
-<input type="hidden" name="payId" id="payId" value="0">
-<input type="hidden" name="payType" id="payType" value="1">
-<input type="hidden" name="fee_payer" id="fee_payer" value="1">
-<input type="hidden" name="rate_fee" id="rate_fee" value="0">
-<input type="hidden" name="pay_first" id="pay_first" value="0">
-<input type="hidden" name="isMobile" id="isMobile"  value="1">
-<input type="hidden" name="is_buy_protocol" id="is_buy_protocol"  value="0">
-<input type="hidden" name="is_notice" id="is_notice"  value="">
-<input type="hidden" name="transaction_min_fee" id="transaction_min_fee"  value="0">
-<input type="hidden"  id="vip_goods"  value="0">
-<input type="hidden"  id="vipInfo"  value="">
-<input type="hidden"  id="shop_notice"  value="">
-<input type="hidden"  id="buy_protocol"  value="&lt;p&gt;&lt;span style=&quot;color:#1abc9c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;1：扫码付款后没有出卡请联系商户补单&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;span style=&quot;color:#e74c3c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;2：发现违法商品可向网站客服进行举报，&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;span style=&quot;color:#e74c3c;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;举报成立者将获得该链接的全部卡密&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;span style=&quot;color:#f39c12;&quot;&gt;&lt;strong&gt;&lt;span style=&quot;font-size:20px;&quot;&gt;&lt;img lay-on=&quot;photots&quot; src=&quot;https://qiniu.8u9.top/a608817744f13635/ceb96f19e3ceb325.jpg&quot; style=&quot;max-width: 100%; border-width: 0px; border-style: solid; width: 300px; height: 400px;&quot; title=&quot;image&quot; /&gt;&lt;/span&gt;&lt;/strong&gt;&lt;/span&gt;&lt;/p&gt;">
-<input type="hidden"  id="auto_notice"  value="0">
-<input type="hidden"  id="auto_protocol"  value="0">
-<input type="hidden"  id="protocol_second"  value="0">
-<input type="hidden"  id="visit_password"  value="">
-<input type="hidden"  id="added_services"  value="3"><div class="content xsh-width" style=" ">
-    <div style="padding:10px;">
-        <div >
-            <div  style="float: left;line-height: 30px;">
-                <i class="layui-icon layui-icon-cart-simple" style="font-size: 14px;color: #1A8279;font-weight: 800;">
-                    <span style=" font-weight: 600;color: #0C0C0C;margin-left: 5px;">所有商品</span>
-                </i>
-            </div>
-            <span class="goodCount" style="margin-left: 10px;color: #515151; line-height: 35px;font-size: 12px;">在售商品<span style="color: red;" id="goodsCount">0</span>个</span>
-            
-        </div>
-    </div>
-    <div class="clear"></div>
-    <div class="cat" style="padding: 0 10px;">
-        <ul >
-            
-        </ul>
+  <body>
+    <div id="app">
+      <div class="page-loading">
+        <div class="circular"></div>
+      </div>
     </div>
 
-    <div class="goods clear">
-        <ul class="flow-default" id="LAY_demo1" style="">
-
-        </ul>
-    </div>
-
-
-
-    <div class="desc clear" style="display: none;margin-left: 10px;">
-
-        <i style="font-weight: 700;color: #555;font-size: 14px;" class="layui-icon layui-icon-about"> 商品说明:</i>
-
-        <p style="margin-top: 5px;" id="goodsContent" class="goodsContent"></p>
-    </div>
-    <!--选号开始-->
-    <div id="jiaose_box" class="pick_box" style="display: none;padding: 5px ;">
-        <div class="jsTitle" style="margin-top: 5px;">
-
-        </div>
-        <div class="jhBtn" id='selectAccount' style="margin-top: 10px;font-size: 12px;line-height: 28px;">
-            <span class=" layui-bg-green left-page"  id="getS" style="cursor: pointer;background-color: #009688!important;padding: 5px;border-radius: 5px;">上一组</span>
-            <span class=" layui-bg-green right-page"  id="getE" style="cursor: pointer;background-color: #009688!important;padding: 5px;border-radius: 5px;">下一组</span>
-            <span class=" layui-bg-green pick-desc"   style="background-color: #009688!important;padding:  5px;border-radius: 5px;"> 自选角色名字+<span id="xh_price">0.00</span>元 (选中自动复制，可到WeGame查看战绩)</span>
-
-
-
-            <div style="clear:both;"></div>
-             <div style="margin-top:5px;">
-                <input placeholder="请输入想要查询的昵称或其它信息"  id="pick_account" style="color:#555;background: 0 0;border: 1px solid #009688;height: 19px;padding: 2px 5px;width: 200px;">
-                <a class="layui-btn layui-btn-sm  " id="pick_search"  style="background: #009688;height: 25px;line-height: 25px;margin-top: -2px;">立即搜索</a>
-            </div>
-           
-        </div>
-        <div class="jsTab" id="account_list" style="display: none;">
-
-            <div style="clear:both;"></div>
-        </div>
-
-        <div class="jsDetail" id="pick_info" style="margin-top:0;">
-
-        </div>
-
-
-        <div class="h_zdy"></div>
-    </div>
-</div>
-<div class="buyClass layui-form"  style="">
-
-    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;">
-        <legend  class="goodsName">尚未选择商品</legend>
-    </fieldset>
-    <div class="payInfo-inner">
-        <div    style="">
-            <div  class="jsq"  style="height: 30px;line-height: 30px;">
-                <div style="margin-left: 20px; ">
-                    <span  style="color: #999999;margin-right: 10px;font-size: 12px;">数量</span>
-
-                    <i id="jian" style="font-size: 13px;font-weight: 800;margin-right: 5px;cursor: pointer;" class="layui-icon layui-icon-subtraction"></i>
-                    <input  type="text" name="quantity" id="quantity" maxlength="9" value="1"  onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"  class="buyNum">
-                    <i id='jia' style="font-size: 13px;font-weight: 800;margin-left: 5px;cursor: pointer;" class="layui-icon layui-icon-addition"></i>
-                    <span class="stock_str"  style="font-size: 12px;font-weight: 400;color: #555; margin-left: 16px;white-space: nowrap;">  <span id="kucun" style="color: #f2270b">0</span> </span>
-                </div>
-            </div>
-
-        </div>
-        <div  class="proName" style="">
-            <p style="font-size:12px;  margin-left: 20px;color: #999999;height: 30px;line-height: 30px;"> 购买信息：<span  class="goodsInfo">未选中商品  </span></p>
-        </div>
-
-    </div>
-</div>
-<div class="PayContent layui-form xsh-width"  style="">
-
-    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 15px;  display:none; ">
-        <legend>增值服务</legend>
-    </fieldset>
-    <div class="layui-form-item" id="activity" style="display:none;">
-        <label class="layui-form-label">优惠活动:</label>
-        <div class="layui-input-block" style="line-height: 38px;">
-            <span class="layui-badge layui-bg-purple" id="discount_tips" style="font-size: 12px;cursor: pointer;">买多优惠</span>
-            <span class="layui-badge layui-bg-red"    id="reach_tips" style="font-size: 12px;cursor: pointer;">买多赠送</span>
-        </div>
-        <p id="discount_tips_str" style="display: none;"></p>
-        <p id="reach_tips_str" style="display: none;"></p>
-    </div>
-    <div class="layui-form-item" style="  display:none; ">
-        <label class="layui-form-label">接收卡密:</label>
-        <div class="layui-input-block">
-             <input type="checkbox" id="email_notice" lay-filter="email_notice" title="邮箱" lay-skin="primary" value="1"  >
-             <input type="checkbox" id="sms_notice" lay-filter="sms_notice" title="短信" lay-skin="primary"  value="1"  >
-        </div>
-    </div>
-    <div class="layui-form-item  additional " id="receive_div" style="display:none;">
-        <div class="layui-inline " style="margin-top: 5px;">
-            <label class="layui-form-label required" id="notice_title"></label>
-            <div class="layui-input-inline" style="width: 500px;">
-                <input type="text"  data-key="1" id="sms_receive" autocomplete="off" placeholder="请输入相应接收卡密方式" class="layui-input" style="border-radius: 5px;color: #555;">
-                <tip id="sms_tip" style="margin-left: 10px;color: #515151;line-height: 35px;font-size: 12px;">使用该服务,会收取<span style="color: red;" class="smsPrice">0.50</span>元费用</tip>
-            </div>
-        </div>
-    </div>
-    <div class="layui-form-item  additional coupon" style="display: none;">
-
-        <div class="layui-inline " style="margin-top: 5px;" >
-            <label class="layui-form-label">优惠券码:</label>
-            <div class="layui-input-inline" style="width: 500px;">
-                <input type="text" name="coupon" id="coupon" autocomplete="off" placeholder="请输入你的优惠券" class="layui-input" style="border-radius: 5px;color: #555;">
-            </div>
-        </div>
-    </div>
-    <div id="contact_html">
-
-    </div>
-    <div class="layui-form-item  additional"  id="card_password" style="display: none;">
-
-        <div class="layui-inline" style="margin-top: 5px;">
-            <label class="layui-form-label">取卡密码：</label>
-            <div class="layui-input-inline" style="width: 500px;">
-                <input type="text" name="take_card_password" id="take_card_password"  autocomplete="off" placeholder="输入您的取卡密码(请自行定义)" class="layui-input" style="border-radius: 5px;color: #555;">
-            </div>
-        </div>
-    </div>
-
-
-    <fieldset class="layui-elem-field layui-field-title" style="">
-
-        <legend style="margin-bottom: 10px;">支付方式</legend>
-        <ul  style="width:90%;    margin-left: 5%;min-height: 40px;" class="payType clear">
-                            <li data-id="983" data-type="2" data-ident="demo" data-rate="0.06" data-fee="0" style="float: left;cursor: pointer;margin-left: 2%; border: 1px solid #ffffff; width: 30%;">
-                    <img style="height:30px;" src="/static/common/images/paylogo/icon_wx.jpg">
-                </li>
-                            <li data-id="983" data-type="2" data-ident="demo" data-rate="0.06" data-fee="0" style="float: left;cursor: pointer;margin-left: 2%; border: 1px solid #ffffff; width: 30%;">
-                    <img style="height:30px;" src="/static/common/images/paylogo/icon_zfb.jpg">
-                </li>
-                    </ul>
-        <div class="clear yue layui-form" style="    margin-left:9%;display: none;font-size: 12px;    margin-top: 10px;" >
-            可使用余额抵扣：
-            <span style="font-size: 14px; font-weight: 500;  color: #f86444;line-height: 22px;">¥</span>
-            <span  class="dkPrice" style="font-size: 14px;font-weight: 500;color: #f86444;line-height: 22px;">2.5</span>
-            元
-            <input type="checkbox"  name="switchDk" id="switchDk"  lay-skin="switch" lay-filter="switchDk" lay-text="抵扣|不抵扣">
-        </div>
-
-
-        <div class="clear" style="width: 96%;margin-left: 2%;">
-
-
-            <a class="layui-btn layui-btn-fluid" id="toPay" style="right: 0;background: #a233c6;margin-top: 20px;margin-bottom: 10px;">
-                <span style="font-weight: 600;" id="ppp">支付金额 : </span>
-                <span style=" font-weight: 500; font-size: 16px">¥</span>
-                <span id="price" style="font-weight: 500;font-size: 14px;">0.00</span>
-                <span id="fee_str" style="font-weight: 600;font-size: 12px;text-align: right;display: none;" > （含手续费:￥<span id="fee">0.12</span>） </span>
-            </a>
-        </div>
-    </fieldset>
-
-</div>
-
-
-
-
-<div style="visibility: hidden;height: 50px;">
-
-</div>
-
-
-
-
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?e61993ec7a83480d69419d1d50dd713a";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script>
-
-    function loginAfter(data){
-        window.location.reload();
-
-    };
-</script>
-
-
-
-
-
-
-<script src="/addons/default_payment_template/js/shop.js?v=1.2.5"></script>
-<script src="/static/common/js/clipboard.js?v=1.2.5"></script>
-<script src="/static/common/js/qrcode.min.js?v=1.2.5"></script>
-
-<script src="/static/plugins/layui/layui.js?v=1.2.5"></script>
-
-
-</body>
+    
+  </body>
 </html>
+
+
+2.步骤2获取支付渠道 取code参数为AlipayH5的支付渠道
+POST /shopApi/Shop/getUserChannel HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+Content-Length: 20
+sec-ch-ua-platform: "iOS"
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: application/json, text/plain, */*
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+Content-Type: application/json
+Visitorid: w9brbv4yj
+sec-ch-ua-mobile: ?1
+Origin: https://my.77yfk.com
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://my.77yfk.com/item/9q72u4
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B
+
+{"token":"87ZFD0BZ"}
+
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: application/json; charset=utf-8
+Vary: Accept-Encoding
+Access-Control-Allow-Origin: https://my.77yfk.com
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: 
+Access-Control-Allow-Headers: 
+Access-Control-Max-Age: 0
+Set-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; expires=Tue, 21-Apr-2026 13:54:12 GMT; Max-Age=1440; path=/
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+Date: Tue, 21 Apr 2026 13:30:11 GMT
+EO-LOG-UUID: 4704601475612891267
+EO-Cache-Status: MISS
+Cache-Control: max-age=0
+NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
+
+{"code":1,"msg":"success","time":1776778212,"data":[{"id":3,"name":"支付宝当面付","types":0,"code":"AlipayQrcode","show_name":"支付宝","status":1,"custom_status":1,"rate":5,"paytype":{"name":"支付宝扫码","icon":"https:\/\/my.77yfk.com\/static\/images\/payment\/zfb.png"}},{"id":2,"name":"支付宝手机收款","types":0,"code":"AlipayH5","show_name":"支付宝","status":1,"custom_status":1,"rate":5,"paytype":{"name":"支付宝H5","icon":"https:\/\/my.77yfk.com\/static\/images\/payment\/zfb.png"}},{"id":5,"name":"微信扫码","types":0,"code":"WeixinJspay","show_name":"微信","status":1,"custom_status":1,"rate":5,"paytype":{"name":"微信JSPAY","icon":"https:\/\/my.77yfk.com\/static\/images\/payment\/wx.png"}}]}
+
+3.步骤3创建订单
+POST /shopApi/Pay/order HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+Content-Length: 171
+sec-ch-ua-platform: "iOS"
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: application/json, text/plain, */*
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+Content-Type: application/json
+Visitorid: w9brbv4yj
+sec-ch-ua-mobile: ?1
+Origin: https://my.77yfk.com
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://my.77yfk.com/item/9q72u4
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
+
+{"goods_key":"9q72u4","quantity":1,"coupon_code":"","channel_id":2,"contact":"13355559999","query_password":"","select_cards_ids":[],"extend":{"juuid":"SimHvBKsG6hcugRt"}}
+
+{
+  "code": 1,
+  "msg": "success",
+  "time": 1776778456,
+  "data": {
+    "trade_no": "77y2604217PCC3K",
+    "total_amount": 1000,
+    "payurl": "https://my.77yfk.com/shopApi/Pay/payment?trade_no=77y2604217PCC3K"
+  }
+}
+
+4.步骤4跟随重定向
+GET /shopApi/Pay/payment?trade_no=77y2604217PCC3K HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "iOS"
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Referer: https://my.77yfk.com/item/9q72u4
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
+
+HTTP/1.1 302 Found
+Server: nginx
+Content-Type: text/html; charset=utf-8
+Access-Control-Allow-Credentials: true
+Access-Control-Max-Age: 1800
+Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Authorization, Content-Type, If-Match, If-Modified-Since, If-None-Match, If-Unmodified-Since, X-CSRF-TOKEN, X-Requested-With
+Access-Control-Allow-Origin: *
+Location: /payApi/AlipayH5/pay.html?trade_no=77y2604217PCC3K
+Set-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; expires=Tue, 21-Apr-2026 13:58:17 GMT; Max-Age=1440; path=/
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+Date: Tue, 21 Apr 2026 13:34:16 GMT
+EO-LOG-UUID: 10621019229901758316
+EO-Cache-Status: MISS
+NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
+
+5.步骤5 获取支付宝网关参数
+GET /payApi/AlipayH5/pay.html?trade_no=77y2604217PCC3K HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "iOS"
+Referer: https://my.77yfk.com/item/9q72u4
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
+
+GET /payApi/AlipayH5/pay.html?trade_no=77y2604217PCC3K HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "iOS"
+Referer: https://my.77yfk.com/item/9q72u4
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776778444
+
+6.步骤6，支付宝网关
+POST /gateway.do?charset=UTF-8 HTTP/2
+host: openapi.alipay.com
+content-length: 1191
+cache-control: max-age=0
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "iOS"
+origin: https://my.77yfk.com
+content-type: application/x-www-form-urlencoded
+upgrade-insecure-requests: 1
+user-agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+sec-fetch-site: cross-site
+sec-fetch-mode: navigate
+sec-fetch-dest: document
+referer: https://my.77yfk.com/
+accept-encoding: gzip, deflate, br, zstd
+accept-language: zh-CN,zh;q=0.9
+cookie: JSESSIONID=31133BECB8F637AA2F0019E4DB2922E3
+cookie: ALIPAYJSESSIONID=GZ00bv9h5w8OvwoUZktvDXwzWda5VrsuperapiGZ00
+cookie: spanner=JDkAlzIwgDDxtFPfnL+ltdqy8YPFX+rz4EJoL7C0n0A=
+cookie: awid=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42
+cookie: ctoken=zfmKh0ymP5ob6xq5
+cookie: zone=RZ42A
+cookie: cookieToken=503c0134d07747c49e52ea880bf4579a
+cookie: 752459860=D7Jrf7oU6xmn6HLohxeWQPJJ776C77vnw%2BnlhNExDmhd
+cookie: jsh_t_c_e=jsh_t_0.9260863296437075
+cookie: 466217328=VzJO6sJzoWKcL%2BZEoGR9r7D2eOD2fCQnf7rPeGnNjWL1DP4AoGR9RZeLQce4xSrNB0J16WeOose1ROycDALZB0JcjPEZjNR9RO6UVWbkQxbNrx4cvZ4fjcDn6mhgxAe%3DwOtxezYgvmDgL0MT7HySrOeBemvLf%3DaP6PKvvx4UQ7cbRNnNw%2Bb160R9RXtc6%3DU1fNMl6%3DeOoWKcosRkhWgyD%2B4KBXeljGJb
+priority: u=0, i
+
+method=alipay.trade.wap.pay&app_id=2021006117650344&timestamp=2026-04-21+21%3A34%3A17&format=json&version=1.0&alipay_sdk=alipay-easysdk-php-2.2.3&charset=UTF-8&sign_type=RSA2&app_cert_sn=85b856c6c78697c1f03e36f1f5d417ad&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22subject%22%3A%22%E8%AE%A2%E5%8D%95%E5%8F%B7%3A77y2604217PCC3K+%E5%AE%A2%E6%9C%8DQ3220532956%E7%94%B5%E8%AF%9D400-1035247%22%2C%22out_trade_no%22%3A%2277y2604217PCC3K%22%2C%22total_amount%22%3A%221000.00%22%2C%22quit_url%22%3A%22https%3A%5C%2F%5C%2Fmy.77yfk.com%5C%2FpayApi%5C%2FAlipayH5%5C%2Fcallback%22%2C%22product_code%22%3A%22QUICK_WAP_WAY%22%7D&return_url=https%3A%2F%2Fmy.77yfk.com%2FpayApi%2FAlipayH5%2Fcallback&notify_url=https%3A%2F%2Fmy.77yfk.com%2FpayApi%2FAlipayH5%2Fnotify&sign=IBct0ldW%2Fdl5cRWCt2vzt1WPja7aGnmxx2mn75X1V708CkltiIpH3jA%2F9MsY7jikOik1E4ewA7WiWpgHM0Ela3vN3T9N7FC%2F39D%2BHdXRIUWcWLQjt9Oln4TJq42cP8xY8okmKRdx8dC5Ec8%2FBaCWq5xf1E3%2BIqF%2BTRftxPK91DvCA2X3toxn6f2bGLyuYVgR8QsXKx5cZl1%2Fqjl2FCq19QTzAaiAvV%2Fgi3s2ptOAjfacwRaqOMubuz34ZTKfyFyXrPRkyCOKky7XSYL7XO3OlNx%2Bu%2Fwwu8HpYY5g8l%2BOk9oK%2BeZUuDxX6t4Vo03HBN3M2xNf%2Ffaj5RmqR0CVExeYFQ%3D%3D
+
+HTTP/2 302
+server: Spanner
+date: Tue, 21 Apr 2026 13:34:17 GMT
+content-length: 0
+location: https://mclient.alipay.com/cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_41695958b3201bcf6ead11705db2a6f0&alipay_exterface_invoke_assign_sign=j6uiq_m_u9_ef%2Fp_zz_s_fey_bfkm_llrx6_t_mo_l37o_l_m_sgsj98o_z635e3_k_t_cb_q%3D%3D
+set-cookie: JSESSIONID=DF5B7FDE2CB6EFC4F9EE75AE26C54A86; Path=/; HttpOnly
+set-cookie: zone=GZ00G; Domain=.alipay.com; Path=/
+set-cookie: ALIPAYJSESSIONID=GZ00bv9h5w8OvwoUZktvDXwzWda5VrsuperapiGZ00; Domain=.alipay.com; Path=/
+access-control-allow-origin: https://my.77yfk.com
+vary: Origin
+access-control-allow-credentials: true
+trace_id: 0b2658e617767784572866164e174d
+invoke_id: 41695958b3201bcf6ead11705db2a6f0
+set-cookie: zone=GZ00G; Domain=.alipay.com; Path=/
+set-cookie: spanner=/jjhGDQYhGnpupcYfmQ2VIF5i0FtqYGhXt2T4qEYgj0=;path=/;secure;
+via: spanner-internet-cz20m-35185.ea179[302]
+origin-agent-cluster: ?0
+
+7.步骤7跟随重定向，获取重定向地址，这个步骤获取的地址location就是最终生成的二维码地址
+GET /cashier/mobilepay.htm?alipay_exterface_invoke_assign_target=invoke_41695958b3201bcf6ead11705db2a6f0&alipay_exterface_invoke_assign_sign=j6uiq_m_u9_ef%2Fp_zz_s_fey_bfkm_llrx6_t_mo_l37o_l_m_sgsj98o_z635e3_k_t_cb_q%3D%3D HTTP/1.1
+Host: mclient.alipay.com
+Connection: keep-alive
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: cross-site
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Dest: document
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+sec-ch-ua-mobile: ?1
+sec-ch-ua-platform: "iOS"
+Referer: https://my.77yfk.com/
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: JSESSIONID=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42; ALIPAYJSESSIONID=GZ00bv9h5w8OvwoUZktvDXwzWda5VrsuperapiGZ00; JSESSIONID=B2392B20E5DB05E8B1D2FB405443C4C3; awid=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42; ctoken=zfmKh0ymP5ob6xq5; cookieToken=503c0134d07747c49e52ea880bf4579a; spanner=TaTL/eivHcDt7VKeZJwZ2gN0PGqK/7T4Xt2T4qEYgj0=; 752459860=D7Jrf7oU6xmn6HLohxeWQPJJ776C77vnw%2BnlhNExDmhd; jsh_t_c_e=jsh_t_0.9260863296437075; 466217328=VzJO6sJzoWKcL%2BZEoGR9r7D2eOD2fCQnf7rPeGnNjWL1DP4AoGR9RZeLQce4xSrNB0J16WeOose1ROycDALZB0JcjPEZjNR9RO6UVWbkQxbNrx4cvZ4fjcDn6mhgxAe%3DwOtxezYgvmDgL0MT7HySrOeBemvLf%3DaP6PKvvx4UQ7cbRNnNw%2Bb160R9RXtc6%3DU1fNMl6%3DeOoWKcosRkhWgyD%2B4KBXeljGJb; zone=GZ00G
+
+HTTP/1.1 302 Found
+Server: Tengine
+Transfer-Encoding: chunked
+Connection: keep-alive
+date: Tue, 21 Apr 2026 13:34:17 GMT
+set-cookie: JSESSIONID=4D60CDD9CCA0E028F490834A47057F65; Path=/; HttpOnly
+set-cookie: zone=RZ42B; Domain=.alipay.com; Path=/
+strict-transport-security: max-age=31536000
+set-cookie: JSESSIONID=RZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42; Path=; Secure; HttpOnly
+set-cookie: cookieToken=cfae03163f4c438a8bbd03b338c051a3; Domain=.alipay.com; Expires=Mon, 20-Jul-2026 21:34:17 GMT; Path=/; HttpOnly
+location: https://mclient.alipay.com/h5pay/landing/index.html?h5_request_token=RZ42fJ3q9yo2gnI2ZZ16a9fF9JqypAmobilecashierRZ42&query_params=alipay_exterface_invoke_assign_sign%3Dj6uiq_m_u9_ef%252Fp_zz_s_fey_bfkm_llrx6_t_mo_l37o_l_m_sgsj98o_z635e3_k_t_cb_q%253D%253D%26awid%3DRZ42q99Jr0bnh3CGZXwAu2tLowBMfkmobileclientgwRZ42%26alipay_exterface_invoke_assign_target%3Dinvoke_41695958b3201bcf6ead11705db2a6f0&referer=https%3A%2F%2Fmy.77yfk.com%2F&app_name=mc&targetDispatchSystem=unitradeprod&serverParams=emlkPTk5O25kcHQ9YjEwZDtjYz15&cookieToken=cfae03163f4c438a8bbd03b338c051a3
+content-language: zh-CN
+set-cookie: spanner=EuOvFISnnb+mOBRN1xjtecu4Ny7tKIvOXt2T4qEYgj0=;path=/;secure;
+via: spanner-internet-cz20k-972.et2[302], ens-cache1.l2eo166-17[72,0], cache13.cn8714[114,0], cache7.cn8714[119,0]
+origin-agent-cluster: ?0
+x-alicdn-da-ups-status: endOs,0,302
+ali-cdn-origin-error-code: endOs,302,0
+timing-allow-origin: *, *
+eagleid: 7518a91b17767784573536203e, 7518a91b17767784573536203e
+x-er-version: S090011524858
+x-ldcid-level: -
+x-user-group: -
+x-unio-error: 2001
+server-timing: e1;dur=116
+
+
+

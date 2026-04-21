@@ -1,0 +1,47 @@
+#获取Token请求，插入步骤1和步骤2之间
+POST /shopApi/Shop/goodsInfo HTTP/1.1
+Host: my.77yfk.com
+Connection: keep-alive
+Content-Length: 36
+sec-ch-ua-platform: "iOS"
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+Accept: application/json, text/plain, */*
+sec-ch-ua: "Google Chrome";v="147", "Not.A/Brand";v="8", "Chromium";v="147"
+Content-Type: application/json
+Visitorid: w9brbv4yj
+sec-ch-ua-mobile: ?1
+Origin: https://my.77yfk.com
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: cors
+Sec-Fetch-Dest: empty
+Referer: https://my.77yfk.com/item/9q72u4
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9
+Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; Hm_lvt_11472a0cffd4810418d7665e195bcaaf=1776778212; HMACCOUNT=C9AD919A62C8038B; juuid=SimHvBKsG6hcugRt; Hm_lpvt_11472a0cffd4810418d7665e195bcaaf=1776779136
+
+{"goods_key":"9q72u4","trade_no":""}
+
+HTTP/1.1 200 OK
+Server: nginx
+Content-Type: application/json; charset=utf-8
+Vary: Accept-Encoding
+Access-Control-Allow-Origin: https://my.77yfk.com
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: 
+Access-Control-Allow-Headers: 
+Access-Control-Max-Age: 0
+Set-Cookie: PHPSESSID=351a9a42b7d7f9c43436fc7039b9dcb0; expires=Tue, 21-Apr-2026 14:09:35 GMT; Max-Age=1440; path=/
+Strict-Transport-Security: max-age=31536000
+Alt-Svc: quic=":443"; h3=":443"; h3-29=":443"; h3-27=":443";h3-25=":443"; h3-T050=":443"; h3-Q050=":443";h3-Q049=":443";h3-Q048=":443"; h3-Q046=":443"; h3-Q043=":443"
+Content-Encoding: gzip
+Age: 0
+Transfer-Encoding: chunked
+Connection: keep-alive
+Date: Tue, 21 Apr 2026 13:45:35 GMT
+EO-LOG-UUID: 13145115536400435181
+EO-Cache-Status: MISS
+Cache-Control: max-age=0
+NEL: {"success_fraction":0.1,"report_to":"eo-nel","max_age":604800}
+Report-To: {"endpoints":[{"url":"https://nel.teo-rum.com/eo-cgi/nel"}],"group":"eo-nel","max_age":604800}
+
+{"code":1,"msg":"success","time":1776779135,"data":{"goods_type":"card","goods_key":"9q72u4","status":1,"verify":1,"name":"蒎心亲密值","price":1000,"image":"","real_price":1000,"market_price":0,"description":"<p>虚拟商品拍下请5分钟内使用，5分钟后不售后，拒绝恶意投诉<\/p>","contact_format":"any","coupon_status":1,"create_time":1776735630,"link":"https:\/\/my.77yfk.com\/item\/9q72u4","category":{"id":647,"name":"语聊平台优惠充值卡"},"user":{"nickname":"小果的铺子","avatar":"https:\/\/my.77yfk.com\/static\/images\/avatar.png","token":"87ZFD0BZ","link":"https:\/\/my.77yfk.com\/shop\/87ZFD0BZ","description":"","auth_type":null,"contact_qq":"356993271","contact_mobile":"","contact_wechat":""},"discount":{"available":0,"rebate":10},"multipleoffers":{"available":0,"discount_type":1,"rules":[]},"fullgift":{"available":0,"gift_type":1,"rules":[]},"extend":{"send_order":0,"limit_count":1,"query_password_status":0},"js":["https:\/\/my.77yfk.com\/plugin\/ShopFloatImg\/static\/ZmxvYXQuanM=?img=%2FIMG_5280.PNG&link=%23&bottom=50&seller_qq=356993271&page_type=goods&show_img=0&show_reg=1&reg_url=%2Fmerchant%2Fregister&reg_text=%E5%90%8C%E6%AC%BE%E5%BA%97%E9%93%BA&reg_color=%23ff3b3b&show_sell=1&sell_text=%E8%81%94%E7%B3%BB%E5%8D%96%E5%AE%B6&sell_color=linear-gradient%2890deg%2C%20%23d946ef%2C%20%236d28d9%29&custom_list=%5B%7B%22text%22%3A%22%E4%B8%BE%E6%8A%A5%E8%BF%9D%E8%A7%84%22%2C%22url%22%3A%22https%3A%5C%2F%5C%2Fdoc.weixin.qq.com%5C%2Fforms%5C%2FAJcAmQcrAEcAToAigZjAJ0CN2qUv0vm5f%22%2C%22color%22%3A%22linear-gradient%2890deg%2C%20%233b82f6%2C%20%232563eb%29%22%7D%5D","https:\/\/my.77yfk.com\/shopApi\/Shop\/buyerBlackJs?token=87ZFD0BZ"]}}
