@@ -526,7 +526,7 @@ class QiqiyunService(BaseService):
                 "logs": self.logs,
             }
 
-    def login(self, username: str, password: str) -> dict:
+    def login(self, username: str, password: str, verify_code: str = "", csrf_token: str = "") -> dict:
         """登录七七云平台"""
         try:
             login_url = f"{self.BASE_URL}/merchantApi/user/login"
