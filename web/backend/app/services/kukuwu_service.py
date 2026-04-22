@@ -14,6 +14,7 @@ class KukuwuService(XinfakaService):
         # 验证码相关属性（继承自XinfakaService但需要重新初始化）
         self.captcha_csrf_token = ""
         self.captcha_cookies = {}
+        self.captcha_cookies_loaded = False
     
     def log(self, message: str):
         """重写日志方法，同时输出到控制台和logs列表"""
