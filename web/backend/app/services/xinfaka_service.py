@@ -80,7 +80,6 @@ class XinfakaService(BaseService):
         
         try:
             from app.models import PlatformConfig
-            from requests.cookies import create_cookie
             import json
             
             config = self.db.query(PlatformConfig).filter(
@@ -98,10 +97,17 @@ class XinfakaService(BaseService):
             
             # 清除所有现有cookies
             self.session.cookies.clear()
-            # 加载验证码 Cookies
+            # 使用 requests.utils.dict_from_cookiejar 和 requests.utils.add_dict_to_cookiejar 来避免重复
+            from http.cookiejar import Cookie
+            from requests.cookies import RequestsCookieJar
+            
+            # 重新创建 CookieJar（避免重复）
+            new_jar = RequestsCookieJar()
             for key, value in self.captcha_cookies.items():
-                cookie = create_cookie(key, value)
-                self.session.cookies.set_cookie(cookie)
+                # 使用 session.cookies.set 的简化方式
+                new_jar.set(key, value)
+            
+            self.session.cookies = new_jar
             
             self.captcha_cookies_loaded = True
             self.log(f"从数据库加载验证码 Cookies: {list(self.captcha_cookies.keys())}")
