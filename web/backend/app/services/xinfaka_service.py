@@ -87,6 +87,7 @@ class XinfakaService(BaseService):
                 PlatformConfig.platform_code == self.PLATFORM_CODE
             ).first()
             
+            # 检查 captcha_cookies 字段是否存在
             if not config or not hasattr(config, 'captcha_cookies') or not config.captcha_cookies:
                 self.captcha_cookies_loaded = True
                 return
@@ -95,19 +96,11 @@ class XinfakaService(BaseService):
             self.captcha_cookies = json.loads(config.captcha_cookies)
             self.captcha_csrf_token = config.captcha_csrf_token if hasattr(config, 'captcha_csrf_token') and config.captcha_csrf_token else ""
             
-            # 清除所有现有cookies
-            self.session.cookies.clear()
-            # 使用 requests.utils.dict_from_cookiejar 和 requests.utils.add_dict_to_cookiejar 来避免重复
-            from http.cookiejar import Cookie
-            from requests.cookies import RequestsCookieJar
-            
-            # 重新创建 CookieJar（避免重复）
-            new_jar = RequestsCookieJar()
+            # 完全重置 session 的 cookie jar，然后设置验证码 cookies
+            import requests
+            self.session.cookies = requests.cookies.RequestsCookieJar()
             for key, value in self.captcha_cookies.items():
-                # 使用 session.cookies.set 的简化方式
-                new_jar.set(key, value)
-            
-            self.session.cookies = new_jar
+                self.session.cookies.set(key, value)
             
             self.captcha_cookies_loaded = True
             self.log(f"从数据库加载验证码 Cookies: {list(self.captcha_cookies.keys())}")
@@ -172,8 +165,14 @@ class XinfakaService(BaseService):
                     raise Exception(f"需要{type_name}二级验证,验证账号: {value}")
                 raise Exception(f"登录失败: {error_msg}")
 
-            xsh_cookie = self.session.cookies.get("xsh_session")
-            if not xsh_cookie and not dict(self.session.cookies):
+            # 安全地获取 xsh_session cookie（遍历避免重复 cookie 问题）
+            xsh_cookie = None
+            for cookie in self.session.cookies:
+                if cookie.name == "xsh_session":
+                    xsh_cookie = cookie.value
+                    break
+            
+            if not xsh_cookie:
                 raise Exception("登录失败: 服务器未返回Cookie")
             
             self.log("登录成功")

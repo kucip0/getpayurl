@@ -64,15 +64,16 @@ class BaseService:
         if not config:
             return
         
-        cookies_list = []
+        # 去重：使用字典保存唯一 cookie name
+        cookies_dict = {}
         for cookie in self.session.cookies:
-            cookies_list.append({
+            cookies_dict[cookie.name] = {
                 "name": cookie.name,
                 "value": cookie.value,
                 "domain": cookie.domain,
-            })
+            }
         
-        config.cookies = json.dumps(cookies_list)
+        config.cookies = json.dumps(list(cookies_dict.values()))
         self.db.commit()
     
     def get_product_price(self, product_url: str) -> dict:
