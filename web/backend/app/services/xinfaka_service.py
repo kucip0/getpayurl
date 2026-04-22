@@ -373,13 +373,27 @@ class XinfakaService(BaseService):
                 raise Exception("未找到 shopId")
             shop_id = shop_id_input.get("value")
             
-            # 提取商品ID (从URL或页面)
-            # URL格式: https://www.xinfaka.com/single/8BF70AA3E39D
-            # 但实际API使用的是数字ID,需要从页面获取
+            # 提取商品ID (从页面获取，支持input和select两种元素)
+            goods_id = None
+            # 优先查找 input 元素
             goods_id_input = soup.find("input", {"id": "GoodsId"})
-            if not goods_id_input:
+            if goods_id_input:
+                goods_id = goods_id_input.get("value")
+            else:
+                # 查找 select 元素下的 option
+                goods_id_select = soup.find("select", {"id": "GoodsId"})
+                if goods_id_select:
+                    selected_option = goods_id_select.find("option", selected=True)
+                    if selected_option:
+                        goods_id = selected_option.get("value")
+                    else:
+                        # 如果没有selected属性，取第一个option
+                        first_option = goods_id_select.find("option")
+                        if first_option:
+                            goods_id = first_option.get("value")
+            
+            if not goods_id:
                 raise Exception("未找到商品ID")
-            goods_id = goods_id_input.get("value")
             
             self.log(f"商品信息: shopId={shop_id[:20]}..., goodsId={goods_id}")
             
