@@ -653,14 +653,9 @@ class FengyangService(BaseService):
             data = result.get("data", {})
             platform_data = data.get("platform", {})
             
+            # available_money 和 freeze_money 已经是元为单位，不需要转换
             available_money = platform_data.get("available_money", 0)
             freeze_money = platform_data.get("freeze_money", 0)
-            
-            # 转换为元（API返回的可能是分）
-            if isinstance(available_money, (int, float)):
-                available_money = available_money / 100
-            if isinstance(freeze_money, (int, float)):
-                freeze_money = freeze_money / 100
             
             self.log(f"查询余额成功: 可用余额={available_money}, 冻结金额={freeze_money}")
             

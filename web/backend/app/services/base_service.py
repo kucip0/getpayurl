@@ -30,6 +30,7 @@ class BaseService:
         # 移除BOM字符和其他可能导致编码问题的字符
         clean_message = message.replace('\ufeff', '').encode('gbk', 'ignore').decode('gbk')
         self.logs.append(clean_message)
+        print(clean_message)
     
     def load_cookies(self) -> bool:
         """从数据库加载Cookie"""

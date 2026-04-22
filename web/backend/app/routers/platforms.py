@@ -28,6 +28,8 @@ from app.services.qukapu_service import QukapuService
 from app.services.kukuwu_service import KukuwuService
 from app.services.qiqiyun_service import QiqiyunService
 from app.services.fengyang_service import FengyangService
+from app.services.zhufaka_service import ZhufakaService
+from app.services.qianxun_service import QianxunService
 
 router = APIRouter(prefix="/api/platforms", tags=["平台"])
 
@@ -66,6 +68,8 @@ PLATFORMS = [
     PlatformInfo(code="kukuwu", name="酷卡屋", host="https://kkw.yiyipay.com"),
     PlatformInfo(code="qiqiyun", name="七七云寄售", host="https://my.77yfk.com"),
     PlatformInfo(code="fengyang", name="枫阳发卡", host="https://faka.hbfywlkj.com"),
+    PlatformInfo(code="zhufaka", name="猪发卡", host="https://www.zhufaka.cn"),
+    PlatformInfo(code="qianxun", name="千寻寄售", host="https://www.qianxun1688.com"),
 ]
 
 
@@ -87,6 +91,10 @@ def get_service(platform_code: str, user_id: int, db: Session):
         return QiqiyunService(user_id, db)
     elif platform_code == "fengyang":
         return FengyangService(user_id, db)
+    elif platform_code == "zhufaka":
+        return ZhufakaService(user_id, db)
+    elif platform_code == "qianxun":
+        return QianxunService(user_id, db)
     else:
         raise HTTPException(status_code=404, detail="平台不存在")
 
