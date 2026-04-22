@@ -592,11 +592,24 @@ class XinfakaService(BaseService):
 
         soup = BeautifulSoup(html, "html.parser")
 
-        # 提取商品ID (从隐藏input)
+        # 提取商品ID (支持input和select两种元素)
+        goods_id = None
         goods_id_input = soup.find("input", {"id": "GoodsId"})
-        if not goods_id_input:
+        if goods_id_input:
+            goods_id = goods_id_input.get("value")
+        else:
+            goods_id_select = soup.find("select", {"id": "GoodsId"})
+            if goods_id_select:
+                selected_option = goods_id_select.find("option", selected=True)
+                if selected_option:
+                    goods_id = selected_option.get("value")
+                else:
+                    first_option = goods_id_select.find("option")
+                    if first_option:
+                        goods_id = first_option.get("value")
+        
+        if not goods_id:
             raise Exception("未找到商品ID")
-        goods_id = goods_id_input.get("value")
 
         # 提取 shopId
         shop_id_input = soup.find("input", {"id": "shopId"})
