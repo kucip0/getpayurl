@@ -2,6 +2,10 @@ import os
 from typing import Dict, Optional, Tuple
 
 import requests
+import urllib3
+
+# 禁用 SSL 警告
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def create_session(verify_ssl: bool = False) -> requests.Session:
@@ -11,12 +15,9 @@ def create_session(verify_ssl: bool = False) -> requests.Session:
     # 禁用SSL验证
     if not verify_ssl:
         session.verify = False
-        # 清除所有SSL相关环境变量，避免干扰
-        for env_var in ['REQUESTS_CA_BUNDLE', 'CURL_CA_BUNDLE', 'SSLKEYLOGFILE']:
-            if env_var in os.environ:
-                del os.environ[env_var]
+        # 不再删除SSL环境变量，只设置session.verify=False即可
 
-    # 浏览器请求头
+    # 浏览器请求头（必须使用Windows User-Agent，否则获取不到正确的支付渠道）
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
         "Accept": "application/json, text/javascript, */*; q=0.01",

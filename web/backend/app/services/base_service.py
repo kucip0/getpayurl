@@ -26,9 +26,9 @@ class BaseService:
         self.logs: List[str] = []
     
     def log(self, message: str):
-        """添加日志（过滤BOM字符，避免Windows终端编码错误）"""
-        # 移除BOM字符和其他可能导致编码问题的字符
-        clean_message = message.replace('\ufeff', '').encode('gbk', 'ignore').decode('gbk')
+        """添加日志（过滤BOM字符，跨平台编码兼容）"""
+        # 移除BOM字符，使用UTF-8编码（跨平台兼容）
+        clean_message = message.replace('\ufeff', '')
         self.logs.append(clean_message)
         print(clean_message)
     
