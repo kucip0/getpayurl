@@ -28,6 +28,8 @@ class PlatformConfig(Base):
     shop_password = Column(String(255))
     product_urls = Column(Text)  # JSON数组
     cookies = Column(Text)  # JSON
+    captcha_cookies = Column(Text)  # JSON - 验证码 Session 的 Cookies（解决多 worker 模式下的 Session 丢失问题）
+    captcha_csrf_token = Column(String(500))  # 验证码 CSRF Token
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 

@@ -22,6 +22,7 @@ class XinfakaService(BaseService):
         super().__init__(user_id, db)
         self.captcha_csrf_token = ""  # 保存 CSRF Token
         self.captcha_cookies = {}  # 保存验证码请求的cookies
+        self.captcha_cookies_loaded = False  # 标记是否已从数据库加载验证码cookies
     
     def log(self, message: str):
         """重写日志方法，同时输出到控制台和logs列表"""
@@ -49,10 +50,72 @@ class XinfakaService(BaseService):
             self.log(f"已加载验证码Session Cookies: {list(self.captcha_cookies.keys())}")
             self.log(f"当前Session所有Cookies: {dict(self.session.cookies)}")
             self.log(f"CSRF Token: {self.captcha_csrf_token[:30] if self.captcha_csrf_token else '未设置'}...")
+    
+    def save_captcha_cookies_to_db(self):
+        """将验证码 Session 的 Cookies 和 CSRF Token 保存到数据库"""
+        try:
+            from app.models import PlatformConfig
+            config = self.db.query(PlatformConfig).filter(
+                PlatformConfig.user_id == self.user_id,
+                PlatformConfig.platform_code == self.PLATFORM_CODE
+            ).first()
+            
+            if not config:
+                return
+            
+            # 将验证码 Cookies 和 CSRF Token 保存到数据库
+            import json
+            config.captcha_cookies = json.dumps(self.captcha_cookies)
+            config.captcha_csrf_token = self.captcha_csrf_token
+            self.db.commit()
+            self.log(f"已保存验证码 Cookies 到数据库: {list(self.captcha_cookies.keys())}")
+        except Exception as e:
+            self.log(f"保存验证码 Cookies 到数据库失败: {str(e)}")
+            self.db.rollback()
+    
+    def load_captcha_cookies_from_db(self):
+        """从数据库加载验证码 Cookies（解决多 worker 模式下的 Session 丢失问题）"""
+        if self.captcha_cookies_loaded:
+            return  # 已经加载过，不重复
+        
+        try:
+            from app.models import PlatformConfig
+            from requests.cookies import create_cookie
+            import json
+            
+            config = self.db.query(PlatformConfig).filter(
+                PlatformConfig.user_id == self.user_id,
+                PlatformConfig.platform_code == self.PLATFORM_CODE
+            ).first()
+            
+            if not config or not hasattr(config, 'captcha_cookies') or not config.captcha_cookies:
+                self.captcha_cookies_loaded = True
+                return
+            
+            # 加载验证码 Cookies
+            self.captcha_cookies = json.loads(config.captcha_cookies)
+            self.captcha_csrf_token = config.captcha_csrf_token if hasattr(config, 'captcha_csrf_token') and config.captcha_csrf_token else ""
+            
+            # 清除所有现有cookies
+            self.session.cookies.clear()
+            # 加载验证码 Cookies
+            for key, value in self.captcha_cookies.items():
+                cookie = create_cookie(key, value)
+                self.session.cookies.set_cookie(cookie)
+            
+            self.captcha_cookies_loaded = True
+            self.log(f"从数据库加载验证码 Cookies: {list(self.captcha_cookies.keys())}")
+            self.log(f"当前Session所有Cookies: {dict(self.session.cookies)}")
+        except Exception as e:
+            self.log(f"从数据库加载验证码 Cookies 失败: {str(e)}")
+            self.captcha_cookies_loaded = True
 
     def login(self, username: str, password: str, verify_code: str = "", csrf_token: str = "") -> dict:
         """登录新发卡平台（使用缓存的session）"""
         try:
+            # 从数据库加载验证码的 Cookies（解决多 worker 模式下的 Session 丢失问题）
+            self.load_captcha_cookies_from_db()
+            
             if not verify_code:
                 raise Exception("请输入验证码")
             if not csrf_token:
@@ -211,6 +274,12 @@ class XinfakaService(BaseService):
                 self.log("  警告: 未获取到 CSRF Token")
             
             self.log("=" * 80)
+            
+            # 将验证码 Session 的 Cookies 保存到数据库（解决多 worker 模式下的 Session 丢失问题）
+            self.captcha_cookies = dict(self.session.cookies)
+            self.save_captcha_cookies_to_db()
+            self.log(f"  已保存验证码 Cookies 到数据库: {list(self.captcha_cookies.keys())}")
+            
             return resp.content
         except Exception as e:
             self.log(f"获取验证码失败: {str(e)}")
