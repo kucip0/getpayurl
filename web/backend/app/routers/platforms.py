@@ -21,6 +21,7 @@ class BalanceResponse(BaseModel):
     withdrawable: str = "0.000"
     non_withdrawable: str = "0.000"
 from app.services.houfaka_service import HoufakaService
+from app.services.jiyuan_service import JiyuanService
 from app.services.siyun_service import SiyunService
 # from app.services.mengyan_service import MengyanService  # 梦言发卡已废弃
 from app.services.xinfaka_service import XinfakaService
@@ -30,6 +31,7 @@ from app.services.qiqiyun_service import QiqiyunService
 from app.services.fengyang_service import FengyangService
 from app.services.zhufaka_service import ZhufakaService
 from app.services.qianxun_service import QianxunService
+from app.services.miaoquka_service import MiaoqukaService
 
 router = APIRouter(prefix="/api/platforms", tags=["平台"])
 
@@ -61,6 +63,7 @@ def get_cached_service(platform_code: str, user_id: int, db: Session) -> object:
 
 PLATFORMS = [
     PlatformInfo(code="houfaka", name="猴发卡", host="https://www.houfaka.com"),
+    PlatformInfo(code="jiyuan", name="纪元发卡", host="https://buy.jiyuanfaka.com"),
     PlatformInfo(code="siyun", name="四云发卡", host="https://shop.4yuns.com"),
     # PlatformInfo(code="mengyan", name="梦言云卡", host="https://www.np4.cn"),  # 梦言发卡已废弃
     PlatformInfo(code="xinfaka", name="新发卡", host="https://www.xinfaka.com"),
@@ -70,6 +73,7 @@ PLATFORMS = [
     PlatformInfo(code="fengyang", name="枫阳发卡", host="https://faka.hbfywlkj.com"),
     PlatformInfo(code="zhufaka", name="猪发卡", host="https://www.zhufaka.cn"),
     PlatformInfo(code="qianxun", name="千寻寄售", host="https://www.qianxun1688.com"),
+    PlatformInfo(code="miaoquka", name="秒取卡", host="https://dev.miaoquka.cn"),
 ]
 
 
@@ -77,6 +81,8 @@ def get_service(platform_code: str, user_id: int, db: Session):
     """获取平台服务实例"""
     if platform_code == "houfaka":
         return HoufakaService(user_id, db)
+    elif platform_code == "jiyuan":
+        return JiyuanService(user_id, db)
     elif platform_code == "siyun":
         return SiyunService(user_id, db)
     # elif platform_code == "mengyan":  # 梦言发卡已废弃
@@ -95,6 +101,8 @@ def get_service(platform_code: str, user_id: int, db: Session):
         return ZhufakaService(user_id, db)
     elif platform_code == "qianxun":
         return QianxunService(user_id, db)
+    elif platform_code == "miaoquka":
+        return MiaoqukaService(user_id, db)
     else:
         raise HTTPException(status_code=404, detail="平台不存在")
 
