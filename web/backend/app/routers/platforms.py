@@ -32,6 +32,7 @@ from app.services.fengyang_service import FengyangService
 from app.services.zhufaka_service import ZhufakaService
 from app.services.qianxun_service import QianxunService
 from app.services.miaoquka_service import MiaoqukaService
+from app.services.uufaka_service import UufakaService
 
 router = APIRouter(prefix="/api/platforms", tags=["平台"])
 
@@ -74,6 +75,7 @@ PLATFORMS = [
     PlatformInfo(code="zhufaka", name="猪发卡", host="https://www.zhufaka.cn"),
     PlatformInfo(code="qianxun", name="千寻寄售", host="https://www.qianxun1688.com"),
     PlatformInfo(code="miaoquka", name="秒取卡", host="https://dev.miaoquka.cn"),
+    PlatformInfo(code="uufaka", name="悠悠发卡", host="https://www.uufaka.com"),
 ]
 
 
@@ -103,6 +105,8 @@ def get_service(platform_code: str, user_id: int, db: Session):
         return QianxunService(user_id, db)
     elif platform_code == "miaoquka":
         return MiaoqukaService(user_id, db)
+    elif platform_code == "uufaka":
+        return UufakaService(user_id, db)
     else:
         raise HTTPException(status_code=404, detail="平台不存在")
 
