@@ -411,14 +411,18 @@ class SiyunService(BaseService):
         # 处理转义的HTML（与get_product_price方法一致）
         html = resp.text.replace('\\/', '/').replace('\\"', '"').replace('\\n', '\n').replace('\\t', '\t').replace('\\\\', '\\')
 
-        # 输出完整HTML响应到文件供调试
-        import os
-        debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
-        os.makedirs(debug_dir, exist_ok=True)
-        debug_file = os.path.join(debug_dir, 'step1_response.html')
-        with open(debug_file, 'w', encoding='utf-8') as f:
-            f.write(html)
-        self.log(f"DEBUG1-STEP1: 完整HTML已保存到 {debug_file}")
+        # 输出完整HTML响应到文件供调试（如果权限不允许则跳过）
+        try:
+            import os
+            debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
+            os.makedirs(debug_dir, exist_ok=True)
+            debug_file = os.path.join(debug_dir, 'step1_response.html')
+            with open(debug_file, 'w', encoding='utf-8') as f:
+                f.write(html)
+            self.log(f"DEBUG1-STEP1: 完整HTML已保存到 {debug_file}")
+        except PermissionError:
+            self.log("DEBUG1-STEP1: 跳过保存HTML文件（权限不足）")
+        
         self.log(f"DEBUG1-STEP1: HTML前1000字符={html[:1000]}")
 
         # 调试日志：响应Cookie
