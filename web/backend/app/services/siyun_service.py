@@ -20,6 +20,18 @@ class SiyunService(BaseService):
     TRACKING_COOKIE = "s1c9ae71b"
     FINGERPRINT_ENABLED = True
 
+    def __init__(self, user_id: int, db):
+        """初始化四云发卡服务，使用TLS指纹session"""
+        from app.utils.http_client import create_fingerprint_session
+        
+        # 重写父类的__init__，使用带TLS指纹的session
+        self.user_id = user_id
+        self.db = db
+        # 使用TLS指纹session（模拟Chrome浏览器TLS握手）
+        self.session = create_fingerprint_session(verify_ssl=False)
+        self.fingerprint = str(uuid.uuid4())
+        self.logs = []
+
     def login(self, username: str, password: str) -> dict:
         """登录四云发卡店铺"""
         try:
