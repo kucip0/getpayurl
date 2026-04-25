@@ -19,7 +19,7 @@ class HoufakaService(BaseService):
     BASE_URL = "https://www.houfaka.com"
     TRACKING_COOKIE = "sc447eeeb"
 
-    def login(self, username: str, password: str) -> dict:
+    def login(self, username: str, password: str, verify_code: str = "", csrf_token: str = "") -> dict:
         """登录猴发卡店铺"""
         try:
             # 1. 访问主页获取初始Cookie
@@ -714,9 +714,14 @@ class HoufakaService(BaseService):
                 safe_start = start_date.replace('/', '-') if start_date else 'none'
                 safe_end = end_date.replace('/', '-') if end_date else 'none'
                 debug_file = f"debug_orders_{status}_{safe_start}_{safe_end}.html"
-                with open(debug_file, 'w', encoding='utf-8') as f:
-                    f.write(html_content)
-                self.log(f"DEBUG: 已保存HTML到 {debug_file}")
+                try:
+                    with open(debug_file, 'w', encoding='utf-8') as f:
+                        f.write(html_content)
+                    self.log(f"DEBUG: 已保存HTML到 {debug_file}")
+                except PermissionError:
+                    self.log(f"DEBUG: 无权限写入文件 {debug_file}")
+                except Exception as e:
+                    self.log(f"DEBUG: 保存HTML失败: {str(e)}")
             
             # 6. 返回结果
             return {

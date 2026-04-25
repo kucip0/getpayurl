@@ -977,13 +977,19 @@ class SiyunService(BaseService):
             # 4. 处理转义的HTML
             html = unescape_html(resp.text)
 
-            # 保存调试HTML到文件
-            import os
-            debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
-            os.makedirs(debug_dir, exist_ok=True)
-            debug_file = os.path.join(debug_dir, 'siyun_orders_debug.html')
-            with open(debug_file, 'w', encoding='utf-8') as f:
-                f.write(html)
+            # 保存调试HTML到文件（如果权限不允许则跳过）
+            try:
+                import os
+                debug_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'debug')
+                os.makedirs(debug_dir, exist_ok=True)
+                debug_file = os.path.join(debug_dir, 'siyun_orders_debug.html')
+                with open(debug_file, 'w', encoding='utf-8') as f:
+                    f.write(html)
+                self.log(f"DEBUG: 已保存HTML到 {debug_file}")
+            except PermissionError:
+                self.log("DEBUG: 无权限写入debug文件")
+            except Exception as e:
+                self.log(f"DEBUG: 保存HTML失败: {str(e)}")
 
             # 5. 检测是否跳转到登录页
             # 更准确的检测：检查是否真的没有订单表格且有登录表单
